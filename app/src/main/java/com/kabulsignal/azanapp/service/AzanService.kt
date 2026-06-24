@@ -44,11 +44,13 @@ class AzanService : Service() {
     }
 
     private fun handleAzan(intent: Intent) {
+        val prayerName = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_NAME) ?: ""
         val prayerDari = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_DARI) ?: "نماز"
         val prayerTime = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_TIME) ?: ""
+        val isFajr = prayerName == "FAJR"
 
         startForeground(NOTIFICATION_ID_AZAN, buildAzanNotification(prayerDari, prayerTime))
-        playAzan()
+        playAzan(isFajr)
         vibrate(longArrayOf(0, 500, 200, 500, 200, 500))
         handler.postDelayed({ stopAzan() }, 5 * 60 * 1000L)
     }
@@ -62,7 +64,7 @@ class AzanService : Service() {
         handler.postDelayed({ stopSelf() }, 3000)
     }
 
-    private fun playAzan() {
+    private fun playAzan(isFajr: Boolean = false) {
         try {
             mediaPlayer?.release()
 
@@ -71,8 +73,15 @@ class AzanService : Service() {
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .build()
 
-            // Use res/raw/azan.mp3 if provided, otherwise fall back to default alarm
-            val rawId = resources.getIdentifier("azan", "raw", packageName)
+            // For Fajr: try azan_fajr.mp3 first, then fall back to azan.mp3
+            // For others: use azan.mp3
+            val rawId = if (isFajr) {
+                resources.getIdentifier("azan_fajr", "raw", packageName)
+                    .takeIf { it != 0 }
+                    ?: resources.getIdentifier("azan", "raw", packageName)
+            } else {
+                resources.getIdentifier("azan", "raw", packageName)
+            }
 
             mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(audioAttributes)
@@ -90,7 +99,7 @@ class AzanService : Service() {
                 setOnCompletionListener { stopAzan() }
                 start()
             }
-            Log.d("AzanService", "Azan audio started (custom=${rawId != 0})")
+            Log.d("AzanService", "Azan started (fajr=$isFajr, customFile=${rawId != 0})")
         } catch (e: Exception) {
             Log.e("AzanService", "Failed to play azan", e)
             handler.postDelayed({ stopSelf() }, 3000)
