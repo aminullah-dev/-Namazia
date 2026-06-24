@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">اوقات نماز</string>
+    <string name="widget_description">ویجت اوقات نماز — نماز بعدی را نشان می‌دهد</string>
+    <string name="channel_azan_name">اذان</string>
+    <string name="channel_reminder_name">یادآوری نماز</string>
+</resources>
