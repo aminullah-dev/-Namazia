@@ -319,6 +319,7 @@ private fun SwitchRow(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReminderChips(minutes: Int, onChanged: (Int) -> Unit) {
     Column {

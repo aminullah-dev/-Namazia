@@ -173,7 +173,7 @@ private fun DuaCard(dua: Dua) {
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth()
         )
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        Divider(color = MaterialTheme.colorScheme.outlineVariant)
         Text(
             text = dua.dari,
             fontSize = 13.sp,
@@ -193,6 +193,7 @@ private fun DuaCard(dua: Dua) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TasbihContent(
     count: Int,
