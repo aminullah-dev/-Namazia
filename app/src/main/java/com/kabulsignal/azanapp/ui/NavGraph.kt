@@ -2,12 +2,14 @@ package com.kabulsignal.azanapp.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Adjust
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -25,8 +27,9 @@ private data class NavItem(val route: String, val label: String, val icon: Image
 
 private val navItems = listOf(
     NavItem("home", "نماز", Icons.Filled.Home),
+    NavItem("calendar", "تقویم", Icons.Filled.DateRange),
     NavItem("qibla", "قبله", Icons.Filled.Explore),
-    NavItem("tasbih", "تسبیح", Icons.Outlined.Adjust),
+    NavItem("dhikr", "ذکر", Icons.Filled.MenuBook),
     NavItem("settings", "تنظیمات", Icons.Filled.Settings)
 )
 
@@ -35,6 +38,7 @@ fun AzanNavGraph(
     uiState: HomeUiState,
     settings: AppSettings,
     tasbihCount: Int,
+    calendarState: CalendarUiState,
     onCitySelected: (Int) -> Unit,
     onPrayerToggled: (PrayerName, Boolean) -> Unit,
     onReminderChanged: (Int) -> Unit,
@@ -43,6 +47,7 @@ fun AzanNavGraph(
     onVibrationToggled: (Boolean) -> Unit,
     onTasbihIncrement: () -> Unit,
     onTasbihReset: () -> Unit,
+    onMonthChanged: (Int, Int) -> Unit,
     onRefresh: () -> Unit
 ) {
     val navController = rememberNavController()
@@ -81,14 +86,26 @@ fun AzanNavGraph(
             composable("home") {
                 HomeScreen(uiState = uiState, onRefresh = onRefresh)
             }
+            composable("calendar") {
+                // Auto-load current month when first navigating here
+                LaunchedEffect(Unit) {
+                    if (calendarState.days.isEmpty() && !calendarState.isLoading) {
+                        onMonthChanged(calendarState.year, calendarState.month)
+                    }
+                }
+                CalendarScreen(
+                    calendarState = calendarState,
+                    onMonthChanged = onMonthChanged
+                )
+            }
             composable("qibla") {
                 QiblaScreen(city = uiState.currentCity)
             }
-            composable("tasbih") {
-                TasbihScreen(
-                    count = tasbihCount,
-                    onIncrement = onTasbihIncrement,
-                    onReset = onTasbihReset
+            composable("dhikr") {
+                DuaScreen(
+                    tasbihCount = tasbihCount,
+                    onTasbihIncrement = onTasbihIncrement,
+                    onTasbihReset = onTasbihReset
                 )
             }
             composable("settings") {

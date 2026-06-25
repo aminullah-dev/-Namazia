@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.kabulsignal.azanapp.data.*
+import com.kabulsignal.azanapp.ui.CalendarUiState
 import com.kabulsignal.azanapp.utils.AlarmScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -40,6 +41,9 @@ class MainViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    private val _calendarState = MutableStateFlow(CalendarUiState())
+    val calendarState: StateFlow<CalendarUiState> = _calendarState.asStateFlow()
 
     init {
         loadPrayerTimes()
@@ -116,6 +120,25 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             settingsDataStore.updateCalculationMethod(method)
             loadPrayerTimes()
+        }
+    }
+
+    fun loadMonthlyCalendar(year: Int = LocalDate.now().year, month: Int = LocalDate.now().monthValue) {
+        viewModelScope.launch {
+            _calendarState.update { it.copy(isLoading = true, error = null, year = year, month = month) }
+            val settings = settingsDataStore.settings.first()
+            val city = AfghanCities.list[settings.cityIndex]
+            repository.getMonthlyCalendar(year, month, city, settings.calculationMethod)
+                .fold(
+                    onSuccess = { days ->
+                        _calendarState.update { it.copy(isLoading = false, days = days) }
+                    },
+                    onFailure = { error ->
+                        _calendarState.update {
+                            it.copy(isLoading = false, error = "خطا در بارگزاری تقویم: ${error.message}")
+                        }
+                    }
+                )
         }
     }
 

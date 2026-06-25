@@ -1,11 +1,18 @@
 package com.kabulsignal.azanapp.ui
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -14,6 +21,8 @@ import com.kabulsignal.azanapp.data.AppSettings
 import com.kabulsignal.azanapp.data.CalcMethods
 import com.kabulsignal.azanapp.data.PrayerName
 import com.kabulsignal.azanapp.utils.toPersianDigits
+
+private const val SUPPORT_EMAIL = "aminhashemi979@gmail.com"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +36,8 @@ fun SettingsScreen(
     onDarkModeToggled: (Boolean) -> Unit,
     onVibrationToggled: (Boolean) -> Unit
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,6 +100,76 @@ fun SettingsScreen(
                 SwitchRow("لرزش هنگام اذان", settings.vibrationEnabled, onVibrationToggled)
                 Spacer(modifier = Modifier.height(8.dp))
                 SwitchRow("حالت شب", settings.darkMode, onDarkModeToggled)
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                SectionTitle("پشتیبانی")
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                data = Uri.parse("mailto:$SUPPORT_EMAIL")
+                                putExtra(Intent.EXTRA_SUBJECT, "پشتیبانی اپ اوقات نماز")
+                            }
+                            context.startActivity(Intent.createChooser(intent, "ارسال ایمیل"))
+                        },
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text("تماس با پشتیبانی", fontSize = 16.sp)
+                            Text(
+                                text = SUPPORT_EMAIL,
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Icon(
+                            Icons.Default.Email,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text("نسخه برنامه", fontSize = 16.sp)
+                            Text(
+                                text = "نسخه ۱.۰.۰",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.outline
+                        )
+                    }
+                }
             }
         }
     }

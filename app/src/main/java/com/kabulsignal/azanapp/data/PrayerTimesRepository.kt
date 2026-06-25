@@ -56,6 +56,31 @@ class PrayerTimesRepository @Inject constructor(
         }
     }
 
+    suspend fun getMonthlyCalendar(
+        year: Int,
+        month: Int,
+        city: AfghanCity,
+        method: Int = 3
+    ): Result<List<PrayerData>> {
+        return try {
+            val response = api.getMonthlyCalendar(
+                year = year,
+                month = month,
+                latitude = city.latitude,
+                longitude = city.longitude,
+                method = method
+            )
+            if (response.isSuccessful) {
+                Result.success(response.body()!!.data)
+            } else {
+                Result.failure(Exception("خطای سرور: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Log.e("Repository", "Monthly calendar error", e)
+            Result.failure(e)
+        }
+    }
+
     suspend fun clearOldCache() {
         val threshold = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
         dao.deleteOldCache(threshold)

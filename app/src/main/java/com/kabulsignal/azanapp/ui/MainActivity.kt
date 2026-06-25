@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
             val uiState by viewModel.uiState.collectAsState()
             val settings by viewModel.settings.collectAsState()
             val tasbihCount by viewModel.tasbihCount.collectAsState()
+            val calendarState by viewModel.calendarState.collectAsState()
 
             AzanAppTheme(darkTheme = settings.darkMode) {
                 Surface(
@@ -46,6 +47,7 @@ class MainActivity : ComponentActivity() {
                         uiState = uiState,
                         settings = settings,
                         tasbihCount = tasbihCount,
+                        calendarState = calendarState,
                         onCitySelected = viewModel::selectCity,
                         onPrayerToggled = viewModel::togglePrayer,
                         onReminderChanged = viewModel::updateReminderMinutes,
@@ -54,6 +56,7 @@ class MainActivity : ComponentActivity() {
                         onVibrationToggled = viewModel::toggleVibration,
                         onTasbihIncrement = viewModel::incrementTasbih,
                         onTasbihReset = viewModel::resetTasbih,
+                        onMonthChanged = viewModel::loadMonthlyCalendar,
                         onRefresh = { viewModel.loadPrayerTimes() }
                     )
                 }
