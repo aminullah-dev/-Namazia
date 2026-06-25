@@ -8,5 +8,6 @@
 .externalNativeBuild
 .cxx
 local.properties
-app/src/main/res/raw/azan.mp3
-app/src/main/res/raw/azan_fajr.mp3
+# Add your own azan files to app/src/main/res/raw/ — not committed by default
+# app/src/main/res/raw/azan.mp3
+# app/src/main/res/raw/azan_fajr.mp3

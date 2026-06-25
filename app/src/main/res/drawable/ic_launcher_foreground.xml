@@ -1,11 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+
+    <!-- Left minaret body -->
     <path
         android:fillColor="#BFA15C"
-        android:pathData="M54,20 C50,20 47,23 47,27 L47,30 C44,30 42,32 42,35 L42,38 L34,38 L34,35 C34,32 32,30 29,30 L29,27 C29,23 26,20 22,20 C18,20 15,23 15,27 L15,30 C12,30 10,32 10,35 L10,42 L18,42 L18,85 L90,85 L90,42 L98,42 L98,35 C98,32 96,30 93,30 L93,27 C93,23 90,20 86,20 C82,20 79,23 79,27 L79,30 C76,30 74,32 74,35 L74,38 L66,38 L66,35 C66,32 64,30 61,30 L61,27 C61,23 58,20 54,20 Z M26,43 L42,43 L42,85 L26,85 Z M50,43 L58,43 L58,65 L50,65 Z M66,43 L82,43 L82,85 L66,85 Z M10,86 L98,86 L98,92 L10,92 Z" />
+        android:pathData="M24,82 L24,42 L30,42 L30,82 Z" />
+    <!-- Left minaret cap (pointed) -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M22,42 L27,30 L32,42 Z" />
+    <!-- Left minaret small dome top -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M23,42 Q27,36 31,42 Z" />
+
+    <!-- Right minaret body -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M78,82 L78,42 L84,42 L84,82 Z" />
+    <!-- Right minaret cap -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M76,42 L81,30 L86,42 Z" />
+    <!-- Right minaret small dome top -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M77,42 Q81,36 85,42 Z" />
+
+    <!-- Left side small dome -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M32,58 Q41,47 50,58 Z" />
+
+    <!-- Right side small dome -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M58,58 Q67,47 76,58 Z" />
+
+    <!-- Main central dome -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M34,58 Q54,28 74,58 Z" />
+
+    <!-- Building body + arch entrance (evenOdd creates opening) -->
+    <path
+        android:fillColor="#BFA15C"
+        android:fillType="evenOdd"
+        android:pathData="M30,58 L30,82 L78,82 L78,58 Z
+                          M46,82 L46,68 Q54,60 62,68 L62,82 Z" />
+
+    <!-- Crescent moon above main dome -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M54,20
+                          C59,17 65,20 63,27
+                          C61,34 53,36 48,32
+                          C54,31 59,26 57,21
+                          C55,17 51,19 54,20 Z" />
+
+    <!-- Base line -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M22,83 L86,83 L86,86 L22,86 Z" />
+
 </vector>
