@@ -47,20 +47,22 @@ class AzanService : Service() {
         val prayerName = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_NAME) ?: ""
         val prayerDari = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_DARI) ?: "نماز"
         val prayerTime = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_TIME) ?: ""
+        val shouldVibrate = intent.getBooleanExtra(AlarmScheduler.EXTRA_VIBRATE, true)
         val isFajr = prayerName == "FAJR"
 
         startForeground(NOTIFICATION_ID_AZAN, buildAzanNotification(prayerDari, prayerTime))
         playAzan(isFajr)
-        vibrate(longArrayOf(0, 500, 200, 500, 200, 500))
+        if (shouldVibrate) vibrate(longArrayOf(0, 500, 200, 500, 200, 500))
         handler.postDelayed({ stopAzan() }, 5 * 60 * 1000L)
     }
 
     private fun handleReminder(intent: Intent) {
         val prayerDari = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_DARI) ?: "نماز"
         val prayerTime = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_TIME) ?: ""
+        val shouldVibrate = intent.getBooleanExtra(AlarmScheduler.EXTRA_VIBRATE, true)
 
         startForeground(NOTIFICATION_ID_REMINDER, buildReminderNotification(prayerDari, prayerTime))
-        vibrate(longArrayOf(0, 300, 100, 300))
+        if (shouldVibrate) vibrate(longArrayOf(0, 300, 100, 300))
         handler.postDelayed({ stopSelf() }, 3000)
     }
 

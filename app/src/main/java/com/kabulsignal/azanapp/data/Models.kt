@@ -130,5 +130,21 @@ data class AppSettings(
     val sunriseEnabled: Boolean = false,
     val reminderMinutes: Int = 15,
     val vibrationEnabled: Boolean = true,
-    val useAutoLocation: Boolean = false
+    val useAutoLocation: Boolean = false,
+    val darkMode: Boolean = false
 )
+
+// Calculation methods supported by the aladhan API
+data class CalcMethod(val id: Int, val nameDari: String)
+
+object CalcMethods {
+    val list = listOf(
+        CalcMethod(1, "دانشگاه علوم اسلامی کراچی"),
+        CalcMethod(3, "اتحادیه جهانی مسلمانان"),
+        CalcMethod(4, "ام القری مکه"),
+        CalcMethod(2, "انجمن اسلامی امریکای شمالی"),
+        CalcMethod(5, "سازمان عمومی مساحی مصر")
+    )
+
+    fun nameOf(id: Int): String = list.firstOrNull { it.id == id }?.nameDari ?: "پیش‌فرض"
+}

@@ -19,12 +19,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kabulsignal.azanapp.data.PrayerTime
+import com.kabulsignal.azanapp.utils.toPersianDigits
+import kotlinx.coroutines.delay
+import java.time.Duration
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
-    onSettingsClick: () -> Unit,
     onRefresh: () -> Unit
 ) {
     Scaffold(
@@ -47,9 +51,6 @@ fun HomeScreen(
                 actions = {
                     IconButton(onClick = onRefresh) {
                         Icon(Icons.Default.Refresh, contentDescription = "بارگزاری مجدد")
-                    }
-                    IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Default.Settings, contentDescription = "تنظیمات")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -151,14 +152,61 @@ private fun NextPrayerCard(prayer: PrayerTime, hijriDate: String) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = prayer.time,
+                    text = prayer.time.toPersianDigits(),
                     color = Color.White,
                     fontSize = 48.sp,
                     fontWeight = FontWeight.Light,
                     letterSpacing = 2.sp
                 )
+                Spacer(modifier = Modifier.height(10.dp))
+                CountdownPill(targetTime = prayer.time)
             }
         }
+    }
+}
+
+@Composable
+private fun CountdownPill(targetTime: String) {
+    var remaining by remember(targetTime) { mutableStateOf(computeRemaining(targetTime)) }
+
+    LaunchedEffect(targetTime) {
+        while (true) {
+            remaining = computeRemaining(targetTime)
+            delay(1000)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .background(
+                color = Color.White.copy(alpha = 0.18f),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 16.dp, vertical = 6.dp)
+    ) {
+        Text(
+            text = "تا اذان: ${remaining.toPersianDigits()}",
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+private val countdownFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+private fun computeRemaining(targetTime: String): String {
+    return try {
+        val now = LocalTime.now()
+        val target = LocalTime.parse(targetTime, countdownFormatter)
+        var seconds = Duration.between(now, target).seconds
+        if (seconds < 0) seconds += 24 * 3600 // wrap to next day
+        val h = seconds / 3600
+        val m = (seconds % 3600) / 60
+        val s = seconds % 60
+        "%02d:%02d:%02d".format(h, m, s)
+    } catch (e: Exception) {
+        "--:--:--"
     }
 }
 
@@ -224,7 +272,7 @@ private fun PrayerTimeCard(prayer: PrayerTime) {
                     Spacer(modifier = Modifier.width(6.dp))
                 }
                 Text(
-                    text = prayer.time,
+                    text = prayer.time.toPersianDigits(),
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 20.sp,
                     color = if (prayer.isNext)

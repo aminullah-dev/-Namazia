@@ -29,6 +29,8 @@ class SettingsDataStore @Inject constructor(
         val REMINDER_MINUTES = intPreferencesKey("reminder_minutes")
         val VIBRATION_ENABLED = booleanPreferencesKey("vibration_enabled")
         val USE_AUTO_LOCATION = booleanPreferencesKey("use_auto_location")
+        val DARK_MODE = booleanPreferencesKey("dark_mode")
+        val TASBIH_COUNT = intPreferencesKey("tasbih_count")
     }
 
     val settings: Flow<AppSettings> = context.dataStore.data
@@ -45,9 +47,14 @@ class SettingsDataStore @Inject constructor(
                 sunriseEnabled = prefs[Keys.SUNRISE_ENABLED] ?: false,
                 reminderMinutes = prefs[Keys.REMINDER_MINUTES] ?: 15,
                 vibrationEnabled = prefs[Keys.VIBRATION_ENABLED] ?: true,
-                useAutoLocation = prefs[Keys.USE_AUTO_LOCATION] ?: false
+                useAutoLocation = prefs[Keys.USE_AUTO_LOCATION] ?: false,
+                darkMode = prefs[Keys.DARK_MODE] ?: false
             )
         }
+
+    val tasbihCount: Flow<Int> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs -> prefs[Keys.TASBIH_COUNT] ?: 0 }
 
     suspend fun updateCityIndex(index: Int) = context.dataStore.edit {
         it[Keys.CITY_INDEX] = index
@@ -75,5 +82,17 @@ class SettingsDataStore @Inject constructor(
 
     suspend fun updateAutoLocation(enabled: Boolean) = context.dataStore.edit {
         it[Keys.USE_AUTO_LOCATION] = enabled
+    }
+
+    suspend fun updateDarkMode(enabled: Boolean) = context.dataStore.edit {
+        it[Keys.DARK_MODE] = enabled
+    }
+
+    suspend fun updateCalculationMethod(method: Int) = context.dataStore.edit {
+        it[Keys.CALC_METHOD] = method
+    }
+
+    suspend fun updateTasbihCount(count: Int) = context.dataStore.edit {
+        it[Keys.TASBIH_COUNT] = count
     }
 }

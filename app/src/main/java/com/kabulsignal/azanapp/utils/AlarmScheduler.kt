@@ -64,13 +64,13 @@ object AlarmScheduler {
             val now = System.currentTimeMillis()
             if (triggerMs <= now) return
 
-            val azanIntent = createAlarmIntent(context, prayer, timeStr, isReminder = false)
+            val azanIntent = createAlarmIntent(context, prayer, timeStr, isReminder = false, vibrate = settings.vibrationEnabled)
             setExactAlarm(alarmManager, triggerMs, azanIntent)
 
             if (settings.reminderMinutes > 0 && prayer != PrayerName.SUNRISE) {
                 val reminderMs = triggerMs - (settings.reminderMinutes * 60 * 1000L)
                 if (reminderMs > now) {
-                    val reminderIntent = createAlarmIntent(context, prayer, timeStr, isReminder = true)
+                    val reminderIntent = createAlarmIntent(context, prayer, timeStr, isReminder = true, vibrate = settings.vibrationEnabled)
                     setExactAlarm(alarmManager, reminderMs, reminderIntent)
                 }
             }
@@ -85,7 +85,8 @@ object AlarmScheduler {
         context: Context,
         prayer: PrayerName,
         time: String,
-        isReminder: Boolean
+        isReminder: Boolean,
+        vibrate: Boolean = true
     ): PendingIntent {
         val intent = Intent(context, AzanAlarmReceiver::class.java).apply {
             action = if (isReminder) ACTION_REMINDER else ACTION_AZAN
@@ -93,6 +94,7 @@ object AlarmScheduler {
             putExtra(EXTRA_PRAYER_DARI, prayer.dari)
             putExtra(EXTRA_PRAYER_TIME, time)
             putExtra(EXTRA_IS_REMINDER, isReminder)
+            putExtra(EXTRA_VIBRATE, vibrate)
         }
 
         val requestCode = "${prayer.name}_${if (isReminder) "reminder" else "azan"}".hashCode()
@@ -135,4 +137,5 @@ object AlarmScheduler {
     const val EXTRA_PRAYER_DARI = "prayer_dari"
     const val EXTRA_PRAYER_TIME = "prayer_time"
     const val EXTRA_IS_REMINDER = "is_reminder"
+    const val EXTRA_VIBRATE = "vibrate"
 }

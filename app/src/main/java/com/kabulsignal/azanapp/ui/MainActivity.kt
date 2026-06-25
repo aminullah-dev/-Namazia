@@ -33,20 +33,27 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            AzanAppTheme {
+            val uiState by viewModel.uiState.collectAsState()
+            val settings by viewModel.settings.collectAsState()
+            val tasbihCount by viewModel.tasbihCount.collectAsState()
+
+            AzanAppTheme(darkTheme = settings.darkMode) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val uiState by viewModel.uiState.collectAsState()
-                    val settings by viewModel.settings.collectAsState()
-
                     AzanNavGraph(
                         uiState = uiState,
                         settings = settings,
+                        tasbihCount = tasbihCount,
                         onCitySelected = viewModel::selectCity,
                         onPrayerToggled = viewModel::togglePrayer,
                         onReminderChanged = viewModel::updateReminderMinutes,
+                        onCalcMethodChanged = viewModel::updateCalculationMethod,
+                        onDarkModeToggled = viewModel::toggleDarkMode,
+                        onVibrationToggled = viewModel::toggleVibration,
+                        onTasbihIncrement = viewModel::incrementTasbih,
+                        onTasbihReset = viewModel::resetTasbih,
                         onRefresh = { viewModel.loadPrayerTimes() }
                     )
                 }

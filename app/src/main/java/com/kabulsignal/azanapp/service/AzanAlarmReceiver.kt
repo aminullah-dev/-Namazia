@@ -15,6 +15,7 @@ class AzanAlarmReceiver : BroadcastReceiver() {
         val prayerDari = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_DARI) ?: ""
         val prayerTime = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_TIME) ?: ""
         val isReminder = intent.getBooleanExtra(AlarmScheduler.EXTRA_IS_REMINDER, false)
+        val vibrate = intent.getBooleanExtra(AlarmScheduler.EXTRA_VIBRATE, true)
 
         val serviceIntent = Intent(context, AzanService::class.java).apply {
             action = intent.action
@@ -22,6 +23,7 @@ class AzanAlarmReceiver : BroadcastReceiver() {
             putExtra(AlarmScheduler.EXTRA_PRAYER_DARI, prayerDari)
             putExtra(AlarmScheduler.EXTRA_PRAYER_TIME, prayerTime)
             putExtra(AlarmScheduler.EXTRA_IS_REMINDER, isReminder)
+            putExtra(AlarmScheduler.EXTRA_VIBRATE, vibrate)
         }
 
         context.startForegroundService(serviceIntent)

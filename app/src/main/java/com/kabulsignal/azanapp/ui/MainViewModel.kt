@@ -35,6 +35,9 @@ class MainViewModel @Inject constructor(
     val settings: StateFlow<AppSettings> = settingsDataStore.settings
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppSettings())
 
+    val tasbihCount: StateFlow<Int> = settingsDataStore.tasbihCount
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
@@ -94,6 +97,37 @@ class MainViewModel @Inject constructor(
     fun updateReminderMinutes(minutes: Int) {
         viewModelScope.launch {
             settingsDataStore.updateReminderMinutes(minutes)
+        }
+    }
+
+    fun toggleDarkMode(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsDataStore.updateDarkMode(enabled)
+        }
+    }
+
+    fun toggleVibration(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsDataStore.updateVibration(enabled)
+        }
+    }
+
+    fun updateCalculationMethod(method: Int) {
+        viewModelScope.launch {
+            settingsDataStore.updateCalculationMethod(method)
+            loadPrayerTimes()
+        }
+    }
+
+    fun incrementTasbih() {
+        viewModelScope.launch {
+            settingsDataStore.updateTasbihCount(tasbihCount.value + 1)
+        }
+    }
+
+    fun resetTasbih() {
+        viewModelScope.launch {
+            settingsDataStore.updateTasbihCount(0)
         }
     }
 
