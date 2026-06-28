@@ -1,9 +1,12 @@
 package com.kabulsignal.azanapp.ui
 
 import android.app.Application
+import android.content.Intent
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.kabulsignal.azanapp.data.*
+import com.kabulsignal.azanapp.service.AzanService
 import com.kabulsignal.azanapp.ui.CalendarUiState
 import com.kabulsignal.azanapp.utils.AlarmScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -140,6 +143,18 @@ class MainViewModel @Inject constructor(
                     }
                 )
         }
+    }
+
+    /** Plays the azan immediately so the user can verify audio works (no need to wait for a prayer time). */
+    fun testAzan(fajr: Boolean = false) {
+        val intent = Intent(context, AzanService::class.java).apply {
+            action = AlarmScheduler.ACTION_AZAN
+            putExtra(AlarmScheduler.EXTRA_PRAYER_NAME, if (fajr) "FAJR" else "DHUHR")
+            putExtra(AlarmScheduler.EXTRA_PRAYER_DARI, "تست اذان")
+            putExtra(AlarmScheduler.EXTRA_PRAYER_TIME, "")
+            putExtra(AlarmScheduler.EXTRA_VIBRATE, settings.value.vibrationEnabled)
+        }
+        ContextCompat.startForegroundService(context, intent)
     }
 
     fun incrementTasbih() {

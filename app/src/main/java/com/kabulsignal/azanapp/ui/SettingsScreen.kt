@@ -1,13 +1,19 @@
 package com.kabulsignal.azanapp.ui
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BatteryAlert
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,7 +40,8 @@ fun SettingsScreen(
     onReminderChanged: (Int) -> Unit,
     onCalcMethodChanged: (Int) -> Unit,
     onDarkModeToggled: (Boolean) -> Unit,
-    onVibrationToggled: (Boolean) -> Unit
+    onVibrationToggled: (Boolean) -> Unit,
+    onTestAzan: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -100,6 +107,52 @@ fun SettingsScreen(
                 SwitchRow("لرزش هنگام اذان", settings.vibrationEnabled, onVibrationToggled)
                 Spacer(modifier = Modifier.height(8.dp))
                 SwitchRow("حالت شب", settings.darkMode, onDarkModeToggled)
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                SectionTitle("اذان")
+
+                // Test azan immediately
+                ActionRow(
+                    title = "تست اذان (پخش فوری)",
+                    subtitle = "برای اطمینان از پخش صدا",
+                    icon = Icons.Default.PlayCircle,
+                    onClick = { onTestAzan(false) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                ActionRow(
+                    title = "تست اذان صبح",
+                    subtitle = "پخش فایل اذان فجر",
+                    icon = Icons.Default.PlayCircle,
+                    onClick = { onTestAzan(true) }
+                )
+
+                // Battery optimization — main reason azan does not fire on Samsung/Xiaomi
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                    val ignoringBattery = pm.isIgnoringBatteryOptimizations(context.packageName)
+                    if (!ignoringBattery) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        ActionRow(
+                            title = "غیرفعال کردن بهینه‌سازی باتری",
+                            subtitle = "اگر اذان به‌موقع پخش نمی‌شود این را فعال کنید",
+                            icon = Icons.Default.BatteryAlert,
+                            highlight = true,
+                            onClick = {
+                                val intent = Intent(
+                                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                                    Uri.parse("package:${context.packageName}")
+                                )
+                                try {
+                                    context.startActivity(intent)
+                                } catch (e: Exception) {
+                                    context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                                }
+                            }
+                        )
+                    }
+                }
             }
 
             item {
@@ -171,6 +224,50 @@ fun SettingsScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ActionRow(
+    title: String,
+    subtitle: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    highlight: Boolean = false,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = if (highlight)
+                MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
+            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, fontSize = 16.sp)
+                Text(
+                    text = subtitle,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = if (highlight)
+                    MaterialTheme.colorScheme.error
+                else MaterialTheme.colorScheme.primary
+            )
         }
     }
 }

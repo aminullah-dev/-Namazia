@@ -48,6 +48,7 @@ fun AzanNavGraph(
     onTasbihIncrement: () -> Unit,
     onTasbihReset: () -> Unit,
     onMonthChanged: (Int, Int) -> Unit,
+    onTestAzan: (Boolean) -> Unit,
     onRefresh: () -> Unit
 ) {
     val navController = rememberNavController()
@@ -117,7 +118,8 @@ fun AzanNavGraph(
                     onReminderChanged = onReminderChanged,
                     onCalcMethodChanged = onCalcMethodChanged,
                     onDarkModeToggled = onDarkModeToggled,
-                    onVibrationToggled = onVibrationToggled
+                    onVibrationToggled = onVibrationToggled,
+                    onTestAzan = onTestAzan
                 )
             }
         }

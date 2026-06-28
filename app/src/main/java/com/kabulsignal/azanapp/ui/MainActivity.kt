@@ -57,6 +57,7 @@ class MainActivity : ComponentActivity() {
                         onTasbihIncrement = viewModel::incrementTasbih,
                         onTasbihReset = viewModel::resetTasbih,
                         onMonthChanged = viewModel::loadMonthlyCalendar,
+                        onTestAzan = viewModel::testAzan,
                         onRefresh = { viewModel.loadPrayerTimes() }
                     )
                 }
