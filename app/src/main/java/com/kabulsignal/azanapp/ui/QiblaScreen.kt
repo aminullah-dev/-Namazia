@@ -1,6 +1,7 @@
 package com.kabulsignal.azanapp.ui
 
 import android.content.Context
+import android.hardware.GeomagneticField
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -38,6 +39,17 @@ fun QiblaScreen(city: AfghanCity) {
         QiblaUtil.bearingToKaaba(city.latitude, city.longitude)
     }
 
+    // Sensors report azimuth from MAGNETIC north; the qibla bearing is from TRUE north.
+    // GeomagneticField.declination bridges the two for the current location.
+    val declination = remember(city) {
+        GeomagneticField(
+            city.latitude.toFloat(),
+            city.longitude.toFloat(),
+            0f,
+            System.currentTimeMillis()
+        ).declination
+    }
+
     var azimuth by remember { mutableStateOf(0f) }
     var hasSensor by remember { mutableStateOf(true) }
 
@@ -64,10 +76,13 @@ fun QiblaScreen(city: AfghanCity) {
         onDispose { sensorManager.unregisterListener(listener) }
     }
 
+    // Heading corrected to true north.
+    val trueAzimuth = (azimuth + declination + 360f) % 360f
+
     // Where the qibla sits relative to the phone's current heading
-    val qiblaRelative = (qiblaBearing - azimuth + 360f) % 360f
+    val qiblaRelative = (qiblaBearing - trueAzimuth + 360f) % 360f
     val animatedDial by animateFloatAsState(
-        targetValue = -azimuth,
+        targetValue = -trueAzimuth,
         animationSpec = tween(250),
         label = "dial"
     )

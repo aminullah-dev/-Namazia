@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +45,7 @@ fun DuaScreen(
     onTasbihIncrement: () -> Unit,
     onTasbihReset: () -> Unit
 ) {
-    var selectedTab by remember { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val tabs = listOf("اذکار و ادعیه", "تسبیح")
 
     Scaffold(
@@ -202,7 +203,7 @@ private fun TasbihContent(
 ) {
     val context = LocalContext.current
     val targets = listOf(33, 99, 100)
-    var target by remember { mutableIntStateOf(33) }
+    var target by rememberSaveable { mutableIntStateOf(33) }
 
     val cycle = if (target > 0) count % target else count
     val rounds = if (target > 0) count / target else 0
