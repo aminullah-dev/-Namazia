@@ -10,9 +10,12 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import com.kabulsignal.azanapp.ui.theme.AzanAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,6 +55,8 @@ class MainActivity : ComponentActivity() {
             val calendarState by viewModel.calendarState.collectAsState()
 
             AzanAppTheme(darkTheme = settings.darkMode) {
+                // The whole UI is Dari — force right-to-left regardless of device locale.
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -74,6 +79,7 @@ class MainActivity : ComponentActivity() {
                         onTestAzan = viewModel::testAzan,
                         onRefresh = { viewModel.loadPrayerTimes() }
                     )
+                }
                 }
             }
         }
