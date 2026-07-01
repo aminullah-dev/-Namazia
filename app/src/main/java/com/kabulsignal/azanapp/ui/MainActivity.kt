@@ -25,6 +25,19 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { /* permission result handled silently */ }
 
+    // The ViewModel loads on init, so skip the resume that immediately follows onCreate.
+    private var firstResume = true
+
+    override fun onResume() {
+        super.onResume()
+        if (firstResume) {
+            firstResume = false
+        } else {
+            // Returning to the app: refresh so the next-prayer card / countdown stay current.
+            viewModel.loadPrayerTimes()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

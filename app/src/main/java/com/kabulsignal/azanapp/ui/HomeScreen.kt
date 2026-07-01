@@ -67,14 +67,14 @@ fun HomeScreen(
             when {
                 uiState.isLoading -> LoadingState()
                 uiState.error != null -> ErrorState(uiState.error, onRefresh)
-                else -> PrayerTimesList(uiState)
+                else -> PrayerTimesList(uiState, onRefresh)
             }
         }
     }
 }
 
 @Composable
-private fun PrayerTimesList(uiState: HomeUiState) {
+private fun PrayerTimesList(uiState: HomeUiState, onRefresh: () -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -82,7 +82,7 @@ private fun PrayerTimesList(uiState: HomeUiState) {
     ) {
         uiState.nextPrayer?.let { next ->
             item {
-                NextPrayerCard(prayer = next, hijriDate = uiState.hijriDate)
+                NextPrayerCard(prayer = next, hijriDate = uiState.hijriDate, onReached = onRefresh)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -107,7 +107,7 @@ private fun PrayerTimesList(uiState: HomeUiState) {
 }
 
 @Composable
-private fun NextPrayerCard(prayer: PrayerTime, hijriDate: String) {
+private fun NextPrayerCard(prayer: PrayerTime, hijriDate: String, onReached: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -159,19 +159,25 @@ private fun NextPrayerCard(prayer: PrayerTime, hijriDate: String) {
                     letterSpacing = 2.sp
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                CountdownPill(targetTime = prayer.time)
+                CountdownPill(targetTime = prayer.time, onReached = onReached)
             }
         }
     }
 }
 
 @Composable
-private fun CountdownPill(targetTime: String) {
-    var remaining by remember(targetTime) { mutableStateOf(computeRemaining(targetTime)) }
+private fun CountdownPill(targetTime: String, onReached: () -> Unit) {
+    var remaining by remember(targetTime) { mutableStateOf(formatRemaining(secondsUntil(targetTime))) }
 
     LaunchedEffect(targetTime) {
         while (true) {
-            remaining = computeRemaining(targetTime)
+            val secs = secondsUntil(targetTime)
+            if (secs <= 0L) {
+                // Prayer time reached — ask for a refresh so the card advances to the next prayer.
+                onReached()
+                break
+            }
+            remaining = formatRemaining(secs)
             delay(1000)
         }
     }
@@ -195,19 +201,23 @@ private fun CountdownPill(targetTime: String) {
 
 private val countdownFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-private fun computeRemaining(targetTime: String): String {
+/** Seconds from now until [targetTime] today. Negative/zero once the time has passed. */
+private fun secondsUntil(targetTime: String): Long {
     return try {
         val now = LocalTime.now()
         val target = LocalTime.parse(targetTime, countdownFormatter)
-        var seconds = Duration.between(now, target).seconds
-        if (seconds < 0) seconds += 24 * 3600 // wrap to next day
-        val h = seconds / 3600
-        val m = (seconds % 3600) / 60
-        val s = seconds % 60
-        "%02d:%02d:%02d".format(h, m, s)
+        Duration.between(now, target).seconds
     } catch (e: Exception) {
-        "--:--:--"
+        -1L
     }
+}
+
+private fun formatRemaining(seconds: Long): String {
+    val safe = if (seconds < 0L) 0L else seconds
+    val h = safe / 3600
+    val m = (safe % 3600) / 60
+    val s = safe % 60
+    return "%02d:%02d:%02d".format(h, m, s)
 }
 
 @Composable
