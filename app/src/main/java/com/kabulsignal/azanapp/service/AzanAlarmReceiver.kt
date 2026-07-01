@@ -38,6 +38,7 @@ private fun BroadcastReceiver.rescheduleInBackground(
                 .onFailure { Log.e("Reschedule", "today fetch failed", it) }
             // Arm the next nightly refresh so this keeps rolling day after day.
             AlarmScheduler.scheduleDailyRefresh(appContext)
+            com.kabulsignal.azanapp.ui.widget.AzanWidget.requestUpdate(appContext)
         } catch (e: Exception) {
             Log.e("Reschedule", "failed", e)
         } finally {
@@ -78,6 +79,11 @@ class AzanAlarmReceiver : BroadcastReceiver() {
         }
 
         context.startForegroundService(serviceIntent)
+
+        // A prayer just triggered — nudge the widget so it advances to the next one.
+        if (!isReminder) {
+            com.kabulsignal.azanapp.ui.widget.AzanWidget.requestUpdate(context.applicationContext)
+        }
     }
 }
 

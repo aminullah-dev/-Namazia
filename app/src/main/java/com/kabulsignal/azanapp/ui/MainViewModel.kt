@@ -74,6 +74,7 @@ class MainViewModel @Inject constructor(
                         }
                         if (date == LocalDate.now()) {
                             AlarmScheduler.scheduleTodayAlarms(context, entity, settings)
+                            com.kabulsignal.azanapp.ui.widget.AzanWidget.requestUpdate(context)
                             // Cache the coming week so the nightly refresh (and offline use) has data.
                             viewModelScope.launch { repository.prefetchWeek(city, settings.calculationMethod) }
                         }
