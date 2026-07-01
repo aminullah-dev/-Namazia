@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
             val settings = settingsDataStore.settings.first()
             val city = AfghanCities.list[settings.cityIndex]
 
-            repository.getPrayerTimes(date, city, settings.calculationMethod)
+            repository.getPrayerTimes(date, city, settings.calculationMethod, settings.asrSchool)
                 .fold(
                     onSuccess = { entity ->
                         val prayers = entity.toPrayerTimeList(settings)
@@ -76,7 +76,7 @@ class MainViewModel @Inject constructor(
                             AlarmScheduler.scheduleTodayAlarms(context, entity, settings)
                             com.kabulsignal.azanapp.ui.widget.AzanWidget.requestUpdate(context)
                             // Cache the coming week so the nightly refresh (and offline use) has data.
-                            viewModelScope.launch { repository.prefetchWeek(city, settings.calculationMethod) }
+                            viewModelScope.launch { repository.prefetchWeek(city, settings.calculationMethod, settings.asrSchool) }
                         }
                     },
                     onFailure = { error ->
@@ -125,6 +125,18 @@ class MainViewModel @Inject constructor(
     fun updateCalculationMethod(method: Int) {
         viewModelScope.launch {
             settingsDataStore.updateCalculationMethod(method)
+            // Cached times were computed with the old method — drop them and refetch.
+            repository.clearCache()
+            _calendarState.update { it.copy(days = emptyList()) }
+            loadPrayerTimes()
+        }
+    }
+
+    fun updateAsrSchool(school: Int) {
+        viewModelScope.launch {
+            settingsDataStore.updateAsrSchool(school)
+            repository.clearCache()
+            _calendarState.update { it.copy(days = emptyList()) }
             loadPrayerTimes()
         }
     }
@@ -134,7 +146,7 @@ class MainViewModel @Inject constructor(
             _calendarState.update { it.copy(isLoading = true, error = null, year = year, month = month) }
             val settings = settingsDataStore.settings.first()
             val city = AfghanCities.list[settings.cityIndex]
-            repository.getMonthlyCalendar(year, month, city, settings.calculationMethod)
+            repository.getMonthlyCalendar(year, month, city, settings.calculationMethod, settings.asrSchool)
                 .fold(
                     onSuccess = { days ->
                         _calendarState.update { it.copy(isLoading = false, days = days) }

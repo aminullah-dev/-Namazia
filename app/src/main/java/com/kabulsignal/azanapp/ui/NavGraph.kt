@@ -43,6 +43,7 @@ fun AzanNavGraph(
     onPrayerToggled: (PrayerName, Boolean) -> Unit,
     onReminderChanged: (Int) -> Unit,
     onCalcMethodChanged: (Int) -> Unit,
+    onAsrSchoolChanged: (Int) -> Unit,
     onDarkModeToggled: (Boolean) -> Unit,
     onVibrationToggled: (Boolean) -> Unit,
     onTasbihIncrement: () -> Unit,
@@ -117,6 +118,7 @@ fun AzanNavGraph(
                     onPrayerToggled = onPrayerToggled,
                     onReminderChanged = onReminderChanged,
                     onCalcMethodChanged = onCalcMethodChanged,
+                    onAsrSchoolChanged = onAsrSchoolChanged,
                     onDarkModeToggled = onDarkModeToggled,
                     onVibrationToggled = onVibrationToggled,
                     onTestAzan = onTestAzan

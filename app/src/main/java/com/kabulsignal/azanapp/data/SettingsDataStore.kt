@@ -20,6 +20,7 @@ class SettingsDataStore @Inject constructor(
     private object Keys {
         val CITY_INDEX = intPreferencesKey("city_index")
         val CALC_METHOD = intPreferencesKey("calc_method")
+        val ASR_SCHOOL = intPreferencesKey("asr_school")
         val FAJR_ENABLED = booleanPreferencesKey("fajr_enabled")
         val DHUHR_ENABLED = booleanPreferencesKey("dhuhr_enabled")
         val ASR_ENABLED = booleanPreferencesKey("asr_enabled")
@@ -39,6 +40,7 @@ class SettingsDataStore @Inject constructor(
             AppSettings(
                 cityIndex = prefs[Keys.CITY_INDEX] ?: 0,
                 calculationMethod = prefs[Keys.CALC_METHOD] ?: 3,
+                asrSchool = prefs[Keys.ASR_SCHOOL] ?: 1,
                 fajrEnabled = prefs[Keys.FAJR_ENABLED] ?: true,
                 dhuhrEnabled = prefs[Keys.DHUHR_ENABLED] ?: true,
                 asrEnabled = prefs[Keys.ASR_ENABLED] ?: true,
@@ -90,6 +92,10 @@ class SettingsDataStore @Inject constructor(
 
     suspend fun updateCalculationMethod(method: Int) = context.dataStore.edit {
         it[Keys.CALC_METHOD] = method
+    }
+
+    suspend fun updateAsrSchool(school: Int) = context.dataStore.edit {
+        it[Keys.ASR_SCHOOL] = school
     }
 
     suspend fun updateTasbihCount(count: Int) = context.dataStore.edit {

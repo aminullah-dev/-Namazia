@@ -15,7 +15,8 @@ class PrayerTimesRepository @Inject constructor(
     suspend fun getPrayerTimes(
         date: LocalDate,
         city: AfghanCity,
-        method: Int = 3
+        method: Int = 3,
+        school: Int = 1
     ): Result<PrayerTimesEntity> {
         val dateStr = date.toString() // yyyy-MM-dd
 
@@ -31,7 +32,8 @@ class PrayerTimesRepository @Inject constructor(
                 timestamp = timestamp,
                 latitude = city.latitude,
                 longitude = city.longitude,
-                method = method
+                method = method,
+                school = school
             )
 
             if (response.isSuccessful) {
@@ -48,11 +50,11 @@ class PrayerTimesRepository @Inject constructor(
         }
     }
 
-    suspend fun prefetchWeek(city: AfghanCity, method: Int = 3) {
+    suspend fun prefetchWeek(city: AfghanCity, method: Int = 3, school: Int = 1) {
         val today = LocalDate.now()
         for (i in 0..6) {
             val date = today.plusDays(i.toLong())
-            getPrayerTimes(date, city, method)
+            getPrayerTimes(date, city, method, school)
         }
     }
 
@@ -60,7 +62,8 @@ class PrayerTimesRepository @Inject constructor(
         year: Int,
         month: Int,
         city: AfghanCity,
-        method: Int = 3
+        method: Int = 3,
+        school: Int = 1
     ): Result<List<PrayerData>> {
         return try {
             val response = api.getMonthlyCalendar(
@@ -68,7 +71,8 @@ class PrayerTimesRepository @Inject constructor(
                 month = month,
                 latitude = city.latitude,
                 longitude = city.longitude,
-                method = method
+                method = method,
+                school = school
             )
             if (response.isSuccessful) {
                 Result.success(response.body()!!.data)
@@ -85,6 +89,10 @@ class PrayerTimesRepository @Inject constructor(
         val threshold = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
         dao.deleteOldCache(threshold)
     }
+
+    /** Wipe cached times — call when the calculation method or fiqh school changes so stale
+     *  (differently-calculated) times are not served from the cache. */
+    suspend fun clearCache() = dao.clearAll()
 
     private fun PrayerData.toEntity(cityName: String, requestDate: LocalDate): PrayerTimesEntity {
         return PrayerTimesEntity(

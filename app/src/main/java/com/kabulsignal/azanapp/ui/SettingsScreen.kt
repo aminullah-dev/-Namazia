@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.kabulsignal.azanapp.data.AfghanCity
 import com.kabulsignal.azanapp.data.AppSettings
 import com.kabulsignal.azanapp.data.CalcMethods
+import com.kabulsignal.azanapp.data.Madhabs
 import com.kabulsignal.azanapp.data.PrayerName
 import com.kabulsignal.azanapp.utils.toPersianDigits
 
@@ -39,6 +40,7 @@ fun SettingsScreen(
     onPrayerToggled: (PrayerName, Boolean) -> Unit,
     onReminderChanged: (Int) -> Unit,
     onCalcMethodChanged: (Int) -> Unit,
+    onAsrSchoolChanged: (Int) -> Unit,
     onDarkModeToggled: (Boolean) -> Unit,
     onVibrationToggled: (Boolean) -> Unit,
     onTestAzan: (Boolean) -> Unit
@@ -77,6 +79,15 @@ fun SettingsScreen(
                 CalcMethodDropdown(
                     selectedId = settings.calculationMethod,
                     onSelected = onCalcMethodChanged
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                SectionTitle("مذهب فقهی (وقت عصر)")
+                MadhabDropdown(
+                    selectedSchool = settings.asrSchool,
+                    onSelected = onAsrSchoolChanged
                 )
             }
 
@@ -354,6 +365,45 @@ private fun CalcMethodDropdown(
                     text = { Text(method.nameDari) },
                     onClick = {
                         onSelected(method.id)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MadhabDropdown(
+    selectedSchool: Int,
+    onSelected: (Int) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it }
+    ) {
+        OutlinedTextField(
+            value = Madhabs.nameOf(selectedSchool),
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("مذهب") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            Madhabs.list.forEach { madhab ->
+                DropdownMenuItem(
+                    text = { Text(madhab.nameDari) },
+                    onClick = {
+                        onSelected(madhab.school)
                         expanded = false
                     }
                 )

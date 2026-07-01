@@ -12,7 +12,8 @@ interface PrayerTimesApi {
         @Path("timestamp") timestamp: Long,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("method") method: Int = 3
+        @Query("method") method: Int = 3,
+        @Query("school") school: Int = 1
     ): Response<PrayerTimesResponse>
 
     @GET("v1/calendar/{year}/{month}")
@@ -21,7 +22,8 @@ interface PrayerTimesApi {
         @Path("month") month: Int,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("method") method: Int = 3
+        @Query("method") method: Int = 3,
+        @Query("school") school: Int = 1
     ): Response<MonthlyCalendarResponse>
 }
 

@@ -122,6 +122,8 @@ object AfghanCities {
 data class AppSettings(
     val cityIndex: Int = 0,
     val calculationMethod: Int = 3,
+    // Asr calculation: 0 = Shafi/standard, 1 = Hanafi (default — most Afghans are Hanafi)
+    val asrSchool: Int = 1,
     val fajrEnabled: Boolean = true,
     val dhuhrEnabled: Boolean = true,
     val asrEnabled: Boolean = true,
@@ -133,6 +135,18 @@ data class AppSettings(
     val useAutoLocation: Boolean = false,
     val darkMode: Boolean = false
 )
+
+// Fiqh school for Asr timing
+data class Madhab(val school: Int, val nameDari: String)
+
+object Madhabs {
+    val list = listOf(
+        Madhab(1, "حنفی"),
+        Madhab(0, "شافعی / مالکی / حنبلی")
+    )
+
+    fun nameOf(school: Int): String = list.firstOrNull { it.school == school }?.nameDari ?: "حنفی"
+}
 
 // Calculation methods supported by the aladhan API
 data class CalcMethod(val id: Int, val nameDari: String)

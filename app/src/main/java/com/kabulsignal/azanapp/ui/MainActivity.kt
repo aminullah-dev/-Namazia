@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
                         onPrayerToggled = viewModel::togglePrayer,
                         onReminderChanged = viewModel::updateReminderMinutes,
                         onCalcMethodChanged = viewModel::updateCalculationMethod,
+                        onAsrSchoolChanged = viewModel::updateAsrSchool,
                         onDarkModeToggled = viewModel::toggleDarkMode,
                         onVibrationToggled = viewModel::toggleVibration,
                         onTasbihIncrement = viewModel::incrementTasbih,
