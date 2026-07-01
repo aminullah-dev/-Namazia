@@ -27,8 +27,8 @@ import java.time.LocalDate
 data class CalendarUiState(
     val isLoading: Boolean = false,
     val days: List<PrayerData> = emptyList(),
-    val year: Int = LocalDate.now().year,
-    val month: Int = LocalDate.now().monthValue,
+    val year: Int = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE).year,
+    val month: Int = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE).monthValue,
     val error: String? = null
 )
 
@@ -44,9 +44,10 @@ fun CalendarScreen(
     onMonthChanged: (year: Int, month: Int) -> Unit
 ) {
     val listState = rememberLazyListState()
-    val todayDay = LocalDate.now().dayOfMonth
-    val isCurrentMonth = calendarState.year == LocalDate.now().year &&
-            calendarState.month == LocalDate.now().monthValue
+    val today = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE)
+    val todayDay = today.dayOfMonth
+    val isCurrentMonth = calendarState.year == today.year &&
+            calendarState.month == today.monthValue
 
     // Scroll to today on first load
     LaunchedEffect(calendarState.days, isCurrentMonth) {

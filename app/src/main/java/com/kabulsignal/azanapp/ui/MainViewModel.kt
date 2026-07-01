@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(
         loadPrayerTimes()
     }
 
-    fun loadPrayerTimes(date: LocalDate = LocalDate.now()) {
+    fun loadPrayerTimes(date: LocalDate = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE)) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
@@ -72,7 +72,7 @@ class MainViewModel @Inject constructor(
                                 hijriDate = entity.hijriDate
                             )
                         }
-                        if (date == LocalDate.now()) {
+                        if (date == LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE)) {
                             AlarmScheduler.scheduleTodayAlarms(context, entity, settings)
                             com.kabulsignal.azanapp.ui.widget.AzanWidget.requestUpdate(context)
                             // Cache the coming week so the nightly refresh (and offline use) has data.
@@ -141,7 +141,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun loadMonthlyCalendar(year: Int = LocalDate.now().year, month: Int = LocalDate.now().monthValue) {
+    fun loadMonthlyCalendar(
+        year: Int = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE).year,
+        month: Int = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE).monthValue
+    ) {
         viewModelScope.launch {
             _calendarState.update { it.copy(isLoading = true, error = null, year = year, month = month) }
             val settings = settingsDataStore.settings.first()
@@ -185,7 +188,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun PrayerTimesEntity.toPrayerTimeList(settings: AppSettings): List<PrayerTime> {
-        val now = LocalTime.now()
+        val now = LocalTime.now(com.kabulsignal.azanapp.utils.APP_ZONE)
 
         val raw = listOf(
             Triple(PrayerName.FAJR, fajr, settings.fajrEnabled),

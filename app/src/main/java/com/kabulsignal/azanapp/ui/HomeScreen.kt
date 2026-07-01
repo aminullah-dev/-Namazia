@@ -204,7 +204,7 @@ private val countdownFormatter = DateTimeFormatter.ofPattern("HH:mm")
 /** Seconds from now until [targetTime] today. Negative/zero once the time has passed. */
 private fun secondsUntil(targetTime: String): Long {
     return try {
-        val now = LocalTime.now()
+        val now = LocalTime.now(com.kabulsignal.azanapp.utils.APP_ZONE)
         val target = LocalTime.parse(targetTime, countdownFormatter)
         Duration.between(now, target).seconds
     } catch (e: Exception) {

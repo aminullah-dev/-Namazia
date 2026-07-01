@@ -33,7 +33,10 @@ private fun BroadcastReceiver.rescheduleInBackground(
         try {
             val settings = settingsDataStore.settings.first()
             val city = AfghanCities.list.getOrElse(settings.cityIndex) { AfghanCities.default }
-            repository.getPrayerTimes(LocalDate.now(), city, settings.calculationMethod)
+            repository.getPrayerTimes(
+                LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE),
+                city, settings.calculationMethod, settings.asrSchool
+            )
                 .onSuccess { AlarmScheduler.scheduleTodayAlarms(appContext, it, settings) }
                 .onFailure { Log.e("Reschedule", "today fetch failed", it) }
             // Arm the next nightly refresh so this keeps rolling day after day.

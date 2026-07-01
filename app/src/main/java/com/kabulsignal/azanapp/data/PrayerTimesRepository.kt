@@ -51,7 +51,7 @@ class PrayerTimesRepository @Inject constructor(
     }
 
     suspend fun prefetchWeek(city: AfghanCity, method: Int = 3, school: Int = 1) {
-        val today = LocalDate.now()
+        val today = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE)
         for (i in 0..6) {
             val date = today.plusDays(i.toLong())
             getPrayerTimes(date, city, method, school)

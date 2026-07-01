@@ -42,12 +42,14 @@ class AzanWidget : AppWidgetProvider() {
                 val settings = settingsDataStore.settings.first()
                 val city = AfghanCities.list.getOrElse(settings.cityIndex) { AfghanCities.default }
                 val method = settings.calculationMethod
+                val school = settings.asrSchool
+                val today = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE)
 
                 // Next prayer today; if all have passed, fall back to tomorrow's Fajr.
                 val next: NextPrayerInfo? =
-                    repository.getPrayerTimes(LocalDate.now(), city, method).getOrNull()
+                    repository.getPrayerTimes(today, city, method, school).getOrNull()
                         ?.upcomingPrayer(settings)
-                        ?: repository.getPrayerTimes(LocalDate.now().plusDays(1), city, method).getOrNull()
+                        ?: repository.getPrayerTimes(today.plusDays(1), city, method, school).getOrNull()
                             ?.let { NextPrayerInfo(com.kabulsignal.azanapp.data.PrayerName.FAJR, it.fajr) }
 
                 appWidgetIds.forEach { id ->
