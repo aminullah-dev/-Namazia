@@ -26,7 +26,6 @@ class AzanService : Service() {
     companion object {
         const val NOTIFICATION_ID_AZAN = 1001
         const val NOTIFICATION_ID_REMINDER = 1002
-        const val ACTION_RESCHEDULE = "com.kabulsignal.azanapp.ACTION_RESCHEDULE"
         const val ACTION_STOP_AZAN = "com.kabulsignal.azanapp.ACTION_STOP_AZAN"
     }
 
@@ -37,7 +36,6 @@ class AzanService : Service() {
             AlarmScheduler.ACTION_AZAN -> handleAzan(intent)
             AlarmScheduler.ACTION_REMINDER -> handleReminder(intent)
             ACTION_STOP_AZAN -> stopAzan()
-            ACTION_RESCHEDULE -> rescheduleAlarms()
             else -> stopSelf()
         }
         return START_NOT_STICKY
@@ -139,11 +137,6 @@ class AzanService : Service() {
         }
     }
 
-    private fun rescheduleAlarms() {
-        startForeground(9999, buildSilentNotification())
-        handler.postDelayed({ stopSelf() }, 2000)
-    }
-
     private fun buildAzanNotification(prayerDari: String, time: String): Notification {
         val stopIntent = PendingIntent.getService(
             this, 0,
@@ -184,14 +177,6 @@ class AzanService : Service() {
             .setContentIntent(openAppIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
-            .build()
-    }
-
-    private fun buildSilentNotification(): Notification {
-        return NotificationCompat.Builder(this, AzanApplication.CHANNEL_REMINDER)
-            .setContentTitle("در حال بارگزاری اوقات نماز")
-            .setSmallIcon(R.drawable.ic_mosque)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
 

@@ -74,6 +74,8 @@ class MainViewModel @Inject constructor(
                         }
                         if (date == LocalDate.now()) {
                             AlarmScheduler.scheduleTodayAlarms(context, entity, settings)
+                            // Cache the coming week so the nightly refresh (and offline use) has data.
+                            viewModelScope.launch { repository.prefetchWeek(city, settings.calculationMethod) }
                         }
                     },
                     onFailure = { error ->

@@ -14,11 +14,13 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object AlarmScheduler {
 
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    private val KABUL_ZONE: ZoneId = ZoneId.of("Asia/Kabul")
 
     fun scheduleTodayAlarms(
         context: Context,
@@ -26,7 +28,7 @@ object AlarmScheduler {
         settings: AppSettings
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val today = LocalDate.now()
+        val today = LocalDate.now(KABUL_ZONE)
 
         val prayers = mapOf(
             PrayerName.FAJR to Pair(prayerTimes.fajr, settings.fajrEnabled),
@@ -43,6 +45,34 @@ object AlarmScheduler {
                 scheduleAlarm(context, alarmManager, today, prayer, timeStr, settings)
             }
         }
+
+        // Make sure the nightly re-scheduling alarm is armed whenever we (re)schedule a day.
+        scheduleDailyRefresh(context)
+    }
+
+    /**
+     * Arms a single exact alarm for the next 00:05 (Asia/Kabul). When it fires, AzanService
+     * re-fetches the day's prayer times and reschedules — so azan keeps working day after day
+     * even if the user never opens the app.
+     */
+    fun scheduleDailyRefresh(context: Context) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val now = ZonedDateTime.now(KABUL_ZONE)
+        var next = now.toLocalDate().atTime(0, 5).atZone(KABUL_ZONE)
+        if (!next.isAfter(now)) next = next.plusDays(1)
+        val triggerMs = next.toInstant().toEpochMilli()
+
+        val intent = Intent(context, AzanAlarmReceiver::class.java).apply {
+            action = ACTION_DAILY_REFRESH
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            "daily_refresh".hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        setExactAlarm(alarmManager, triggerMs, pendingIntent)
+        Log.d("AlarmScheduler", "Daily refresh armed for $next")
     }
 
     private fun scheduleAlarm(
@@ -57,7 +87,7 @@ object AlarmScheduler {
             val time = LocalTime.parse(timeStr, timeFormatter)
             val dateTime = LocalDateTime.of(date, time)
             val triggerMs = dateTime
-                .atZone(ZoneId.of("Asia/Kabul"))
+                .atZone(KABUL_ZONE)
                 .toInstant()
                 .toEpochMilli()
 
@@ -133,6 +163,7 @@ object AlarmScheduler {
 
     const val ACTION_AZAN = "com.kabulsignal.azanapp.ACTION_AZAN"
     const val ACTION_REMINDER = "com.kabulsignal.azanapp.ACTION_REMINDER"
+    const val ACTION_DAILY_REFRESH = "com.kabulsignal.azanapp.ACTION_DAILY_REFRESH"
     const val EXTRA_PRAYER_NAME = "prayer_name"
     const val EXTRA_PRAYER_DARI = "prayer_dari"
     const val EXTRA_PRAYER_TIME = "prayer_time"
