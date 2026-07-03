@@ -8,27 +8,41 @@ import com.kabulsignal.azanapp.data.AfghanCities
 import com.kabulsignal.azanapp.data.PrayerTimesRepository
 import com.kabulsignal.azanapp.data.SettingsDataStore
 import com.kabulsignal.azanapp.utils.AlarmScheduler
-import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import javax.inject.Inject
+
+/**
+ * Hilt entry point so plain BroadcastReceivers can obtain singletons without
+ * @AndroidEntryPoint (which would require super.onReceive() — not allowed on the
+ * abstract BroadcastReceiver.onReceive in Kotlin).
+ */
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface RescheduleEntryPoint {
+    fun repository(): PrayerTimesRepository
+    fun settingsDataStore(): SettingsDataStore
+}
 
 /**
  * Rebuilds the day's alarm schedule off the main thread using goAsync().
  * Shared by the nightly refresh alarm and by boot completion so azan keeps
  * firing without the user having to open the app.
  */
-private fun BroadcastReceiver.rescheduleInBackground(
-    context: Context,
-    repository: PrayerTimesRepository,
-    settingsDataStore: SettingsDataStore
-) {
+private fun BroadcastReceiver.rescheduleInBackground(context: Context) {
     val pending = goAsync()
     val appContext = context.applicationContext
+    val entryPoint = EntryPointAccessors.fromApplication(appContext, RescheduleEntryPoint::class.java)
+    val repository = entryPoint.repository()
+    val settingsDataStore = entryPoint.settingsDataStore()
+
     CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
         try {
             val settings = settingsDataStore.settings.first()
@@ -50,19 +64,14 @@ private fun BroadcastReceiver.rescheduleInBackground(
     }
 }
 
-@AndroidEntryPoint
 class AzanAlarmReceiver : BroadcastReceiver() {
 
-    @Inject lateinit var repository: PrayerTimesRepository
-    @Inject lateinit var settingsDataStore: SettingsDataStore
-
     override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent) // triggers Hilt member injection
         Log.d("AzanAlarmReceiver", "Received: ${intent.action}")
 
         // Nightly refresh alarm — rebuild the day's schedule.
         if (intent.action == AlarmScheduler.ACTION_DAILY_REFRESH) {
-            rescheduleInBackground(context, repository, settingsDataStore)
+            rescheduleInBackground(context)
             return
         }
 
@@ -90,17 +99,12 @@ class AzanAlarmReceiver : BroadcastReceiver() {
     }
 }
 
-@AndroidEntryPoint
 class BootReceiver : BroadcastReceiver() {
 
-    @Inject lateinit var repository: PrayerTimesRepository
-    @Inject lateinit var settingsDataStore: SettingsDataStore
-
     override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent) // triggers Hilt member injection
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             Log.d("BootReceiver", "Device booted — rescheduling alarms")
-            rescheduleInBackground(context, repository, settingsDataStore)
+            rescheduleInBackground(context)
         }
     }
 }
