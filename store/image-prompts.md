@@ -128,7 +128,80 @@ photorealism, any rounded corners on the canvas, any frame or border, any waterm
 
 ---
 
-## PROMPT 2 — Feature graphic / banner (wide, becomes 1024×500)
+## PROMPT 2A — Banner matched to the accepted icon ← use this one
+
+The icon that was accepted uses slightly different colours from the palette above, sampled
+from the file itself:
+
+| Element | Hex |
+|---|---|
+| Gold (the whole mosque) | `#D3AB4F` |
+| Blue, lightest (upper area) | `#154A9E` |
+| Blue, darkest (bottom-right) | `#041958` |
+
+Its mosque anatomy also differs from the original spec: the central dome is a **pointed**
+onion dome, the doorway is a **pointed** arch, the minaret caps are **bulbous** onion
+domes, and the minarets are very tall and thin. The prompt below describes that mosque, so
+the banner and the icon read as one set.
+
+**Most reliable method:** attach the icon PNG to the message alongside this prompt and add
+the line *"Match the mosque shape, proportions and colours in the attached image exactly."*
+Describing a shape in words is always less accurate than showing it.
+
+```
+Create a flat vector banner illustration in a wide landscape format, composed so that all
+important content sits inside a central horizontal band of roughly 2:1 ratio (it will be
+cropped to 1024x500).
+
+BACKGROUND: a smooth gradient of deep saturated royal blue, lightest at the top-left
+around #154A9E and darkening toward the bottom-right to #041958. Add a soft, subtle
+radial glow of slightly lighter blue behind the mosque so the shape lifts off the
+background. Scatter small delicate white stars of varying sizes across the upper
+two-thirds, fading out completely toward the bottom — a quiet clear night sky, sparse and
+restrained, not a glittery galaxy. No texture, no noise, no pattern, no clouds.
+
+SUBJECT: a single flat mosque silhouette in solid warm gold #D3AB4F, placed in the RIGHT
+THIRD of the composition and vertically centred, with clear breathing room above and below
+so nothing touches the top or bottom edge. The mosque is one flat solid gold shape: no
+gradient on it, no shading, no outline, no highlight.
+
+The mosque, perfectly bilaterally symmetrical, is built from these parts:
+- A large central ONION dome that rises to a distinct point at the top, noticeably taller
+  than a half-circle, with its widest part low and its sides curving inward to the point.
+- Two smaller bulbous rounded half-domes flanking it, one each side, sitting lower than
+  the central dome and slightly overlapping it.
+- A rectangular building body below the domes, with narrow stepped shoulders at its outer
+  top corners.
+- A tall POINTED arch doorway centred in the building body, cut out so the blue background
+  shows through it — a transparent opening, not a gold shape. The arch rises to a point at
+  its apex, not a rounded semicircle.
+- Two very tall, very slim minarets standing outside the building body, one at each far
+  side, rising well above the central dome. Each minaret has, from bottom to top: a narrow
+  vertical shaft; a thin horizontal balcony ring; a bulbous onion-shaped dome cap; a short
+  thin spire; and a small solid ball finial at the very top.
+- A wide flat plinth bar running along the bottom, extending outward past both minarets,
+  with the minarets standing on it.
+- A crescent moon above the central dome, on a short thin vertical spire rising from the
+  dome's point. The crescent opens toward the upper right. It is a true crescent — a
+  circle with an offset circular bite removed — never a ring or a donut.
+
+CRITICAL — NEGATIVE SPACE: leave the LEFT HALF and CENTRE of the banner almost completely
+empty, containing only the blue gradient and the stars. This area is reserved for text
+that will be added later, so it must stay clean and uncluttered. Do not fill it with any
+decoration, ornament, pattern, shape or secondary element.
+
+STYLE: flat 2D vector, minimal, elegant, geometric, crisp clean edges, generous negative
+space, calm and reverent.
+
+STRICTLY DO NOT INCLUDE: any text, any letters, any Arabic or Persian script, any numbers,
+any logos, any people, any 3D effect, any drop shadow, any bevel, any gloss, any
+photorealism, any ornamental pattern, any frame or border, any watermark, no clouds, no
+city skyline, no second mosque.
+```
+
+---
+
+## PROMPT 2 — Banner, original palette version
 
 ```
 Create a flat vector banner illustration in a wide landscape format, composed so that all
