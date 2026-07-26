@@ -128,7 +128,92 @@ photorealism, any rounded corners on the canvas, any frame or border, any waterm
 
 ---
 
-## PROMPT 2A — Banner matched to the accepted icon ← use this one
+## PROMPT 2B — Banner WITH the text rendered by the model ← use this one
+
+The exact strings, to check the output against character by character:
+
+| Line | Text | Style |
+|---|---|---|
+| Title | `اوقات نماز` | white, largest |
+| Latin | `NAMAZIA` | gold `#D3AB4F` |
+| Tagline | `اذان، قبله و تقویم برای افغانستان` | white, small |
+
+Perso-Arabic is the weak point of every image model — letters come out disconnected or
+simply invented. Two things that improve the odds a lot: attach the icon so the model has
+the visual style, and generate several times and pick the one where the script is right.
+The Latin `NAMAZIA` will almost always come out clean; the long tagline is the most likely
+to fail, so drop that line from the prompt if it keeps garbling.
+
+If the script still comes out wrong, send me the generated image and I will composite the
+correct Dari text onto it in Vazirmatn — the shaping and right-to-left ordering are handled
+properly there, so the letters join correctly.
+
+```
+Create a flat vector banner illustration in a wide landscape format, composed so that all
+important content sits inside a central horizontal band of roughly 2:1 ratio (it will be
+cropped to 1024x500).
+
+BACKGROUND: a smooth gradient of deep saturated royal blue, lightest at the top-left
+around #154A9E and darkening toward the bottom-right to #041958. Add a soft subtle radial
+glow of slightly lighter blue behind the mosque. Scatter small delicate white stars of
+varying sizes across the upper two-thirds, fading out toward the bottom — a quiet clear
+night sky, sparse and restrained. No texture, no noise, no clouds.
+
+MOSQUE: a single flat mosque silhouette in solid warm gold #D3AB4F, placed in the RIGHT
+THIRD of the composition, vertically centred, with clear breathing room above and below so
+nothing touches the top or bottom edge. It is one flat solid gold shape — no gradient on
+it, no shading, no outline.
+
+The mosque, perfectly bilaterally symmetrical, consists of:
+- A large central ONION dome rising to a distinct point at the top, noticeably taller than
+  a half-circle, widest low down with its sides curving inward to the point.
+- Two smaller bulbous rounded half-domes flanking it, lower than the central dome and
+  slightly overlapping it.
+- A rectangular building body below the domes, with narrow stepped shoulders at its outer
+  top corners.
+- A tall POINTED arch doorway centred in the body, cut out so the blue background shows
+  through — a transparent opening, not a gold shape, rising to a point at its apex.
+- Two very tall very slim minarets standing outside the building body, one each side,
+  rising well above the central dome. Each has, bottom to top: a narrow vertical shaft, a
+  thin horizontal balcony ring, a bulbous onion-shaped dome cap, a short thin spire, and a
+  small solid ball finial.
+- A wide flat plinth bar along the bottom, extending past both minarets, with the minarets
+  standing on it.
+- A crescent moon above the central dome on a short thin vertical spire, opening toward the
+  upper right. A true crescent — a circle with an offset circular bite removed — never a
+  ring.
+
+TEXT — render these three lines exactly as written, in the LEFT HALF of the banner:
+
+Line 1, the largest: "اوقات نماز"
+Line 2, below it: "NAMAZIA"
+Line 3, below that, small: "اذان، قبله و تقویم برای افغانستان"
+
+Lines 1 and 3 are Persian/Dari, written in Perso-Arabic script and read RIGHT TO LEFT. The
+letters within each word MUST be properly joined and connected in continuous cursive
+script, exactly as written above — never separated into isolated letters, never reversed,
+never substituted with invented or decorative letterforms. Copy the characters exactly.
+
+Set all three lines in a clean modern geometric sans-serif Persian typeface. Right-align
+the whole text block so its right edge sits near the middle of the banner and the text
+reads toward the mosque. Line 1 in pure white #FFFFFF and bold. Line 2 in gold #D3AB4F,
+medium weight, all capitals, letter-spaced slightly. Line 3 in white at about 80 percent
+opacity, regular weight, clearly smaller than line 1. Add a short horizontal gold #D3AB4F
+rule above line 1, aligned to the same right edge, about the width of line 2.
+
+Keep generous empty space around the text — it must not crowd the mosque or the edges.
+
+STYLE: flat 2D vector, minimal, elegant, geometric, crisp clean edges, calm and reverent.
+
+STRICTLY DO NOT INCLUDE: any text other than the three lines specified above, any
+additional words, any 3D effect, any drop shadow, any bevel, any gloss, any photorealism,
+any ornamental pattern, any frame or border, any watermark, no clouds, no city skyline, no
+second mosque, no people.
+```
+
+---
+
+## PROMPT 2A — Banner matched to the icon, no text (composite the text yourself)
 
 The icon that was accepted uses slightly different colours from the palette above, sampled
 from the file itself:
