@@ -18,18 +18,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kabulsignal.azanapp.data.AfghanCity
 import com.kabulsignal.azanapp.data.AppSettings
 import com.kabulsignal.azanapp.data.CalcMethods
 import com.kabulsignal.azanapp.data.Madhabs
 import com.kabulsignal.azanapp.data.PrayerName
+import com.kabulsignal.azanapp.ui.theme.Radii
+import com.kabulsignal.azanapp.ui.theme.Spacing
 import com.kabulsignal.azanapp.utils.toPersianDigits
 
 private const val SUPPORT_EMAIL = "aminhashemi979@gmail.com"
+
+private data class PrayerToggle(
+    val label: String,
+    val prayer: PrayerName,
+    val enabled: Boolean
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,10 +55,19 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
 
+    val prayerToggles = listOf(
+        PrayerToggle("فجر", PrayerName.FAJR, settings.fajrEnabled),
+        PrayerToggle("طلوع آفتاب", PrayerName.SUNRISE, settings.sunriseEnabled),
+        PrayerToggle("ظهر", PrayerName.DHUHR, settings.dhuhrEnabled),
+        PrayerToggle("عصر", PrayerName.ASR, settings.asrEnabled),
+        PrayerToggle("مغرب", PrayerName.MAGHRIB, settings.maghribEnabled),
+        PrayerToggle("عشا", PrayerName.ISHA, settings.ishaEnabled)
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("تنظیمات", fontWeight = FontWeight.Bold) },
+                title = { Text("تنظیمات", style = MaterialTheme.typography.titleLarge) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -61,237 +78,269 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(
+                start = Spacing.lg,
+                end = Spacing.lg,
+                top = Spacing.sm,
+                bottom = Spacing.xl
+            ),
+            verticalArrangement = Arrangement.spacedBy(Spacing.sm)
         ) {
             item {
-                SectionTitle("شهر")
-                CityDropdown(
-                    cities = cities,
-                    selectedIndex = settings.cityIndex,
-                    onSelected = onCitySelected
-                )
+                SettingsGroup("محل و محاسبه") {
+                    CityDropdown(
+                        cities = cities,
+                        selectedIndex = settings.cityIndex,
+                        onSelected = onCitySelected
+                    )
+                    Spacer(Modifier.height(Spacing.md))
+                    CalcMethodDropdown(
+                        selectedId = settings.calculationMethod,
+                        onSelected = onCalcMethodChanged
+                    )
+                    Spacer(Modifier.height(Spacing.md))
+                    MadhabDropdown(
+                        selectedSchool = settings.asrSchool,
+                        onSelected = onAsrSchoolChanged
+                    )
+                    Spacer(Modifier.height(Spacing.sm))
+                    Text(
+                        text = "مذهب تنها بر وقت عصر تأثیر دارد. در حنفی عصر دیرتر می‌شود.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
 
             item {
-                Spacer(modifier = Modifier.height(8.dp))
-                SectionTitle("روش محاسبه")
-                CalcMethodDropdown(
-                    selectedId = settings.calculationMethod,
-                    onSelected = onCalcMethodChanged
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                SectionTitle("مذهب فقهی (وقت عصر)")
-                MadhabDropdown(
-                    selectedSchool = settings.asrSchool,
-                    onSelected = onAsrSchoolChanged
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                SectionTitle("اذان فعال")
-            }
-
-            item { PrayerToggleRow("فجر", PrayerName.FAJR, settings.fajrEnabled, onPrayerToggled) }
-            item { PrayerToggleRow("طلوع آفتاب", PrayerName.SUNRISE, settings.sunriseEnabled, onPrayerToggled) }
-            item { PrayerToggleRow("ظهر", PrayerName.DHUHR, settings.dhuhrEnabled, onPrayerToggled) }
-            item { PrayerToggleRow("عصر", PrayerName.ASR, settings.asrEnabled, onPrayerToggled) }
-            item { PrayerToggleRow("مغرب", PrayerName.MAGHRIB, settings.maghribEnabled, onPrayerToggled) }
-            item { PrayerToggleRow("عشا", PrayerName.ISHA, settings.ishaEnabled, onPrayerToggled) }
-
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                SectionTitle("یادآوری")
-                ReminderChips(
-                    minutes = settings.reminderMinutes,
-                    onChanged = onReminderChanged
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                SectionTitle("عمومی")
-                SwitchRow("لرزش هنگام اذان", settings.vibrationEnabled, onVibrationToggled)
-                Spacer(modifier = Modifier.height(8.dp))
-                SwitchRow("حالت شب", settings.darkMode, onDarkModeToggled)
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                SectionTitle("اذان")
-
-                // Test azan immediately
-                ActionRow(
-                    title = "تست اذان (پخش فوری)",
-                    subtitle = "برای اطمینان از پخش صدا",
-                    icon = Icons.Default.PlayCircle,
-                    onClick = { onTestAzan(false) }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                ActionRow(
-                    title = "تست اذان صبح",
-                    subtitle = "پخش فایل اذان فجر",
-                    icon = Icons.Default.PlayCircle,
-                    onClick = { onTestAzan(true) }
-                )
-
-                // Battery optimization — main reason azan does not fire on Samsung/Xiaomi
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-                    val ignoringBattery = pm.isIgnoringBatteryOptimizations(context.packageName)
-                    if (!ignoringBattery) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        ActionRow(
-                            title = "غیرفعال کردن بهینه‌سازی باتری",
-                            subtitle = "اگر اذان به‌موقع پخش نمی‌شود این را فعال کنید",
-                            icon = Icons.Default.BatteryAlert,
-                            highlight = true,
-                            onClick = {
-                                val intent = Intent(
-                                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                    Uri.parse("package:${context.packageName}")
-                                )
-                                try {
-                                    context.startActivity(intent)
-                                } catch (e: Exception) {
-                                    context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
-                                }
-                            }
+                SettingsGroup("اذان برای کدام وقت‌ها") {
+                    prayerToggles.forEachIndexed { index, toggle ->
+                        SwitchRow(
+                            label = toggle.label,
+                            checked = toggle.enabled,
+                            onChange = { onPrayerToggled(toggle.prayer, it) }
                         )
+                        if (index != prayerToggles.lastIndex) {
+                            Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                        }
                     }
                 }
             }
 
             item {
-                Spacer(modifier = Modifier.height(16.dp))
-                SectionTitle("پشتیبانی")
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
+                SettingsGroup("یادآوری پیش از اذان") {
+                    ReminderChips(
+                        minutes = settings.reminderMinutes,
+                        onChanged = onReminderChanged
+                    )
+                }
+            }
+
+            item {
+                SettingsGroup("پخش اذان") {
+                    ActionRow(
+                        title = "تست اذان",
+                        subtitle = "برای اطمینان از پخش صدا، همین حالا پخش می‌شود",
+                        icon = Icons.Default.PlayCircle,
+                        onClick = { onTestAzan(false) }
+                    )
+                    Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                    ActionRow(
+                        title = "تست اذان صبح",
+                        subtitle = "فایل جداگانه اذان فجر",
+                        icon = Icons.Default.PlayCircle,
+                        onClick = { onTestAzan(true) }
+                    )
+                    Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                    SwitchRow(
+                        label = "لرزش هنگام اذان",
+                        checked = settings.vibrationEnabled,
+                        onChange = onVibrationToggled
+                    )
+                }
+            }
+
+            // Battery optimisation is the usual reason a scheduled azan never fires on
+            // Samsung/Xiaomi, so surface it prominently — but only while it applies.
+            item {
+                BatteryOptimisationCard(context = context)
+            }
+
+            item {
+                SettingsGroup("نمایش") {
+                    SwitchRow(
+                        label = "حالت شب",
+                        checked = settings.darkMode,
+                        onChange = onDarkModeToggled
+                    )
+                }
+            }
+
+            item {
+                SettingsGroup("پشتیبانی") {
+                    ActionRow(
+                        title = "تماس با پشتیبانی",
+                        subtitle = SUPPORT_EMAIL,
+                        icon = Icons.Default.Email,
+                        onClick = {
                             val intent = Intent(Intent.ACTION_SENDTO).apply {
                                 data = Uri.parse("mailto:$SUPPORT_EMAIL")
                                 putExtra(Intent.EXTRA_SUBJECT, "پشتیبانی اپ اوقات نماز")
                             }
-                            context.startActivity(Intent.createChooser(intent, "ارسال ایمیل"))
-                        },
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text("تماس با پشتیبانی", fontSize = 16.sp)
-                            Text(
-                                text = SUPPORT_EMAIL,
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
+                            runCatching {
+                                context.startActivity(
+                                    Intent.createChooser(intent, "ارسال ایمیل")
+                                )
+                            }
                         }
-                        Icon(
-                            Icons.Default.Email,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                     )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text("نسخه برنامه", fontSize = 16.sp)
-                            Text(
-                                text = "نسخه ۱.۰.۰",
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
-                        }
-                        Icon(
-                            Icons.Default.Info,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.outline
-                        )
-                    }
+                    Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                    ActionRow(
+                        title = "نسخه برنامه",
+                        subtitle = "۱.۰.۰",
+                        icon = Icons.Default.Info,
+                        onClick = null
+                    )
                 }
             }
         }
+    }
+}
+
+/** Titled card that groups related settings — replaces bare section labels over loose rows. */
+@Composable
+private fun SettingsGroup(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(modifier = Modifier.padding(top = Spacing.sm)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(
+                start = Spacing.xs,
+                bottom = Spacing.sm
+            )
+        )
+        Surface(
+            shape = Radii.lg,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 1.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(Spacing.lg), content = content)
+        }
+    }
+}
+
+@Composable
+private fun SwitchRow(
+    label: String,
+    checked: Boolean,
+    onChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            // Whole row toggles, not just the switch — a 48dp target instead of a thumb.
+            .clickable { onChange(!checked) }
+            .heightIn(min = Spacing.touchTarget),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Switch(checked = checked, onCheckedChange = onChange)
     }
 }
 
 @Composable
 private fun ActionRow(
     title: String,
-    subtitle: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    subtitle: String?,
+    icon: ImageVector,
     highlight: Boolean = false,
-    onClick: () -> Unit
+    onClick: (() -> Unit)?
 ) {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = if (highlight)
-                MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
-            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        )
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
+            .heightIn(min = Spacing.touchTarget)
+            .padding(vertical = Spacing.sm),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(title, fontSize = 16.sp)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (subtitle != null) {
                 Text(
                     text = subtitle,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (highlight) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
                 )
             }
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = if (highlight)
-                    MaterialTheme.colorScheme.error
-                else MaterialTheme.colorScheme.primary
-            )
         }
+        Spacer(Modifier.width(Spacing.md))
+        Icon(
+            icon,
+            contentDescription = null,
+            tint = when {
+                highlight -> MaterialTheme.colorScheme.error
+                onClick != null -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.outline
+            }
+        )
     }
 }
 
 @Composable
-private fun SectionTitle(text: String) {
-    Text(
-        text = text,
-        fontWeight = FontWeight.Bold,
-        fontSize = 13.sp,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(vertical = 4.dp)
-    )
+private fun BatteryOptimisationCard(context: Context) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+
+    val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+    // Re-checked on each recomposition so the card disappears once the user grants it.
+    val exempt = powerManager.isIgnoringBatteryOptimizations(context.packageName)
+    if (exempt) return
+
+    Column(modifier = Modifier.padding(top = Spacing.sm)) {
+        Surface(
+            shape = Radii.lg,
+            color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.55f),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(Spacing.lg)) {
+                ActionRow(
+                    title = "بهینه‌سازی باتری را غیرفعال کنید",
+                    subtitle = "بدون این کار، سیستم ممکن است اذان را به‌موقع پخش نکند",
+                    icon = Icons.Default.BatteryAlert,
+                    highlight = true,
+                    onClick = {
+                        val direct = Intent(
+                            Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                            Uri.parse("package:${context.packageName}")
+                        )
+                        val fallback = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                        runCatching { context.startActivity(direct) }
+                            .recoverCatching { context.startActivity(fallback) }
+                    }
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -311,8 +360,10 @@ private fun CityDropdown(
             value = cities.getOrNull(selectedIndex)?.nameDari ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text("انتخاب شهر") },
+            label = { Text("شهر") },
+            textStyle = MaterialTheme.typography.bodyLarge,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            shape = Radii.md,
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
@@ -323,7 +374,9 @@ private fun CityDropdown(
         ) {
             cities.forEachIndexed { index, city ->
                 DropdownMenuItem(
-                    text = { Text(city.nameDari) },
+                    text = {
+                        Text(city.nameDari, style = MaterialTheme.typography.bodyLarge)
+                    },
                     onClick = {
                         onSelected(index)
                         expanded = false
@@ -350,8 +403,10 @@ private fun CalcMethodDropdown(
             value = CalcMethods.nameOf(selectedId),
             onValueChange = {},
             readOnly = true,
-            label = { Text("روش محاسبه اوقات") },
+            label = { Text("روش محاسبه") },
+            textStyle = MaterialTheme.typography.bodyLarge,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            shape = Radii.md,
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
@@ -362,7 +417,9 @@ private fun CalcMethodDropdown(
         ) {
             CalcMethods.list.forEach { method ->
                 DropdownMenuItem(
-                    text = { Text(method.nameDari) },
+                    text = {
+                        Text(method.nameDari, style = MaterialTheme.typography.bodyLarge)
+                    },
                     onClick = {
                         onSelected(method.id)
                         expanded = false
@@ -390,7 +447,9 @@ private fun MadhabDropdown(
             onValueChange = {},
             readOnly = true,
             label = { Text("مذهب") },
+            textStyle = MaterialTheme.typography.bodyLarge,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            shape = Radii.md,
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
@@ -401,7 +460,9 @@ private fun MadhabDropdown(
         ) {
             Madhabs.list.forEach { madhab ->
                 DropdownMenuItem(
-                    text = { Text(madhab.nameDari) },
+                    text = {
+                        Text(madhab.nameDari, style = MaterialTheme.typography.bodyLarge)
+                    },
                     onClick = {
                         onSelected(madhab.school)
                         expanded = false
@@ -412,74 +473,25 @@ private fun MadhabDropdown(
     }
 }
 
-@Composable
-private fun PrayerToggleRow(
-    label: String,
-    prayer: PrayerName,
-    enabled: Boolean,
-    onToggle: (PrayerName, Boolean) -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(label, fontSize = 16.sp)
-            Switch(
-                checked = enabled,
-                onCheckedChange = { onToggle(prayer, it) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun SwitchRow(
-    label: String,
-    checked: Boolean,
-    onChange: (Boolean) -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(label, fontSize = 16.sp)
-            Switch(checked = checked, onCheckedChange = onChange)
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun ReminderChips(minutes: Int, onChanged: (Int) -> Unit) {
     Column {
         Text(
-            text = if (minutes == 0) "یادآوری غیرفعال"
-            else "${minutes.toPersianDigits()} دقیقه قبل از اذان",
+            text = if (minutes == 0) {
+                "یادآوری خاموش است"
+            } else {
+                "${minutes.toPersianDigits()} دقیقه پیش از اذان"
+            },
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Spacer(Modifier.height(Spacing.md))
+        // FlowRow so the six chips wrap instead of being squeezed off-screen when
+        // Dari labels run long.
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+            verticalArrangement = Arrangement.spacedBy(Spacing.sm)
         ) {
             listOf(0, 5, 10, 15, 20, 30).forEach { option ->
                 FilterChip(
@@ -487,8 +499,12 @@ private fun ReminderChips(minutes: Int, onChanged: (Int) -> Unit) {
                     onClick = { onChanged(option) },
                     label = {
                         Text(
-                            if (option == 0) "خاموش" else "${option.toPersianDigits()} دقیقه",
-                            fontSize = 12.sp
+                            text = if (option == 0) {
+                                "خاموش"
+                            } else {
+                                "${option.toPersianDigits()} دقیقه"
+                            },
+                            style = MaterialTheme.typography.labelLarge
                         )
                     }
                 )

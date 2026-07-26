@@ -6,12 +6,16 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ExploreOff
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Rotate90DegreesCcw
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,28 +23,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kabulsignal.azanapp.data.AfghanCity
+import com.kabulsignal.azanapp.ui.components.MessageState
+import com.kabulsignal.azanapp.ui.theme.Radii
+import com.kabulsignal.azanapp.ui.theme.Spacing
 import com.kabulsignal.azanapp.utils.QiblaUtil
 import com.kabulsignal.azanapp.utils.toPersianDigits
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+/** Within this many degrees we call it aligned and confirm with a haptic tick. */
+private const val ALIGN_TOLERANCE_DEG = 4f
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QiblaScreen(city: AfghanCity) {
     val context = LocalContext.current
+    val haptics = LocalHapticFeedback.current
 
     val qiblaBearing = remember(city) {
         QiblaUtil.bearingToKaaba(city.latitude, city.longitude)
     }
 
     // Sensors report azimuth from MAGNETIC north; the qibla bearing is from TRUE north.
-    // GeomagneticField.declination bridges the two for the current location.
+    // GeomagneticField.declination bridges the two for this location.
     val declination = remember(city) {
         GeomagneticField(
             city.latitude.toFloat(),
@@ -50,10 +64,9 @@ fun QiblaScreen(city: AfghanCity) {
         ).declination
     }
 
-    // Primitive state: the sensor writes this many times a second and boxing every
-    // value would churn the heap for no reason.
     var azimuth by remember { mutableFloatStateOf(0f) }
     var hasSensor by remember { mutableStateOf(true) }
+    var accuracy by remember { mutableIntStateOf(SensorManager.SENSOR_STATUS_ACCURACY_HIGH) }
 
     DisposableEffect(Unit) {
         val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -63,13 +76,17 @@ fun QiblaScreen(city: AfghanCity) {
         val listener = object : SensorEventListener {
             private val rotationMatrix = FloatArray(9)
             private val orientation = FloatArray(3)
+
             override fun onSensorChanged(event: SensorEvent) {
                 SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
                 SensorManager.getOrientation(rotationMatrix, orientation)
                 val deg = Math.toDegrees(orientation[0].toDouble()).toFloat()
                 azimuth = (deg + 360f) % 360f
             }
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+            override fun onAccuracyChanged(sensor: Sensor?, newAccuracy: Int) {
+                accuracy = newAccuracy
+            }
         }
 
         rotationSensor?.let {
@@ -78,23 +95,41 @@ fun QiblaScreen(city: AfghanCity) {
         onDispose { sensorManager.unregisterListener(listener) }
     }
 
-    // Heading corrected to true north.
-    val trueAzimuth = (azimuth + declination + 360f) % 360f
+    if (!hasSensor) {
+        // No compass hardware: show the bearing as a number instead of a dial that cannot work.
+        QiblaNoSensor(city = city, bearing = qiblaBearing)
+        return
+    }
 
-    // Where the qibla sits relative to the phone's current heading
+    val trueAzimuth = (azimuth + declination + 360f) % 360f
     val qiblaRelative = (qiblaBearing - trueAzimuth + 360f) % 360f
+    val offBy = abs(((qiblaRelative + 180f) % 360f) - 180f)
+    val aligned = offBy < ALIGN_TOLERANCE_DEG
+
+    // Confirm alignment once per entry, not continuously while held on target.
+    LaunchedEffect(aligned) {
+        if (aligned) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
+
     val animatedDial by animateFloatAsState(
         targetValue = -trueAzimuth,
-        animationSpec = tween(250),
+        animationSpec = tween(220),
         label = "dial"
     )
-
-    val aligned = abs(((qiblaRelative + 180f) % 360f) - 180f) < 4f
+    val needleColor by animateColorAsState(
+        targetValue = if (aligned) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.tertiary
+        },
+        animationSpec = tween(300),
+        label = "needle"
+    )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("قبله‌نما", fontWeight = FontWeight.Bold) },
+                title = { Text("قبله‌نما", style = MaterialTheme.typography.titleLarge) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -105,7 +140,7 @@ fun QiblaScreen(city: AfghanCity) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(24.dp),
+                .padding(horizontal = Spacing.xl),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -116,103 +151,223 @@ fun QiblaScreen(city: AfghanCity) {
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(18.dp)
                 )
-                Spacer(Modifier.width(4.dp))
-                Text(city.nameDari, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Spacer(Modifier.width(Spacing.xs))
+                Text(
+                    text = city.nameDari,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Spacing.md))
 
-            Text(
-                text = if (aligned) "رو به قبله ✓" else "گوشی را بچرخانید",
-                fontSize = 14.sp,
-                color = if (aligned) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            )
+            AlignmentBadge(aligned = aligned, offBy = offBy)
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(Spacing.xl))
 
-            val ringColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-            val tickColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            val ringColor = MaterialTheme.colorScheme.outlineVariant
+            val tickColor = MaterialTheme.colorScheme.onSurfaceVariant
             val northColor = MaterialTheme.colorScheme.error
-            val qiblaColor = if (aligned) MaterialTheme.colorScheme.primary
-            else MaterialTheme.colorScheme.tertiary
+            val faceColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
+            val hubColor = MaterialTheme.colorScheme.surface
 
-            Canvas(modifier = Modifier.size(280.dp)) {
+            Canvas(modifier = Modifier.size(288.dp)) {
                 val r = size.minDimension / 2f
                 val center = Offset(r, r)
 
-                // Outer ring
-                drawCircle(color = ringColor, radius = r, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 3f))
-                drawCircle(color = ringColor.copy(alpha = 0.15f), radius = r)
+                drawCircle(color = faceColor, radius = r)
+                drawCircle(
+                    color = ringColor,
+                    radius = r,
+                    style = Stroke(width = 3.dp.toPx())
+                )
 
-                // Rotating dial — tick marks every 30°, north marker
+                // Rotating bezel: ticks every 15°, longer every 45°, red at north.
                 rotate(degrees = animatedDial, pivot = center) {
-                    for (i in 0 until 12) {
-                        rotate(degrees = i * 30f, pivot = center) {
-                            val long = i % 3 == 0
+                    for (i in 0 until 24) {
+                        rotate(degrees = i * 15f, pivot = center) {
+                            val isNorth = i == 0
+                            val isMajor = i % 3 == 0
+                            val len = when {
+                                isNorth -> 30f
+                                isMajor -> 22f
+                                else -> 12f
+                            }
                             drawLine(
-                                color = if (i == 0) northColor else tickColor,
-                                start = Offset(r, r - r + 8f),
-                                end = Offset(r, r - r + (if (long) 26f else 16f)),
-                                strokeWidth = if (i == 0) 6f else 3f
+                                color = if (isNorth) northColor else tickColor.copy(
+                                    alpha = if (isMajor) 0.75f else 0.4f
+                                ),
+                                start = Offset(center.x, center.y - r + 10f),
+                                end = Offset(center.x, center.y - r + 10f + len),
+                                strokeWidth = if (isNorth) 7f else if (isMajor) 4f else 2.5f,
+                                cap = StrokeCap.Round
                             )
                         }
                     }
                 }
 
-                // Fixed qibla needle pointing to qiblaRelative
+                // Needle stays fixed to the qibla direction relative to the device heading.
                 rotate(degrees = qiblaRelative, pivot = center) {
+                    val tip = center.y - r * 0.74f
                     val needle = Path().apply {
-                        moveTo(center.x, center.y - r * 0.72f) // tip
-                        lineTo(center.x - 22f, center.y)
-                        lineTo(center.x + 22f, center.y)
+                        moveTo(center.x, tip)
+                        lineTo(center.x - 20f, center.y + 6f)
+                        lineTo(center.x + 20f, center.y + 6f)
                         close()
                     }
-                    drawPath(needle, color = qiblaColor)
-                    // tail
+                    drawPath(needle, color = needleColor)
                     drawLine(
-                        color = qiblaColor.copy(alpha = 0.35f),
+                        color = needleColor.copy(alpha = 0.3f),
                         start = center,
-                        end = Offset(center.x, center.y + r * 0.55f),
-                        strokeWidth = 10f
+                        end = Offset(center.x, center.y + r * 0.5f),
+                        strokeWidth = 9f,
+                        cap = StrokeCap.Round
                     )
                 }
 
-                drawCircle(color = qiblaColor, radius = 14f, center = center)
-                drawCircle(color = Color.White, radius = 5f, center = center)
+                drawCircle(color = needleColor, radius = 15f, center = center)
+                drawCircle(color = hubColor, radius = 6f, center = center)
             }
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(Spacing.xl))
 
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.md)) {
+                InfoTile(
+                    label = "جهت قبله",
+                    value = "${qiblaBearing.roundToInt().toPersianDigits()}°",
+                    caption = "از شمال حقیقی"
                 )
+                InfoTile(
+                    label = "اختلاف",
+                    value = "${offBy.roundToInt().toPersianDigits()}°",
+                    caption = if (aligned) "در جهت قبله" else "بچرخانید"
+                )
+            }
+
+            // Rotation-vector accuracy drops when the magnetometer needs re-calibrating;
+            // tell the user how to fix it rather than showing a quietly wrong needle.
+            if (accuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW ||
+                accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE
             ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Spacer(Modifier.height(Spacing.lg))
+                Surface(
+                    shape = Radii.md,
+                    color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.55f)
                 ) {
-                    Text("جهت قبله", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
-                    Text(
-                        text = "${qiblaBearing.roundToInt().toString().toPersianDigits()}°",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text("نسبت به شمال", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
+                    Row(
+                        modifier = Modifier.padding(Spacing.md),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.Rotate90DegreesCcw,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(Spacing.sm))
+                        Text(
+                            text = "دقت قطب‌نما کم است — گوشی را چند بار به شکل ۸ بچرخانید",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
                 }
             }
+        }
+    }
+}
 
-            if (!hasSensor) {
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    "این دستگاه حسگر قطب‌نما ندارد — فقط زاویه قبله نمایش داده می‌شود",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+@Composable
+private fun AlignmentBadge(aligned: Boolean, offBy: Float) {
+    val container by animateColorAsState(
+        targetValue = if (aligned) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        },
+        animationSpec = tween(300),
+        label = "badge"
+    )
+    val content = if (aligned) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Surface(shape = Radii.pill, color = container) {
+        Row(
+            modifier = Modifier.padding(horizontal = Spacing.lg, vertical = Spacing.sm),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (aligned) {
+                Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = content,
+                    modifier = Modifier.size(18.dp)
                 )
+                Spacer(Modifier.width(Spacing.sm))
             }
+            Text(
+                text = if (aligned) "رو به قبله ایستاده‌اید" else "گوشی را بچرخانید",
+                style = MaterialTheme.typography.labelLarge,
+                color = content
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowScope.InfoTile(label: String, value: String, caption: String) {
+    Surface(
+        shape = Radii.md,
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
+        modifier = Modifier.weight(1f)
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = Spacing.md, horizontal = Spacing.lg),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = caption,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun QiblaNoSensor(city: AfghanCity, bearing: Float) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("قبله‌نما", style = MaterialTheme.typography.titleLarge) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        }
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
+            MessageState(
+                title = "این دستگاه قطب‌نما ندارد",
+                body = "جهت قبله از ${city.nameDari} برابر است با " +
+                        "${bearing.roundToInt().toPersianDigits()}° نسبت به شمال حقیقی. " +
+                        "می‌توانید با یک قطب‌نمای دیگر این زاویه را پیدا کنید.",
+                icon = Icons.Default.ExploreOff
+            )
         }
     }
 }

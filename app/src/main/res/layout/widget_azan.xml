@@ -6,34 +6,52 @@
     android:background="@drawable/widget_background"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:paddingStart="14dp"
+    android:paddingEnd="14dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
     <TextView
-        android:id="@+id/widget_city"
+        android:id="@+id/widget_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="کابل"
-        android:textColor="#CCFFFFFF"
-        android:textSize="11sp" />
+        android:fontFamily="@font/vazirmatn_regular"
+        android:letterSpacing="0"
+        android:text="نماز بعدی"
+        android:textColor="#99FFFFFF"
+        android:textSize="10sp" />
 
     <TextView
         android:id="@+id/widget_prayer_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/vazirmatn_bold"
+        android:letterSpacing="0"
         android:text="مغرب"
         android:textColor="#FFFFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="17sp" />
 
     <TextView
         android:id="@+id/widget_prayer_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="18:35"
+        android:layout_marginTop="1dp"
+        android:fontFamily="@font/vazirmatn_light"
+        android:letterSpacing="0"
+        android:text="۱۸:۳۵"
         android:textColor="#FFFFFFFF"
-        android:textSize="28sp"
-        android:letterSpacing="0.05" />
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/widget_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/vazirmatn_regular"
+        android:letterSpacing="0"
+        android:text="کابل"
+        android:textColor="#B3FFFFFF"
+        android:textSize="11sp" />
 
 </LinearLayout>
