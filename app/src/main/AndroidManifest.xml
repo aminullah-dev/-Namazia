@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--
+      No location permissions: the user picks a city from a fixed list and nothing in the
+      app reads device location. Declaring them would force a Play location-use
+      declaration we cannot truthfully complete, which is a common review rejection.
+      If automatic location detection is added later, re-add ACCESS_COARSE_LOCATION and
+      complete that declaration.
+    -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
