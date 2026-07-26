@@ -121,7 +121,7 @@ fun SettingsScreen(
                             onChange = { onPrayerToggled(toggle.prayer, it) }
                         )
                         if (index != prayerToggles.lastIndex) {
-                            Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         }
                     }
                 }
@@ -144,14 +144,14 @@ fun SettingsScreen(
                         icon = Icons.Default.PlayCircle,
                         onClick = { onTestAzan(false) }
                     )
-                    Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     ActionRow(
                         title = "تست اذان صبح",
                         subtitle = "فایل جداگانه اذان فجر",
                         icon = Icons.Default.PlayCircle,
                         onClick = { onTestAzan(true) }
                     )
-                    Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SwitchRow(
                         label = "لرزش هنگام اذان",
                         checked = settings.vibrationEnabled,
@@ -194,7 +194,7 @@ fun SettingsScreen(
                             }
                         }
                     )
-                    Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     ActionRow(
                         title = "نسخه برنامه",
                         subtitle = "۱.۰.۰",
@@ -365,7 +365,7 @@ private fun CityDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             shape = Radii.md,
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth()
         )
         ExposedDropdownMenu(
@@ -408,7 +408,7 @@ private fun CalcMethodDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             shape = Radii.md,
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth()
         )
         ExposedDropdownMenu(
@@ -451,7 +451,7 @@ private fun MadhabDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             shape = Radii.md,
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth()
         )
         ExposedDropdownMenu(

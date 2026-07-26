@@ -218,7 +218,7 @@ private fun DuaCard(dua: Dua, ordinal: Int) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Divider(color = MaterialTheme.colorScheme.outlineVariant)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
             Text(
                 text = dua.dari,
