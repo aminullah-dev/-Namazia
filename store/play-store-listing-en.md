@@ -175,8 +175,10 @@ location detection in this release.
 
 - **Package name: `af.namazia.app`** — this is the app's permanent identity on Play and can
   never be changed after the first upload. Confirm it is what you want before you publish.
-- `versionCode 1`, `versionName "1.0"` — Play rejects a second upload with the same
-  `versionCode`, so raise it for every upload, including a re-upload of a rejected build.
+- **`versionCode` must go up on every upload.** Play retires a code the moment a bundle
+  carrying it is uploaded — to any track, published or not — and will not accept it again.
+  Bump `versionCode` in `app/build.gradle` before each new bundle you build.
+  Currently at `versionCode 2`, `versionName "1.0.1"`.
 - `minSdk 26` (Android 8.0), `targetSdk 34` (Android 14) — targetSdk 34 satisfies Play's current
   requirement.
 - The app ships two azan recordings (~8 MB total), so expect a bundle of roughly 12–15 MB.
