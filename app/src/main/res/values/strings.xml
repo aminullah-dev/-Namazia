@@ -4,4 +4,16 @@
     <string name="widget_description">ویجت اوقات نماز — نماز بعدی را نشان می‌دهد</string>
     <string name="channel_azan_name">اذان</string>
     <string name="channel_reminder_name">یادآوری نماز</string>
+
+    <!-- Failure states. Codes live in data/AppError.kt; these are only the wording. -->
+    <string name="error_offline_title">اتصال به انترنت نیست</string>
+    <string name="error_offline_body">اوقات این روز در حافظه ذخیره نشده است. پس از وصل شدن به انترنت دوباره تلاش کنید.</string>
+    <string name="error_server_title">سرور پاسخ نداد</string>
+    <string name="error_server_body">در حال حاضر دریافت اوقات ممکن نیست. لطفاً چند لحظه بعد دوباره تلاش کنید.</string>
+    <string name="error_bad_response_title">پاسخ نامعتبر</string>
+    <string name="error_bad_response_body">اطلاعات دریافت‌شده کامل نبود. لطفاً دوباره تلاش کنید.</string>
+    <string name="error_unknown_title">خطای نامشخص</string>
+    <string name="error_unknown_body">مشکلی پیش آمد. لطفاً دوباره تلاش کنید.</string>
+    <string name="action_retry">تلاش دوباره</string>
+    <string name="calendar_empty_title">اطلاعاتی موجود نیست</string>
 </resources>

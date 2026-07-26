@@ -1,6 +1,7 @@
 package com.kabulsignal.azanapp.ui
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,11 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kabulsignal.azanapp.ui.theme.AzanAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,15 +46,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        // Only ask when we do not already hold it — launching the request on every start
+        // re-prompts users who granted it and wastes the one prompt of users who denied it.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
 
         setContent {
-            val uiState by viewModel.uiState.collectAsState()
-            val settings by viewModel.settings.collectAsState()
-            val tasbihCount by viewModel.tasbihCount.collectAsState()
-            val calendarState by viewModel.calendarState.collectAsState()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val settings by viewModel.settings.collectAsStateWithLifecycle()
+            val tasbihCount by viewModel.tasbihCount.collectAsStateWithLifecycle()
+            val calendarState by viewModel.calendarState.collectAsStateWithLifecycle()
 
             AzanAppTheme(darkTheme = settings.darkMode) {
                 // The whole UI is Dari — force right-to-left regardless of device locale.

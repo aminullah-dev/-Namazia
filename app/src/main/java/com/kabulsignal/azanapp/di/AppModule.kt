@@ -57,7 +57,12 @@ object AppModule {
             context,
             AzanDatabase::class.java,
             "azan_database"
-        ).build()
+        )
+            // This table is a re-fetchable cache of API results, never user-authored data.
+            // Dropping it on a schema change is safe and avoids shipping an update that
+            // crashes on launch for anyone with the old schema.
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

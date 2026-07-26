@@ -1,9 +1,9 @@
 package com.kabulsignal.azanapp.data
 
 import android.util.Log
+import java.io.IOException
 import java.time.LocalDate
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,17 +36,25 @@ class PrayerTimesRepository @Inject constructor(
                 school = school
             )
 
-            if (response.isSuccessful) {
-                val body = response.body()!!
-                val entity = body.data.toEntity(city.nameEn, date)
-                dao.insert(entity)
-                Result.success(entity)
-            } else {
-                Result.failure(Exception("API error: ${response.code()}"))
+            val body = response.body()
+            when {
+                response.isSuccessful && body != null -> {
+                    val entity = body.data.toEntity(city.nameEn, date)
+                    dao.insert(entity)
+                    Result.success(entity)
+                }
+                response.isSuccessful ->
+                    Result.failure(AppException(AppError.BAD_RESPONSE, "empty body"))
+                else ->
+                    Result.failure(AppException(AppError.SERVER, "HTTP ${response.code()}"))
             }
+        } catch (e: IOException) {
+            // No connectivity (or it dropped mid-request) and the cache had nothing for this day.
+            Log.w("Repository", "Offline and uncached for $dateStr", e)
+            Result.failure(AppException(AppError.OFFLINE_NO_CACHE, e.message, e))
         } catch (e: Exception) {
-            Log.e("Repository", "Network error", e)
-            Result.failure(e)
+            Log.e("Repository", "Unexpected failure for $dateStr", e)
+            Result.failure(AppException(AppError.UNKNOWN, e.message, e))
         }
     }
 
@@ -74,14 +82,20 @@ class PrayerTimesRepository @Inject constructor(
                 method = method,
                 school = school
             )
-            if (response.isSuccessful) {
-                Result.success(response.body()!!.data)
-            } else {
-                Result.failure(Exception("خطای سرور: ${response.code()}"))
+            val body = response.body()
+            when {
+                response.isSuccessful && body != null -> Result.success(body.data)
+                response.isSuccessful ->
+                    Result.failure(AppException(AppError.BAD_RESPONSE, "empty body"))
+                else ->
+                    Result.failure(AppException(AppError.SERVER, "HTTP ${response.code()}"))
             }
+        } catch (e: IOException) {
+            Log.w("Repository", "Monthly calendar offline", e)
+            Result.failure(AppException(AppError.OFFLINE_NO_CACHE, e.message, e))
         } catch (e: Exception) {
             Log.e("Repository", "Monthly calendar error", e)
-            Result.failure(e)
+            Result.failure(AppException(AppError.UNKNOWN, e.message, e))
         }
     }
 

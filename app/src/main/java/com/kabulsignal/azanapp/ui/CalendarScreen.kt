@@ -1,13 +1,14 @@
 package com.kabulsignal.azanapp.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
@@ -15,12 +16,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.kabulsignal.azanapp.R
+import com.kabulsignal.azanapp.data.AppError
 import com.kabulsignal.azanapp.data.PrayerData
+import com.kabulsignal.azanapp.ui.components.MessageState
+import com.kabulsignal.azanapp.ui.components.SkeletonBlock
+import com.kabulsignal.azanapp.ui.theme.Spacing
 import com.kabulsignal.azanapp.utils.toPersianDigits
 import java.time.LocalDate
 
@@ -29,15 +34,20 @@ data class CalendarUiState(
     val days: List<PrayerData> = emptyList(),
     val year: Int = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE).year,
     val month: Int = LocalDate.now(com.kabulsignal.azanapp.utils.APP_ZONE).monthValue,
-    val error: String? = null
+    val error: AppError? = null
 )
 
-private val persianMonths = listOf(
+private val gregorianMonthsDari = listOf(
     "جنوری", "فبروری", "مارچ", "اپریل", "می", "جون",
     "جولای", "آگست", "سپتمبر", "اکتوبر", "نوامبر", "دسمبر"
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+// Day column is narrower than the five time columns; weights keep the grid aligned
+// between the sticky header and every row.
+private const val DAY_WEIGHT = 0.72f
+private const val TIME_WEIGHT = 1f
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CalendarScreen(
     calendarState: CalendarUiState,
@@ -49,7 +59,7 @@ fun CalendarScreen(
     val isCurrentMonth = calendarState.year == today.year &&
             calendarState.month == today.monthValue
 
-    // Scroll to today on first load
+    // Land on today rather than the 1st — that is the row the user came to read.
     LaunchedEffect(calendarState.days, isCurrentMonth) {
         if (isCurrentMonth && calendarState.days.isNotEmpty()) {
             val todayIndex = calendarState.days.indexOfFirst {
@@ -63,31 +73,40 @@ fun CalendarScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("تقویم اوقات", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Column {
                         Text(
-                            text = "${persianMonths.getOrElse(calendarState.month - 1) { "" }} ${calendarState.year.toPersianDigits()}",
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            text = "تقویم اوقات",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        Text(
+                            text = "${gregorianMonthsDari.getOrElse(calendarState.month - 1) { "" }} " +
+                                    calendarState.year.toPersianDigits(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 },
                 navigationIcon = {
+                    // RTL: "previous" sits at the start edge and points right.
                     IconButton(onClick = {
-                        val prev = if (calendarState.month == 1)
-                            Pair(calendarState.year - 1, 12)
-                        else Pair(calendarState.year, calendarState.month - 1)
-                        onMonthChanged(prev.first, prev.second)
+                        val (y, m) = if (calendarState.month == 1) {
+                            calendarState.year - 1 to 12
+                        } else {
+                            calendarState.year to calendarState.month - 1
+                        }
+                        onMonthChanged(y, m)
                     }) {
                         Icon(Icons.Default.ChevronRight, contentDescription = "ماه قبل")
                     }
                 },
                 actions = {
                     IconButton(onClick = {
-                        val next = if (calendarState.month == 12)
-                            Pair(calendarState.year + 1, 1)
-                        else Pair(calendarState.year, calendarState.month + 1)
-                        onMonthChanged(next.first, next.second)
+                        val (y, m) = if (calendarState.month == 12) {
+                            calendarState.year + 1 to 1
+                        } else {
+                            calendarState.year to calendarState.month + 1
+                        }
+                        onMonthChanged(y, m)
                     }) {
                         Icon(Icons.Default.ChevronLeft, contentDescription = "ماه بعد")
                     }
@@ -103,44 +122,43 @@ fun CalendarScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            val error = calendarState.error
+
             when {
-                calendarState.isLoading -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
+                calendarState.isLoading -> CalendarSkeleton()
+
+                error != null -> MessageState(
+                    title = stringResource(error.titleRes),
+                    body = stringResource(error.bodyRes),
+                    actionLabel = stringResource(R.string.action_retry),
+                    onAction = { onMonthChanged(calendarState.year, calendarState.month) }
+                )
+
+                calendarState.days.isEmpty() -> MessageState(
+                    title = stringResource(R.string.calendar_empty_title),
+                    icon = Icons.Default.CalendarMonth,
+                    actionLabel = stringResource(R.string.action_retry),
+                    onAction = { onMonthChanged(calendarState.year, calendarState.month) }
+                )
+
+                else -> LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    stickyHeader { CalendarHeaderRow() }
+
+                    itemsIndexed(calendarState.days) { index, dayData ->
+                        val dayNum = dayData.date.gregorian.day.trim().toIntOrNull() ?: 0
+                        DayRow(
+                            dayData = dayData,
+                            isToday = isCurrentMonth && dayNum == todayDay,
+                            // Zebra striping: six columns of digits are hard to track
+                            // across without an alternating ground.
+                            striped = index % 2 == 1
+                        )
                     }
-                }
-                calendarState.error != null -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(calendarState.error, color = MaterialTheme.colorScheme.error)
-                            Spacer(Modifier.height(12.dp))
-                            Button(onClick = {
-                                onMonthChanged(calendarState.year, calendarState.month)
-                            }) { Text("تلاش دوباره") }
-                        }
-                    }
-                }
-                calendarState.days.isEmpty() -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("اطلاعاتی موجود نیست", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
-                    }
-                }
-                else -> {
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        item {
-                            CalendarHeader()
-                        }
-                        items(calendarState.days) { dayData ->
-                            val dayNum = dayData.date.gregorian.day.trim().toIntOrNull() ?: 0
-                            val isToday = isCurrentMonth && dayNum == todayDay
-                            DayCard(dayData = dayData, isToday = isToday)
-                        }
-                    }
+
+                    item { Spacer(Modifier.height(Spacing.lg)) }
                 }
             }
         }
@@ -148,115 +166,126 @@ fun CalendarScreen(
 }
 
 @Composable
-private fun CalendarHeader() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+private fun CalendarHeaderRow() {
+    Surface(
+        color = MaterialTheme.colorScheme.primary,
+        tonalElevation = 3.dp
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(horizontal = Spacing.md, vertical = Spacing.md)
         ) {
-            listOf("روز", "فجر", "ظهر", "عصر", "مغرب", "عشا").forEach { label ->
-                Text(
-                    text = label,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
-                )
-            }
+            HeaderCell("روز", DAY_WEIGHT)
+            HeaderCell("فجر", TIME_WEIGHT)
+            HeaderCell("ظهر", TIME_WEIGHT)
+            HeaderCell("عصر", TIME_WEIGHT)
+            HeaderCell("مغرب", TIME_WEIGHT)
+            HeaderCell("عشا", TIME_WEIGHT)
         }
     }
 }
 
 @Composable
-private fun DayCard(dayData: PrayerData, isToday: Boolean) {
-    val dayNum = dayData.date.gregorian.day.trim()
-    val hijriDay = dayData.date.hijri.day
+private fun RowScope.HeaderCell(label: String, weight: Float) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onPrimary,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.weight(weight)
+    )
+}
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = when {
-                isToday -> MaterialTheme.colorScheme.primaryContainer
-                else -> MaterialTheme.colorScheme.surface
-            }
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isToday) 3.dp else 1.dp
-        )
+@Composable
+private fun DayRow(dayData: PrayerData, isToday: Boolean, striped: Boolean) {
+    val background = when {
+        isToday -> MaterialTheme.colorScheme.primaryContainer
+        striped -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+        else -> MaterialTheme.colorScheme.surface
+    }
+    val contentColor = if (isToday) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(background)
+            .padding(horizontal = Spacing.md, vertical = Spacing.md),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        // Day cell: Gregorian day over the Hijri day, so both calendars are readable.
+        Box(
+            modifier = Modifier.weight(DAY_WEIGHT),
+            contentAlignment = Alignment.Center
         ) {
-            // Day number cell
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                if (isToday) {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = dayNum.toPersianDigits(),
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        }
-                    }
-                } else {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = dayNum.toPersianDigits(),
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = hijriDay.toPersianDigits(),
-                            fontSize = 9.sp,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
-                    }
+            val dayNum = dayData.date.gregorian.day.trim().toPersianDigits()
+            val hijriDay = dayData.date.hijri.day.trim().toPersianDigits()
+
+            if (isToday) {
+                Box(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = dayNum,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            } else {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = dayNum,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = contentColor
+                    )
+                    Text(
+                        text = hijriDay,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
                 }
             }
+        }
 
-            // Prayer time cells
-            listOf(
-                dayData.timings.Fajr,
-                dayData.timings.Dhuhr,
-                dayData.timings.Asr,
-                dayData.timings.Maghrib,
-                dayData.timings.Isha
-            ).forEach { timeStr ->
-                Text(
-                    text = cleanCalTime(timeStr).toPersianDigits(),
-                    fontSize = 11.sp,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    color = if (isToday)
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    else MaterialTheme.colorScheme.onSurface
-                )
+        listOf(
+            dayData.timings.Fajr,
+            dayData.timings.Dhuhr,
+            dayData.timings.Asr,
+            dayData.timings.Maghrib,
+            dayData.timings.Isha
+        ).forEach { raw ->
+            Text(
+                text = cleanCalTime(raw).toPersianDigits(),
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
+                color = contentColor,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(TIME_WEIGHT)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CalendarSkeleton() {
+    Column(Modifier.fillMaxSize()) {
+        CalendarHeaderRow()
+        Column(
+            modifier = Modifier.padding(horizontal = Spacing.md, vertical = Spacing.md),
+            verticalArrangement = Arrangement.spacedBy(Spacing.sm)
+        ) {
+            repeat(10) {
+                SkeletonBlock(modifier = Modifier.fillMaxWidth(), height = 44.dp)
             }
         }
     }

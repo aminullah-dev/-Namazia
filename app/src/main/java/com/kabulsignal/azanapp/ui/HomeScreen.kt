@@ -1,24 +1,40 @@
 package com.kabulsignal.azanapp.ui
 
-import androidx.compose.foundation.*
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Brightness5
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsOff
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.kabulsignal.azanapp.R
 import com.kabulsignal.azanapp.data.PrayerTime
+import com.kabulsignal.azanapp.ui.components.MessageState
+import com.kabulsignal.azanapp.ui.components.PrayerListSkeleton
+import com.kabulsignal.azanapp.ui.theme.Radii
+import com.kabulsignal.azanapp.ui.theme.Spacing
+import com.kabulsignal.azanapp.utils.APP_ZONE
 import com.kabulsignal.azanapp.utils.toPersianDigits
 import kotlinx.coroutines.delay
 import java.time.Duration
@@ -37,14 +53,13 @@ fun HomeScreen(
                 title = {
                     Column {
                         Text(
-                            text = "اوقات نماز",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
+                            text = stringResource(R.string.app_name),
+                            style = MaterialTheme.typography.titleLarge
                         )
                         Text(
                             text = uiState.currentCity.nameDari,
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 },
@@ -64,9 +79,19 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            val error = uiState.error
+
             when {
-                uiState.isLoading -> LoadingState()
-                uiState.error != null -> ErrorState(uiState.error, onRefresh)
+                // Skeleton, not a spinner: the layout does not jump when data lands.
+                uiState.isLoading && uiState.prayerTimes.isEmpty() -> PrayerListSkeleton()
+
+                error != null && uiState.prayerTimes.isEmpty() -> MessageState(
+                    title = stringResource(error.titleRes),
+                    body = stringResource(error.bodyRes),
+                    actionLabel = stringResource(R.string.action_retry),
+                    onAction = onRefresh
+                )
+
                 else -> PrayerTimesList(uiState, onRefresh)
             }
         }
@@ -75,259 +100,373 @@ fun HomeScreen(
 
 @Composable
 private fun PrayerTimesList(uiState: HomeUiState, onRefresh: () -> Unit) {
+    // Bound to a local so the value is usable inside the item lambdas below.
+    val staleError = uiState.error
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(
+            start = Spacing.lg,
+            end = Spacing.lg,
+            top = Spacing.md,
+            bottom = Spacing.xl
+        ),
+        verticalArrangement = Arrangement.spacedBy(Spacing.sm)
     ) {
-        uiState.nextPrayer?.let { next ->
-            item {
-                NextPrayerCard(prayer = next, hijriDate = uiState.hijriDate, onReached = onRefresh)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+        item {
+            NextPrayerHero(
+                next = uiState.nextPrayer,
+                previous = uiState.prayerTimes.lastOrNull { it.isPast },
+                hijriDate = uiState.hijriDate,
+                onReached = onRefresh
+            )
+            Spacer(Modifier.height(Spacing.md))
         }
 
-        if (uiState.nextPrayer == null && uiState.hijriDate.isNotEmpty()) {
-            item {
-                Text(
-                    text = uiState.hijriDate,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+        items(uiState.prayerTimes, key = { it.nameEn }) { prayer ->
+            PrayerRow(prayer = prayer)
         }
 
-        items(uiState.prayerTimes) { prayer ->
-            PrayerTimeCard(prayer = prayer)
+        // Cached data still shows, but say so rather than passing it off as live.
+        if (staleError != null) {
+            item {
+                Spacer(Modifier.height(Spacing.sm))
+                StaleDataNotice(title = stringResource(staleError.titleRes))
+            }
         }
     }
 }
 
+/**
+ * Hero card: the one thing the user opens the app for. A ring closes as the current
+ * interval elapses, so remaining time reads at a glance before any digits are parsed.
+ */
 @Composable
-private fun NextPrayerCard(prayer: PrayerTime, hijriDate: String, onReached: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.tertiary
-                        )
-                    )
+private fun NextPrayerHero(
+    next: PrayerTime?,
+    previous: PrayerTime?,
+    hijriDate: String,
+    onReached: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(Radii.xl)
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondary
+                    ),
+                    start = Offset.Zero,
+                    end = Offset(900f, 900f)
                 )
-                .padding(24.dp)
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (hijriDate.isNotEmpty()) {
+            )
+            .padding(vertical = Spacing.xl, horizontal = Spacing.lg),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            if (hijriDate.isNotEmpty()) {
+                Surface(
+                    shape = Radii.pill,
+                    color = Color.White.copy(alpha = 0.16f)
+                ) {
                     Text(
                         text = hijriDate,
-                        color = Color.White.copy(alpha = 0.8f),
-                        fontSize = 12.sp
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White.copy(alpha = 0.92f),
+                        modifier = Modifier.padding(
+                            horizontal = Spacing.md,
+                            vertical = Spacing.xs
+                        )
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
+                Spacer(Modifier.height(Spacing.lg))
+            }
+
+            if (next == null) {
+                // Every prayer of the day is behind us; Fajr arrives with tomorrow's data.
                 Text(
-                    text = "نماز بعدی",
-                    color = Color.White.copy(alpha = 0.9f),
-                    fontSize = 14.sp
+                    text = "نمازهای امروز تمام شد",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(Modifier.height(Spacing.sm))
                 Text(
-                    text = prayer.name,
-                    color = Color.White,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold
+                    text = "اذان فجر فردا به‌موقع پخش می‌شود",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.85f)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = prayer.time.toPersianDigits(),
-                    color = Color.White,
-                    fontSize = 48.sp,
-                    fontWeight = FontWeight.Light,
-                    letterSpacing = 2.sp
+            } else {
+                CountdownRing(
+                    next = next,
+                    previous = previous,
+                    onReached = onReached
                 )
-                Spacer(modifier = Modifier.height(10.dp))
-                CountdownPill(targetTime = prayer.time, onReached = onReached)
             }
         }
     }
 }
 
 @Composable
-private fun CountdownPill(targetTime: String, onReached: () -> Unit) {
-    var remaining by remember(targetTime) { mutableStateOf(formatRemaining(secondsUntil(targetTime))) }
+private fun CountdownRing(
+    next: PrayerTime,
+    previous: PrayerTime?,
+    onReached: () -> Unit
+) {
+    var secondsLeft by remember(next.time) { mutableLongStateOf(secondsUntil(next.time)) }
 
-    LaunchedEffect(targetTime) {
+    LaunchedEffect(next.time) {
         while (true) {
-            val secs = secondsUntil(targetTime)
+            val secs = secondsUntil(next.time)
             if (secs <= 0L) {
-                // Prayer time reached — ask for a refresh so the card advances to the next prayer.
+                // Time reached — ask for a reload so the hero advances to the next prayer.
                 onReached()
                 break
             }
-            remaining = formatRemaining(secs)
+            secondsLeft = secs
             delay(1000)
         }
     }
 
-    Box(
-        modifier = Modifier
-            .background(
+    // Fraction of the current interval already elapsed, so the ring tracks the real
+    // gap between prayers instead of an arbitrary span.
+    val intervalSeconds = remember(next.time, previous?.time) {
+        val span = previous?.time?.let { secondsBetween(it, next.time) } ?: 0L
+        // No earlier prayer today (pre-Fajr): fall back to a 6h window.
+        if (span > 0L) span else 6 * 3600L
+    }
+    val progress = ((intervalSeconds - secondsLeft).toFloat() / intervalSeconds)
+        .coerceIn(0f, 1f)
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(600),
+        label = "ringProgress"
+    )
+
+    Box(contentAlignment = Alignment.Center) {
+        Canvas(modifier = Modifier.size(232.dp)) {
+            val stroke = 10.dp.toPx()
+            val inset = stroke / 2f
+            val arcSize = Size(size.width - stroke, size.height - stroke)
+
+            drawArc(
                 color = Color.White.copy(alpha = 0.18f),
-                shape = RoundedCornerShape(20.dp)
+                startAngle = -90f,
+                sweepAngle = 360f,
+                useCenter = false,
+                topLeft = Offset(inset, inset),
+                size = arcSize,
+                style = Stroke(width = stroke, cap = StrokeCap.Round)
             )
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+            drawArc(
+                color = Color.White,
+                startAngle = -90f,
+                sweepAngle = 360f * animatedProgress,
+                useCenter = false,
+                topLeft = Offset(inset, inset),
+                size = arcSize,
+                style = Stroke(width = stroke, cap = StrokeCap.Round)
+            )
+        }
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "نماز بعدی",
+                style = MaterialTheme.typography.labelMedium,
+                color = Color.White.copy(alpha = 0.85f)
+            )
+            Text(
+                text = next.name,
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White
+            )
+            Spacer(Modifier.height(Spacing.xs))
+            Text(
+                text = next.time.toPersianDigits(),
+                style = MaterialTheme.typography.displayMedium,
+                color = Color.White
+            )
+            Spacer(Modifier.height(Spacing.sm))
+            Surface(
+                shape = Radii.pill,
+                color = Color.White.copy(alpha = 0.18f)
+            ) {
+                Text(
+                    text = "تا اذان ${formatRemaining(secondsLeft).toPersianDigits()}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White,
+                    modifier = Modifier.padding(
+                        horizontal = Spacing.md,
+                        vertical = Spacing.xs
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PrayerRow(prayer: PrayerTime) {
+    val containerColor by animateColorAsState(
+        targetValue = when {
+            prayer.isNext -> MaterialTheme.colorScheme.primaryContainer
+            prayer.isPast -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+            else -> MaterialTheme.colorScheme.surface
+        },
+        animationSpec = tween(400),
+        label = "rowColor"
+    )
+    val contentColor = when {
+        prayer.isNext -> MaterialTheme.colorScheme.onPrimaryContainer
+        prayer.isPast -> MaterialTheme.colorScheme.onSurfaceVariant
+        else -> MaterialTheme.colorScheme.onSurface
+    }
+
+    Surface(
+        shape = Radii.md,
+        color = containerColor,
+        tonalElevation = if (prayer.isNext) 3.dp else 0.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 64.dp)
+                .padding(horizontal = Spacing.lg, vertical = Spacing.md),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Leading marker so state is not carried by colour alone.
+            StatusDot(prayer = prayer)
+
+            Spacer(Modifier.width(Spacing.md))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = prayer.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = if (prayer.isNext) FontWeight.Bold else FontWeight.Medium,
+                    color = contentColor
+                )
+                Text(
+                    text = prayer.nameEn,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = contentColor.copy(alpha = 0.6f)
+                )
+            }
+
+            if (!prayer.enabled) {
+                Icon(
+                    Icons.Default.NotificationsOff,
+                    contentDescription = "اذان این وقت خاموش است",
+                    tint = contentColor.copy(alpha = 0.5f),
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(Spacing.sm))
+            }
+
+            Text(
+                text = prayer.time.toPersianDigits(),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = if (prayer.isNext) FontWeight.Bold else FontWeight.Medium,
+                color = if (prayer.isNext) MaterialTheme.colorScheme.primary else contentColor
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatusDot(prayer: PrayerTime) {
+    val dotSize = 32.dp
+    val iconSize = 16.dp
+
+    when {
+        prayer.isNext -> Box(
+            modifier = Modifier
+                .size(dotSize)
+                .clip(Radii.pill)
+                .background(MaterialTheme.colorScheme.primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.NotificationsActive,
+                contentDescription = "نماز بعدی",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(iconSize)
+            )
+        }
+
+        prayer.isPast -> Box(
+            modifier = Modifier
+                .size(dotSize)
+                .clip(Radii.pill)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.Check,
+                contentDescription = "گذشته",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(iconSize)
+            )
+        }
+
+        else -> Box(
+            modifier = Modifier
+                .size(dotSize)
+                .clip(Radii.pill)
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.Brightness5,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                modifier = Modifier.size(15.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun StaleDataNotice(title: String) {
+    Surface(
+        shape = Radii.md,
+        color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.6f),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "تا اذان: ${remaining.toPersianDigits()}",
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
+            text = "$title — اوقات نمایش‌داده‌شده از حافظه است",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onErrorContainer,
+            modifier = Modifier.padding(Spacing.md)
         )
     }
 }
 
 private val countdownFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-/** Seconds from now until [targetTime] today. Negative/zero once the time has passed. */
-private fun secondsUntil(targetTime: String): Long {
-    return try {
-        val now = LocalTime.now(com.kabulsignal.azanapp.utils.APP_ZONE)
-        val target = LocalTime.parse(targetTime, countdownFormatter)
-        Duration.between(now, target).seconds
-    } catch (e: Exception) {
-        -1L
-    }
+/** Seconds from now until [targetTime] today; zero or negative once it has passed. */
+private fun secondsUntil(targetTime: String): Long = try {
+    Duration.between(
+        LocalTime.now(APP_ZONE),
+        LocalTime.parse(targetTime, countdownFormatter)
+    ).seconds
+} catch (e: Exception) {
+    -1L
+}
+
+/** Seconds between two HH:mm times on the same day. */
+private fun secondsBetween(from: String, to: String): Long = try {
+    Duration.between(
+        LocalTime.parse(from, countdownFormatter),
+        LocalTime.parse(to, countdownFormatter)
+    ).seconds
+} catch (e: Exception) {
+    0L
 }
 
 private fun formatRemaining(seconds: Long): String {
     val safe = if (seconds < 0L) 0L else seconds
-    val h = safe / 3600
-    val m = (safe % 3600) / 60
-    val s = safe % 60
-    return "%02d:%02d:%02d".format(h, m, s)
-}
-
-@Composable
-private fun PrayerTimeCard(prayer: PrayerTime) {
-    val alpha = if (prayer.isPast) 0.45f else 1f
-    val bgColor = when {
-        prayer.isNext -> MaterialTheme.colorScheme.primaryContainer
-        prayer.isPast -> MaterialTheme.colorScheme.surfaceVariant
-        else -> MaterialTheme.colorScheme.surface
-    }
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(alpha),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = bgColor),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (prayer.isNext) 4.dp else 1.dp
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text(
-                    text = prayer.name,
-                    fontWeight = if (prayer.isNext) FontWeight.Bold else FontWeight.Medium,
-                    fontSize = 18.sp,
-                    color = if (prayer.isNext)
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    else MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = prayer.nameEn,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                )
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (prayer.isPast) {
-                    Icon(
-                        Icons.Default.Check,
-                        contentDescription = "گذشته",
-                        tint = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                }
-                if (prayer.isNext) {
-                    Icon(
-                        Icons.Default.Notifications,
-                        contentDescription = "بعدی",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                }
-                Text(
-                    text = prayer.time.toPersianDigits(),
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp,
-                    color = if (prayer.isNext)
-                        MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun LoadingState() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            CircularProgressIndicator()
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("در حال بارگزاری اوقات نماز...")
-        }
-    }
-}
-
-@Composable
-private fun ErrorState(error: String, onRetry: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(32.dp)
-        ) {
-            Icon(
-                Icons.Default.Warning,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(48.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = error,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.error
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = onRetry) {
-                Text("تلاش دوباره")
-            }
-        }
-    }
+    return "%02d:%02d:%02d".format(safe / 3600, (safe % 3600) / 60, safe % 60)
 }

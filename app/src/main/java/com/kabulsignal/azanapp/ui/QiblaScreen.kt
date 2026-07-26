@@ -50,7 +50,9 @@ fun QiblaScreen(city: AfghanCity) {
         ).declination
     }
 
-    var azimuth by remember { mutableStateOf(0f) }
+    // Primitive state: the sensor writes this many times a second and boxing every
+    // value would churn the heap for no reason.
+    var azimuth by remember { mutableFloatStateOf(0f) }
     var hasSensor by remember { mutableStateOf(true) }
 
     DisposableEffect(Unit) {

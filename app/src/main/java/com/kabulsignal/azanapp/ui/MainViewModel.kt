@@ -23,7 +23,8 @@ data class HomeUiState(
     val nextPrayer: PrayerTime? = null,
     val currentCity: AfghanCity = AfghanCities.default,
     val hijriDate: String = "",
-    val error: String? = null
+    /** Failure code, not a sentence — the UI resolves the wording. */
+    val error: AppError? = null
 )
 
 @HiltViewModel
@@ -57,7 +58,8 @@ class MainViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             val settings = settingsDataStore.settings.first()
-            val city = AfghanCities.list[settings.cityIndex]
+            // getOrElse, not [] — a stale/invalid saved index would otherwise crash on launch.
+            val city = AfghanCities.list.getOrElse(settings.cityIndex) { AfghanCities.default }
 
             repository.getPrayerTimes(date, city, settings.calculationMethod, settings.asrSchool)
                 .fold(
@@ -81,10 +83,7 @@ class MainViewModel @Inject constructor(
                     },
                     onFailure = { error ->
                         _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                error = "خطا در بارگزاری اوقات: ${error.message}"
-                            )
+                            it.copy(isLoading = false, error = error.toAppError())
                         }
                     }
                 )
@@ -148,7 +147,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _calendarState.update { it.copy(isLoading = true, error = null, year = year, month = month) }
             val settings = settingsDataStore.settings.first()
-            val city = AfghanCities.list[settings.cityIndex]
+            // getOrElse, not [] — a stale/invalid saved index would otherwise crash on launch.
+            val city = AfghanCities.list.getOrElse(settings.cityIndex) { AfghanCities.default }
             repository.getMonthlyCalendar(year, month, city, settings.calculationMethod, settings.asrSchool)
                 .fold(
                     onSuccess = { days ->
@@ -156,7 +156,7 @@ class MainViewModel @Inject constructor(
                     },
                     onFailure = { error ->
                         _calendarState.update {
-                            it.copy(isLoading = false, error = "خطا در بارگزاری تقویم: ${error.message}")
+                            it.copy(isLoading = false, error = error.toAppError())
                         }
                     }
                 )
