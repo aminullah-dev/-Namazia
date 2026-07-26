@@ -20,8 +20,11 @@ class AzanApplication : Application(), Configuration.Provider {
         createNotificationChannels()
     }
 
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder()
+    // WorkManager 2.9 exposes this as a Kotlin property. It was a getter method in 2.8,
+    // so this member flips form with the dependency version — override it as a val here,
+    // not as fun getWorkManagerConfiguration().
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
 
