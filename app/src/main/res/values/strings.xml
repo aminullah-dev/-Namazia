@@ -3,7 +3,9 @@
     <string name="app_name">اوقات نماز</string>
     <string name="widget_description">ویجت اوقات نماز — نماز بعدی را نشان می‌دهد</string>
     <string name="channel_azan_name">اذان</string>
+    <string name="channel_azan_description">اعلان وقت نماز همراه با پخش اذان</string>
     <string name="channel_reminder_name">یادآوری نماز</string>
+    <string name="channel_reminder_description">یادآوری چند دقیقه پیش از وقت نماز</string>
 
     <!-- Failure states. Codes live in data/AppError.kt; these are only the wording. -->
     <string name="error_offline_title">اتصال به انترنت نیست</string>

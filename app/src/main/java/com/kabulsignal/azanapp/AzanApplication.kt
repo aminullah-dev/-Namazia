@@ -29,20 +29,22 @@ class AzanApplication : Application(), Configuration.Provider {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val azanChannel = NotificationChannel(
                 CHANNEL_AZAN,
-                "اذان",
+                getString(R.string.channel_azan_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "اعلان وقت نماز با صدای اذان"
+                description = getString(R.string.channel_azan_description)
                 enableVibration(true)
+                // Audio is played by AzanService so the azan can be stopped; a channel
+                // sound would play over it and cannot be interrupted.
                 setSound(null, null)
             }
 
             val reminderChannel = NotificationChannel(
                 CHANNEL_REMINDER,
-                "یادآوری نماز",
+                getString(R.string.channel_reminder_name),
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "یادآوری قبل از وقت نماز"
+                description = getString(R.string.channel_reminder_description)
             }
 
             val manager = getSystemService(NotificationManager::class.java)
