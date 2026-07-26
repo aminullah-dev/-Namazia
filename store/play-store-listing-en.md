@@ -173,6 +173,8 @@ location detection in this release.
 
 ## Notes on the build itself
 
+- **Package name: `af.namazia.app`** — this is the app's permanent identity on Play and can
+  never be changed after the first upload. Confirm it is what you want before you publish.
 - `versionCode 1`, `versionName "1.0"` — Play rejects a second upload with the same
   `versionCode`, so raise it for every upload, including a re-upload of a rejected build.
 - `minSdk 26` (Android 8.0), `targetSdk 34` (Android 14) — targetSdk 34 satisfies Play's current

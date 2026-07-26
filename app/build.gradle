@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'com.kabulsignal.azanapp'
+    namespace 'af.namazia.app'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.kabulsignal.azanapp"
+        applicationId "af.namazia.app"
         minSdk 26
         targetSdk 34
         versionCode 1
