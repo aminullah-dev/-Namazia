@@ -67,6 +67,11 @@ targets:
       - target: NamaziaWidget
         embed: true
 
+    # A shared scheme, written into the generated project. Xcode invents one when the
+    # project is opened in the app, but `xcodebuild -scheme Namazia` on the command
+    # line — which is what scripts/upload.sh runs — finds nothing without this.
+    scheme: {}
+
   NamaziaWidget:
     type: app-extension
     platform: iOS
