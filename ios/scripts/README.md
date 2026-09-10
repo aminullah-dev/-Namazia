@@ -17,12 +17,17 @@ dance in Xcode.
 ## Once: the App Store Connect API key
 
 The key is what lets the script upload **without your Apple ID password and without a
-two-factor prompt**. It can upload builds and nothing else — it cannot change your
-listing, your agreements, or your account.
+two-factor prompt**.
 
 1. [appstoreconnect.apple.com](https://appstoreconnect.apple.com) → **Users and Access**
    → **Integrations** → **App Store Connect API** → **Team Keys**
-2. **+** → Name: `Namazia upload` → Access: **App Manager** → Generate
+2. **+** → Name: `Namazia upload` → Access: **Admin** → Generate
+
+   Admin, not App Manager, because the script signs automatically: with no Apple
+   Distribution certificate in the keychain, Xcode creates one or signs with a
+   cloud-managed one, and both are refused to an App Manager key. Admin also means the
+   key can do nearly anything to the account — treat the `.p8` like a password, and
+   revoke it on the same page if it is ever exposed.
 3. Download the `AuthKey_XXXXXXXXXX.p8`. **Apple lets you download it once.** Put it
    somewhere outside the repo:
 
