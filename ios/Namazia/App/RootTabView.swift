@@ -7,24 +7,38 @@ import SwiftUI
 /// should reach it in one tap.
 struct RootTabView: View {
     @Environment(\.colors) private var colors
+    @State private var selection = RootTabView.initialTab
 
     var body: some View {
-        TabView {
+        TabView(selection: $selection) {
             HomeView()
                 .tabItem { Label("tab.times".localized, systemImage: "clock") }
+                .tag(0)
 
             QiblaView()
                 .tabItem { Label("tab.qibla".localized, systemImage: "location.north.line") }
+                .tag(1)
 
             CalendarView()
                 .tabItem { Label("tab.calendar".localized, systemImage: "calendar") }
+                .tag(2)
 
             DhikrView()
                 .tabItem { Label("tab.dhikr".localized, systemImage: "hands.sparkles") }
+                .tag(3)
 
             SettingsView()
                 .tabItem { Label("tab.settings".localized, systemImage: "gearshape") }
+                .tag(4)
         }
         .tint(colors.primary)
     }
+
+    /// `-initialTab 2` on launch opens the calendar — how the store screenshots are
+    /// taken from the simulator without tapping. Debug builds only.
+    #if DEBUG
+    private static let initialTab = UserDefaults.standard.integer(forKey: "initialTab")
+    #else
+    private static let initialTab = 0
+    #endif
 }
