@@ -34,10 +34,27 @@ in the whole `Namazia` folder — but the project must be regenerated so Xcode s
 
 ---
 
-## The home screen
+## The screens
 
-`HomeView` is the app's only screen so far — Qibla, calendar, dhikr and settings arrive
-in Phase 5, behind a tab bar.
+Five tabs: **اوقات** (home), **قبله**, **تقویم**, **اذکار**, **تنظیمات**.
+
+- **قبله** computes the great-circle bearing to the Kaaba from the *selected city*, so
+  it needs no permission at all to tell you which way to face. Location is asked for
+  only to rotate the dial with the phone; refuse it and the screen still works, it just
+  stops turning. There is no compass in the simulator — the screen says so rather than
+  showing a dial frozen at north.
+- **تقویم** fetches a whole month in one request and writes it into the same cache the
+  home screen reads, so browsing the calendar also warms tomorrow.
+- **اذکار** carries the same adhkar as Android, plus a tasbih where the whole screen is
+  the button — a counter you have to aim at is a counter you lose your place on.
+- **تنظیمات** writes the method and school through `AppServices`, which clears the cache
+  in the same call.
+
+Two Android settings are deliberately absent: **vibration** (iOS does not let an app
+control notification haptics) and **auto-location** (the city list is the whole model).
+The settings screen says so where a user would otherwise wonder.
+
+### The home screen
 
 What to look for when it runs:
 
@@ -74,9 +91,14 @@ on its own, with no network call.
 App/
   NamaziaApp.swift          entry point, theme container, RTL
   AppServices.swift         the shared repository and settings store
+  RootTabView.swift         the five tabs
 Screens/
   HomeView.swift            the home screen
   HomeViewModel.swift       its state
+  QiblaView.swift           compass + bearing to the Kaaba
+  CalendarView.swift        a month of times
+  DhikrView.swift           adhkar and the tasbih
+  SettingsView.swift        city, method, madhab, azans, reminder, theme
 Components/
   CountdownRing.swift       the hero ring
   PrayerRowView.swift       one line of the list

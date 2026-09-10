@@ -48,9 +48,19 @@
 	     queue at 64 pending notifications — about six days of prayers. Background
 	     refresh lets the system top that queue up while the app is closed, so the
 	     azan does not quietly stop for someone who has not opened the app all week. -->
+	<!-- Only the compass needs this, and only to rotate the qibla dial. The direction
+	     itself is computed from the city the user picked, so refusing this leaves the
+	     screen working. Nothing about the location ever leaves the phone. -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>برای چرخاندن عقربه‌ی قبله به جهت درست، به قطب‌نمای گوشی نیاز است. هیچ اطلاعاتی از موقعیت شما ذخیره یا ارسال نمی‌شود.</string>
+
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<!-- The full azan runs three to five minutes. Without this, locking the phone
+		     or switching apps cuts it off mid-call. It only ever plays audio the user
+		     started or a prayer time triggered — never silently in the background. -->
+		<string>audio</string>
 	</array>
 
 	<key>BGTaskSchedulerPermittedIdentifiers</key>

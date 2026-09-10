@@ -11,7 +11,7 @@ struct NamaziaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            RootTabView()
                 .environmentObject(settings)
                 .environmentObject(notifications)
                 .themed()
