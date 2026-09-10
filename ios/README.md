@@ -34,6 +34,35 @@ in the whole `Namazia` folder — but the project must be regenerated so Xcode s
 
 ---
 
+## Two languages
+
+The app ships in **Dari** and **Pashto**, switchable in Settings, taking effect
+immediately without a relaunch.
+
+The language is the app's own setting, not the phone's. That is deliberate: an Afghan
+phone is very often set to English, and someone who wants the app in Pashto should not
+have to change their whole device to get it. `L10n` points at the chosen `.lproj`
+bundle and `"key".localized` resolves through it; a settings change republishes, every
+view re-reads its strings on the next render, and the UI switches in place.
+
+They are still real `.lproj` resources, so nothing is given up — iOS can still pick a
+sensible default on first launch, and the app lists its languages in iOS Settings.
+
+Things worth knowing before touching the strings:
+
+- **Pashto is not Dari with different words.** The prayers have their own names
+  (ماسپښين, مازديګر, ماخستن), some cities are spelled differently (لښکرګاه), and past-tense
+  transitive verbs agree with the *object*, not the subject — «سهار مو وکړ».
+- **Both files must carry the same keys**, and matching format specifiers. Pashto
+  reorders arguments in places, which is why the formats are positional (`%1$@`,
+  `%2$@`) rather than bare `%@`.
+- **The widget resolves its own strings.** It is a separate process with its own bundle,
+  so it calls `L10n.use` from the timeline provider; nothing the app did carries over.
+- Notifications are written at *schedule* time, so a language change re-arms the whole
+  pending queue — which happens already, because any settings change does.
+
+---
+
 ## The screens
 
 Five tabs: **اوقات** (home), **قبله**, **تقویم**, **اذکار**, **تنظیمات**.
@@ -101,8 +130,8 @@ Two details worth knowing before changing anything here:
   prayer* changes — one per prayer time — which is why the timeline is a few dozen
   entries rather than thousands.
 - **Perso-Arabic digits in that countdown come from the locale**, not from
-  `persianDigits`: the system formats the text, so the widget sets
-  `.environment(\.locale, Locale(identifier: "fa_AF"))`.
+  `persianDigits`: the system formats the text, so the widget sets the locale from the
+  chosen language. Both Afghan locales use the same numerals.
 
 If the widget shows «برنامه را باز کنید», it means it found no cached day — either the
 app has never run, or the App Group is not in place, in which case the app and the
@@ -139,12 +168,15 @@ Notifications/
   AzanPlayer.swift              the full azan, in-app
 Data/
   Models.swift              API payloads, cities, settings, calculation methods
-  AppError.swift            four failure codes + their Dari wording
+  AppError.swift            four failure codes, worded at the UI edge
   AppGroup.swift            shared container, with an app-private fallback
   PrayerTimesAPI.swift      aladhan client (URLSession, async/await)
   PrayerTimesCache.swift    JSON cache in the App Group, an actor
   PrayerTimesRepository.swift   cache-first reads, week prefetch, month fetch
   SettingsStore.swift       UserDefaults, one key per setting
+Localization/
+  L10n.swift                the chosen-language lookup
+  fa.lproj/, ps.lproj/      Dari and Pashto, 155 keys each
 Utils/
   AppTime.swift             Kabul timezone, POSIX formatters, HH:mm → instant
   PrayerCalc.swift          schedule, next prayer, countdown text

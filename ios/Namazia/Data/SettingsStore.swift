@@ -23,6 +23,9 @@ final class SettingsStore: ObservableObject {
         self.defaults = defaults
         self.settings = AppSettings.load(from: defaults)
         self.tasbihCount = defaults.integer(forKey: SettingsKeys.tasbihCount)
+
+        // Before anything is drawn: every label resolves through this.
+        L10n.use(settings.language)
     }
 
     // MARK: - Writing
@@ -55,6 +58,16 @@ final class SettingsStore: ObservableObject {
 
     func setVibration(_ enabled: Bool) {
         write(enabled, forKey: SettingsKeys.vibrationEnabled) { $0.vibrationEnabled = enabled }
+    }
+
+    /// Switching language takes effect immediately — no relaunch — because the whole
+    /// UI re-reads its strings on the next render, which the publish below triggers.
+    /// The order matters: point `L10n` at the new bundle *before* telling SwiftUI
+    /// something changed, or the first render after the switch is still in the old
+    /// language.
+    func setLanguage(_ language: AppLanguage) {
+        L10n.use(language)
+        write(language.rawValue, forKey: SettingsKeys.language) { $0.language = language }
     }
 
     func setDarkMode(_ enabled: Bool) {

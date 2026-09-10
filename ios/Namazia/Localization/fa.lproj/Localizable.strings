@@ -1,0 +1,198 @@
+/* Dari (دری) — the app's default language. */
+
+/* MARK: App */
+"app.name" = "اوقات نماز";
+
+/* MARK: Tabs */
+"tab.times" = "اوقات";
+"tab.qibla" = "قبله";
+"tab.calendar" = "تقویم";
+"tab.dhikr" = "اذکار";
+"tab.settings" = "تنظیمات";
+
+/* MARK: Actions */
+"action.refresh" = "بارگیری دوباره";
+"action.retry" = "تلاش دوباره";
+"action.openSettings" = "تنظیمات";
+"action.testAzan" = "تست اذان";
+
+/* MARK: Home */
+"home.nextPrayer" = "نماز بعدی";
+"home.untilAzan" = "تا اذان %@";
+"home.dayFinished.title" = "نمازهای امروز تمام شد";
+"home.dayFinished.body" = "اذان فجر فردا به‌موقع پخش می‌شود";
+
+/* MARK: Accessibility */
+"a11y.nextPrayer" = "نماز بعدی";
+"a11y.past" = "گذشته";
+"a11y.azanOff" = "اذان خاموش";
+"a11y.ringSummary" = "نماز بعدی %1$@ ساعت %2$@، %3$@ باقی مانده";
+
+/* MARK: States and errors */
+"state.staleData" = "%@ — اوقات نمایش‌داده‌شده از حافظه است";
+"error.offline.title" = "اتصال به انترنت نیست";
+"error.offline.body" = "اوقات این روز در حافظه ذخیره نشده است. پس از وصل شدن به انترنت دوباره تلاش کنید.";
+"error.server.title" = "سرور پاسخ نداد";
+"error.server.body" = "در حال حاضر دریافت اوقات ممکن نیست. لطفاً چند لحظه بعد دوباره تلاش کنید.";
+"error.badResponse.title" = "پاسخ نامعتبر";
+"error.badResponse.body" = "اطلاعات دریافت‌شده کامل نبود. لطفاً دوباره تلاش کنید.";
+"error.unknown.title" = "خطای نامشخص";
+"error.unknown.body" = "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.";
+
+/* MARK: Prayers */
+"prayer.fajr" = "فجر";
+"prayer.sunrise" = "طلوع آفتاب";
+"prayer.dhuhr" = "ظهر";
+"prayer.asr" = "عصر";
+"prayer.maghrib" = "مغرب";
+"prayer.isha" = "عشا";
+
+/* MARK: Cities — keyed by the English name, which is the stable identity */
+"city.Kabul" = "کابل";
+"city.Herat" = "هرات";
+"city.Mazar-i-Sharif" = "مزار شریف";
+"city.Kandahar" = "قندهار";
+"city.Jalalabad" = "جلال‌آباد";
+"city.Kunduz" = "کندز";
+"city.Bamyan" = "بامیان";
+"city.Ghazni" = "غزنی";
+"city.Lashkar Gah" = "لشکرگاه";
+"city.Taloqan" = "تالقان";
+"city.Pul-e-Khumri" = "پل‌خمری";
+"city.Maimana" = "میمنه";
+"city.Sheberghan" = "شبرغان";
+"city.Zaranj" = "زرنج";
+"city.Fayzabad" = "فیض‌آباد";
+
+/* MARK: Fiqh school and calculation method */
+"madhab.1" = "حنفی";
+"madhab.0" = "شافعی / مالکی / حنبلی";
+"method.1" = "دانشگاه علوم اسلامی کراچی";
+"method.3" = "اتحادیه جهانی مسلمانان";
+"method.4" = "ام القری مکه";
+"method.2" = "انجمن اسلامی امریکای شمالی";
+"method.5" = "سازمان عمومی مساحی مصر";
+"method.default" = "پیش‌فرض";
+
+/* MARK: Calendar — Gregorian months as named in Afghanistan */
+"month.1" = "جنوری";
+"month.2" = "فبروری";
+"month.3" = "مارچ";
+"month.4" = "اپریل";
+"month.5" = "می";
+"month.6" = "جون";
+"month.7" = "جولای";
+"month.8" = "اگست";
+"month.9" = "سپتمبر";
+"month.10" = "اکتوبر";
+"month.11" = "نومبر";
+"month.12" = "دسمبر";
+"calendar.day" = "روز";
+
+/* MARK: Qibla */
+"qibla.title" = "قبله";
+"qibla.readout" = "%1$@° از شمال — %2$@";
+"qibla.aligned" = "رو به قبله ایستاده‌اید";
+"qibla.turn" = "گوشی را بچرخانید تا عقربه بالا برسد";
+"qibla.lowAccuracy" = "دقت قطب‌نما کم است — گوشی را به شکل ۸ بچرخانید";
+"qibla.a11y" = "قبله %@ درجه از شمال";
+"qibla.noCompass.title" = "این دستگاه قطب‌نما ندارد";
+"qibla.noCompass.body" = "جهت قبله در بالا نوشته شده است؛ آن را با یک قطب‌نمای دیگر پیدا کنید.";
+"qibla.noPermission.title" = "اجازه‌ی موقعیت داده نشده";
+"qibla.noPermission.body" = "برای چرخیدن عقربه، اجازه‌ی دسترسی به موقعیت لازم است. جهت قبله بدون آن هم در بالا نوشته شده است.";
+"compass.north" = "ش";
+"direction.0" = "شمال";
+"direction.1" = "شمال‌شرق";
+"direction.2" = "شرق";
+"direction.3" = "جنوب‌شرق";
+"direction.4" = "جنوب";
+"direction.5" = "جنوب‌غرب";
+"direction.6" = "غرب";
+"direction.7" = "شمال‌غرب";
+
+/* MARK: Dhikr */
+"dhikr.tasbih" = "تسبیح";
+"dhikr.repeat" = "%@ بار";
+"dhikr.reset" = "صفر کردن";
+"dhikr.tapHint" = "برای شمردن، هرجای صفحه را لمس کنید";
+
+"dhikr.category.morning" = "اذکار صبح";
+"dhikr.category.evening" = "اذکار شام";
+"dhikr.category.afterPrayer" = "بعد از نماز";
+"dhikr.category.sleep" = "قبل از خواب";
+"dhikr.category.travel" = "دعای سفر";
+
+"dhikr.morning.1" = "صبح کردیم در حالی که ملک از آنِ الله است و ستایش از آنِ الله است؛ معبودی جز الله نیست که تنها و بی‌شریک است.";
+"dhikr.morning.2" = "بار الها، به لطف تو صبح کردیم، به لطف تو شام کردیم، به تو زنده‌ایم، به تقدیر تو می‌میریم و بازگشت به سوی توست.";
+"dhikr.morning.3" = "بار الها، تو پروردگار منی، معبودی جز تو نیست؛ مرا آفریدی و من بنده‌ات هستم و تا آنجا که توانم بر عهد و پیمانت هستم.";
+"dhikr.morning.4" = "خداوند منزه است و ستایش از آنِ اوست.";
+
+"dhikr.evening.1" = "شام کردیم در حالی که ملک از آنِ الله است؛ معبودی جز الله نیست که تنها و بی‌شریک است.";
+"dhikr.evening.2" = "بار الها، به لطف تو شام کردیم، به لطف تو صبح کردیم، به تو زنده‌ایم و به تقدیر تو می‌میریم و بازگشت به سوی توست.";
+"dhikr.evening.3" = "بار الها، شام کردم در حالی که تو و حاملان عرشت و فرشتگانت و همه مخلوقاتت را گواه می‌گیرم که تو الله هستی و معبودی جز تو نیست.";
+
+"dhikr.afterPrayer.1" = "خداوند منزه است.";
+"dhikr.afterPrayer.2" = "ستایش از آنِ الله است.";
+"dhikr.afterPrayer.3" = "الله بزرگ‌تر است.";
+"dhikr.afterPrayer.4" = "معبودی جز الله نیست که تنها و بی‌شریک است؛ ملک از آنِ اوست و ستایش از آنِ اوست و او بر همه چیز تواناست.";
+"dhikr.afterPrayer.5" = "آیة الکرسی: الله معبودی جز او نیست؛ زنده و قائم به ذات است...";
+
+"dhikr.sleep.1" = "بار الها، با نام تو می‌میرم و زنده می‌شوم.";
+"dhikr.sleep.2" = "بار الها، مرا از عذابت در روزی که بندگانت را برمی‌انگیزی نگه‌دار.";
+"dhikr.sleep.3" = "خداوندا، تو منزهی و ستایش از آنِ توست؛ گواهی می‌دهم که معبودی جز تو نیست؛ از تو آمرزش می‌خواهم و به سوی تو توبه می‌کنم.";
+
+"dhikr.travel.1" = "منزه است آن که این را برای ما رام کرد، در حالی که ما توان آن را نداشتیم، و ما به سوی پروردگارمان باز خواهیم گشت.";
+"dhikr.travel.2" = "بار الها، در این سفر نیکی و تقوا می‌خواهیم و از عمل آنچه را که تو راضی هستی.";
+
+/* MARK: Notifications */
+"notif.azan.title" = "اذان %@";
+"notif.azan.body" = "وقت نماز %1$@ — %2$@";
+"notif.reminder.title" = "%1$@ دقیقه تا %2$@";
+"notif.reminder.body" = "وقت نماز %1$@ ساعت %2$@ است";
+"notif.test.title" = "تست اذان %@";
+"notif.test.ok" = "صدای اذان باید پخش شود";
+"notif.test.noSound" = "فایل صوتی اذان در برنامه نیست — صدای پیش‌فرض پخش می‌شود";
+"notif.denied.title" = "اعلان‌ها خاموش است";
+"notif.denied.body" = "بدون اجازه‌ی اعلان، اذان پخش نمی‌شود";
+
+/* MARK: Settings */
+"settings.section.language" = "زبان";
+"settings.language" = "زبان برنامه";
+
+"settings.section.location" = "موقعیت";
+"settings.city" = "شهر";
+
+"settings.section.calculation" = "محاسبه";
+"settings.method" = "روش محاسبه";
+"settings.madhab" = "مذهب (وقت عصر)";
+"settings.calculation.footer" = "تغییر این دو، اوقات ذخیره‌شده را پاک می‌کند و همه دوباره محاسبه می‌شوند.";
+
+"settings.section.azans" = "اذان‌ها";
+"settings.azanFor" = "اذان %@";
+"settings.azans.footer" = "برای طلوع آفتاب اذانی گفته نمی‌شود؛ این کلید فقط نمایش آن را در لیست تعیین می‌کند.";
+
+"settings.section.sound" = "یادآوری و صدا";
+"settings.reminder" = "یادآوری پیش از اذان";
+"settings.reminder.off" = "بدون یادآوری";
+"settings.reminder.minutes" = "%@ دقیقه";
+"settings.testNotification" = "تست نوتیفیکیشن اذان";
+"settings.playAzan" = "پخش اذان (آزمایش صدا)";
+"settings.stopAzan" = "توقف اذان";
+"settings.sound.footer.cap" = "در iOS صدای نوتیفیکیشن حداکثر ۳۰ ثانیه است؛ اذان کامل تنها وقتی پخش می‌شود که برنامه باز باشد.";
+"settings.sound.footer.vibration" = "لرزش اعلان‌ها را iOS کنترل می‌کند و از داخل برنامه قابل تغییر نیست.";
+"settings.sound.footer.denied" = "اعلان‌ها خاموش است — بدون آن اذان پخش نمی‌شود.";
+"settings.sound.footer.missing" = "فایل صوتی کوتاه اذان در این نسخه موجود نیست؛ صدای پیش‌فرض پخش می‌شود.";
+
+"settings.section.appearance" = "ظاهر";
+"settings.darkMode" = "حالت تاریک";
+"settings.darkMode.footer" = "خاموش یعنی همان حالتی که در تنظیمات گوشی انتخاب کرده‌اید.";
+
+"settings.section.about" = "درباره";
+"settings.version" = "نسخه";
+"settings.support" = "پشتیبانی";
+"settings.privacy" = "سیاست حریم خصوصی";
+"settings.about.footer" = "اوقات نماز از سرویس Aladhan گرفته می‌شود.";
+
+/* MARK: Widget */
+"widget.description" = "وقت نماز بعدی و اوقات امروز";
+"widget.openApp" = "برنامه را باز کنید";

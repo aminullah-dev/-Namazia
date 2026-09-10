@@ -1,95 +1,100 @@
 import Foundation
 
-/// Adhkar with their Dari meaning, ported unchanged from `data/DuaData.kt` so both
-/// platforms show the same wording.
+/// Adhkar with their meaning, ported from `data/DuaData.kt`.
+///
+/// The Arabic is the dhikr itself and never changes — it is not translated and not
+/// localized. What is localized is the *meaning*, which is why only that side is a key.
 struct Dhikr: Identifiable, Equatable {
     let arabic: String
-    let dari: String
+    /// Key into the strings files, e.g. `dhikr.morning.1`.
+    let meaningKey: String
     var count: Int = 1
 
-    var id: String { arabic }
+    var id: String { meaningKey }
+    var meaning: String { meaningKey.localized }
 }
 
 struct DhikrCategory: Identifiable, Equatable {
-    let title: String
+    let titleKey: String
     let dhikr: [Dhikr]
 
-    var id: String { title }
+    var id: String { titleKey }
+    var title: String { titleKey.localized }
 }
 
 enum DhikrData {
     static let categories: [DhikrCategory] = [
-        DhikrCategory(title: "اذکار صبح", dhikr: [
+        DhikrCategory(titleKey: "dhikr.category.morning", dhikr: [
             Dhikr(
                 arabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
-                dari: "صبح کردیم در حالی که ملک از آنِ الله است و ستایش از آنِ الله است؛ معبودی جز الله نیست که تنها و بی‌شریک است."
+                meaningKey: "dhikr.morning.1"
             ),
             Dhikr(
                 arabic: "اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
-                dari: "بار الها، به لطف تو صبح کردیم، به لطف تو شام کردیم، به تو زنده‌ایم، به تقدیر تو می‌میریم و بازگشت به سوی توست."
+                meaningKey: "dhikr.morning.2"
             ),
             Dhikr(
                 arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ",
-                dari: "بار الها، تو پروردگار منی، معبودی جز تو نیست؛ مرا آفریدی و من بنده‌ات هستم و تا آنجا که توانم بر عهد و پیمانت هستم."
+                meaningKey: "dhikr.morning.3"
             ),
             Dhikr(
                 arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
-                dari: "خداوند منزه است و ستایش از آنِ اوست.",
+                meaningKey: "dhikr.morning.4",
                 count: 100
             )
         ]),
 
-        DhikrCategory(title: "اذکار شام", dhikr: [
+        DhikrCategory(titleKey: "dhikr.category.evening", dhikr: [
             Dhikr(
                 arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
-                dari: "شام کردیم در حالی که ملک از آنِ الله است؛ معبودی جز الله نیست که تنها و بی‌شریک است."
+                meaningKey: "dhikr.evening.1"
             ),
             Dhikr(
                 arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ",
-                dari: "بار الها، به لطف تو شام کردیم، به لطف تو صبح کردیم، به تو زنده‌ایم و به تقدیر تو می‌میریم و بازگشت به سوی توست."
+                meaningKey: "dhikr.evening.2"
             ),
             Dhikr(
                 arabic: "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلَّا أَنْتَ",
-                dari: "بار الها، شام کردم در حالی که تو و حاملان عرشت و فرشتگانت و همه مخلوقاتت را گواه می‌گیرم که تو الله هستی و معبودی جز تو نیست.",
+                meaningKey: "dhikr.evening.3",
                 count: 4
             )
         ]),
 
-        DhikrCategory(title: "بعد از نماز", dhikr: [
-            Dhikr(arabic: "سُبْحَانَ اللَّهِ", dari: "خداوند منزه است.", count: 33),
-            Dhikr(arabic: "الْحَمْدُ لِلَّهِ", dari: "ستایش از آنِ الله است.", count: 33),
-            Dhikr(arabic: "اللَّهُ أَكْبَرُ", dari: "الله بزرگ‌تر است.", count: 33),
+        DhikrCategory(titleKey: "dhikr.category.afterPrayer", dhikr: [
+            Dhikr(arabic: "سُبْحَانَ اللَّهِ", meaningKey: "dhikr.afterPrayer.1", count: 33),
+            Dhikr(arabic: "الْحَمْدُ لِلَّهِ", meaningKey: "dhikr.afterPrayer.2", count: 33),
+            Dhikr(arabic: "اللَّهُ أَكْبَرُ", meaningKey: "dhikr.afterPrayer.3", count: 33),
             Dhikr(
                 arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
-                dari: "معبودی جز الله نیست که تنها و بی‌شریک است؛ ملک از آنِ اوست و ستایش از آنِ اوست و او بر همه چیز تواناست."
+                meaningKey: "dhikr.afterPrayer.4"
             ),
             Dhikr(
                 arabic: "آيَةُ الْكُرْسِيِّ: اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
-                dari: "آیة الکرسی: الله معبودی جز او نیست؛ زنده و قائم به ذات است..."
+                meaningKey: "dhikr.afterPrayer.5"
             )
         ]),
 
-        DhikrCategory(title: "قبل از خواب", dhikr: [
-            Dhikr(arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", dari: "بار الها، با نام تو می‌میرم و زنده می‌شوم."),
+        DhikrCategory(titleKey: "dhikr.category.sleep", dhikr: [
+            Dhikr(arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", meaningKey: "dhikr.sleep.1"),
             Dhikr(
                 arabic: "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",
-                dari: "بار الها، مرا از عذابت در روزی که بندگانت را برمی‌انگیزی نگه‌دار.",
+                meaningKey: "dhikr.sleep.2",
                 count: 3
             ),
             Dhikr(
                 arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
-                dari: "خداوندا، تو منزهی و ستایش از آنِ توست؛ گواهی می‌دهم که معبودی جز تو نیست؛ از تو آمرزش می‌خواهم و به سوی تو توبه می‌کنم."
+                meaningKey: "dhikr.sleep.3"
             )
         ]),
 
-        DhikrCategory(title: "دعای سفر", dhikr: [
+        DhikrCategory(titleKey: "dhikr.category.travel", dhikr: [
             Dhikr(
                 arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
-                dari: "منزه است آن که این را برای ما رام کرد، در حالی که ما توان آن را نداشتیم، و ما به سوی پروردگارمان باز خواهیم گشت."
+                meaningKey: "dhikr.travel.1"
             ),
             Dhikr(
                 arabic: "اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى، وَمِنَ الْعَمَلِ مَا تَرْضَى",
-                dari: "بار الها، در این سفر نیکی و تقوا می‌خواهیم و از عمل آنچه را که تو راضی هستی."
+                meaningKey: "dhikr.travel.2"
             )
         ])
     ]

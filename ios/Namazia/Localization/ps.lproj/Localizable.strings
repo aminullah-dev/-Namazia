@@ -1,0 +1,204 @@
+/* Pashto (پښتو).
+ *
+ * Not a transliteration of the Dari: the prayers have their own names in Pashto
+ * (ماسپښين, مازديګر, ماخستن), several cities are spelled differently (لښکرګاه), and the
+ * grammar is not the same language's grammar with different words. Where a sentence has
+ * a past-tense transitive verb, the verb agrees with the *object* — "سهار مو وکړ", not a
+ * subject-conjugated form. */
+
+/* MARK: App */
+"app.name" = "د لمانځه وختونه";
+
+/* MARK: Tabs */
+"tab.times" = "وختونه";
+"tab.qibla" = "قبله";
+"tab.calendar" = "کالیز";
+"tab.dhikr" = "اذکار";
+"tab.settings" = "تنظیمات";
+
+/* MARK: Actions */
+"action.refresh" = "تازه کول";
+"action.retry" = "بیا هڅه وکړئ";
+"action.openSettings" = "تنظیمات";
+"action.testAzan" = "د اذان ازموینه";
+
+/* MARK: Home */
+"home.nextPrayer" = "راتلونکی لمونځ";
+"home.untilAzan" = "تر اذانه %@";
+"home.dayFinished.title" = "د نن ورځې لمونځونه پای ته ورسېدل";
+"home.dayFinished.body" = "د سبا د سهار اذان به په خپل وخت وغږېږي";
+
+/* MARK: Accessibility */
+"a11y.nextPrayer" = "راتلونکی لمونځ";
+"a11y.past" = "تېر شوی";
+"a11y.azanOff" = "اذان بند دی";
+"a11y.ringSummary" = "راتلونکی لمونځ %1$@ په %2$@ بجو، %3$@ پاتې دي";
+
+/* MARK: States and errors */
+"state.staleData" = "%@ — ښودل شوي وختونه له حافظې دي";
+"error.offline.title" = "انټرنټ نشته";
+"error.offline.body" = "د دې ورځې وختونه په حافظه کې نه دي خوندي شوي. له انټرنټ سره وصل شئ او بیا هڅه وکړئ.";
+"error.server.title" = "سرور ځواب ورنکړ";
+"error.server.body" = "اوس مهال د وختونو ترلاسه کول ممکن نه دي. یوه شېبه وروسته بیا هڅه وکړئ.";
+"error.badResponse.title" = "ناسم ځواب";
+"error.badResponse.body" = "ترلاسه شوي معلومات بشپړ نه وو. مهرباني وکړئ بیا هڅه وکړئ.";
+"error.unknown.title" = "ناڅرګنده تېروتنه";
+"error.unknown.body" = "یوه ستونزه رامنځته شوه. مهرباني وکړئ بیا هڅه وکړئ.";
+
+/* MARK: Prayers — the Pashto names, not the Arabic ones */
+"prayer.fajr" = "سهار";
+"prayer.sunrise" = "لمر ختل";
+"prayer.dhuhr" = "ماسپښين";
+"prayer.asr" = "مازديګر";
+"prayer.maghrib" = "ماښام";
+"prayer.isha" = "ماخستن";
+
+/* MARK: Cities */
+"city.Kabul" = "کابل";
+"city.Herat" = "هرات";
+"city.Mazar-i-Sharif" = "مزار شریف";
+"city.Kandahar" = "کندهار";
+"city.Jalalabad" = "جلال‌آباد";
+"city.Kunduz" = "کندز";
+"city.Bamyan" = "بامیان";
+"city.Ghazni" = "غزني";
+"city.Lashkar Gah" = "لښکرګاه";
+"city.Taloqan" = "تالقان";
+"city.Pul-e-Khumri" = "پلخمري";
+"city.Maimana" = "میمنه";
+"city.Sheberghan" = "شبرغان";
+"city.Zaranj" = "زرنج";
+"city.Fayzabad" = "فیض‌آباد";
+
+/* MARK: Fiqh school and calculation method */
+"madhab.1" = "حنفي";
+"madhab.0" = "شافعي / مالکي / حنبلي";
+"method.1" = "د کراچۍ د اسلامي علومو پوهنتون";
+"method.3" = "د مسلمانانو نړیواله ټولنه";
+"method.4" = "د مکې ام القری";
+"method.2" = "د شمالي امریکا اسلامي ټولنه";
+"method.5" = "د مصر د مساحې عمومي اداره";
+"method.default" = "تلواله";
+
+/* MARK: Calendar */
+"month.1" = "جنوري";
+"month.2" = "فبروري";
+"month.3" = "مارچ";
+"month.4" = "اپریل";
+"month.5" = "مې";
+"month.6" = "جون";
+"month.7" = "جولای";
+"month.8" = "اګست";
+"month.9" = "سپټمبر";
+"month.10" = "اکتوبر";
+"month.11" = "نومبر";
+"month.12" = "دسمبر";
+"calendar.day" = "ورځ";
+
+/* MARK: Qibla */
+"qibla.title" = "قبله";
+"qibla.readout" = "%1$@° له شماله — %2$@";
+"qibla.aligned" = "قبلې ته مو مخ دی";
+"qibla.turn" = "موبایل وګرځوئ تر څو غشی پورته شي";
+"qibla.lowAccuracy" = "د قطب‌نما دقت کم دی — موبایل د ۸ په څېر وګرځوئ";
+"qibla.a11y" = "قبله له شماله %@ درجې";
+"qibla.noCompass.title" = "دا وسیله قطب‌نما نه لري";
+"qibla.noCompass.body" = "د قبلې لوری پورته لیکل شوی دی؛ له بل قطب‌نما څخه یې پیدا کړئ.";
+"qibla.noPermission.title" = "د موقعیت اجازه نه ده ورکړل شوې";
+"qibla.noPermission.body" = "د غشي د ګرځولو لپاره د موقعیت اجازه اړینه ده. د قبلې لوری پرته له هغې هم پورته لیکل شوی دی.";
+"compass.north" = "ش";
+"direction.0" = "شمال";
+"direction.1" = "شمال‌ختیځ";
+"direction.2" = "ختیځ";
+"direction.3" = "سویل‌ختیځ";
+"direction.4" = "سویل";
+"direction.5" = "سویل‌لویدیځ";
+"direction.6" = "لویدیځ";
+"direction.7" = "شمال‌لویدیځ";
+
+/* MARK: Dhikr */
+"dhikr.tasbih" = "تسبیح";
+"dhikr.repeat" = "%@ ځله";
+"dhikr.reset" = "صفر کول";
+"dhikr.tapHint" = "د شمېرلو لپاره د پردې هر ځای ټک کړئ";
+
+"dhikr.category.morning" = "د سهار اذکار";
+"dhikr.category.evening" = "د ماښام اذکار";
+"dhikr.category.afterPrayer" = "تر لمانځه وروسته";
+"dhikr.category.sleep" = "د خوب دمخه";
+"dhikr.category.travel" = "د سفر دعا";
+
+"dhikr.morning.1" = "سهار مو وکړ، په داسې حال کې چې ټول واک د الله دی او ستاینه یوازې الله ته ده؛ له الله پرته بل معبود نشته، یو دی او شریک نه لري.";
+"dhikr.morning.2" = "یا الله، ستا په لطف مو سهار وکړ او ستا په لطف مو ماښام وکړ، ستا په واک ژوندي یو، ستا په حکم مړه کېږو او بېرته ستا لور ته ورتګ دی.";
+"dhikr.morning.3" = "یا الله، ته زما پالونکی یې، له تا پرته بل معبود نشته؛ زه دې پیدا کړم، زه ستا بنده یم او تر خپله وسه ستا په عهد او ژمنه ولاړ یم.";
+"dhikr.morning.4" = "الله پاک دی او ستاینه یوازې هغه ته ده.";
+
+"dhikr.evening.1" = "ماښام مو وکړ، په داسې حال کې چې ټول واک د الله دی؛ له الله پرته بل معبود نشته، یو دی او شریک نه لري.";
+"dhikr.evening.2" = "یا الله، ستا په لطف مو ماښام وکړ او ستا په لطف مو سهار وکړ، ستا په واک ژوندي یو، ستا په حکم مړه کېږو او ورتګ ستا لور ته دی.";
+"dhikr.evening.3" = "یا الله، ماښام مې وکړ او تا، ستا د عرش وړونکي، ستا پرښتې او ټول مخلوق دې ته ګواه نیسم چې ته الله یې او له تا پرته بل معبود نشته.";
+
+"dhikr.afterPrayer.1" = "الله پاک دی.";
+"dhikr.afterPrayer.2" = "ټوله ستاینه الله ته ده.";
+"dhikr.afterPrayer.3" = "الله تر ټولو لوی دی.";
+"dhikr.afterPrayer.4" = "له الله پرته بل معبود نشته، یو دی او شریک نه لري؛ واک د هغه دی، ستاینه د هغه ده او هغه پر هر څه توانا دی.";
+"dhikr.afterPrayer.5" = "آیة الکرسي: الله، له هغه پرته بل معبود نشته؛ تل ژوندی او پر خپل ذات ولاړ دی...";
+
+"dhikr.sleep.1" = "یا الله، ستا په نامه مړ کېږم او ژوندی کېږم.";
+"dhikr.sleep.2" = "یا الله، ما له خپل عذابه وساته په هغه ورځ چې خپل بندګان راپاڅوې.";
+"dhikr.sleep.3" = "یا الله، ته پاک یې او ستاینه ستا ده؛ ګواهي ورکوم چې له تا پرته بل معبود نشته؛ له تا بښنه غواړم او تا ته توبه کوم.";
+
+"dhikr.travel.1" = "پاک دی هغه ذات چې دا یې زموږ لپاره اېل کړ، که نه موږ یې وس نه درلود، او موږ به خامخا خپل پالونکي ته ورستانه شو.";
+"dhikr.travel.2" = "یا الله، په دې سفر کې له تا نېکي او پرهېزګاري غواړو او له کړنو هغه څه چې ته پرې راضي یې.";
+
+/* MARK: Notifications */
+"notif.azan.title" = "د %@ اذان";
+"notif.azan.body" = "د %1$@ د لمانځه وخت — %2$@";
+"notif.reminder.title" = "تر %2$@ پورې %1$@ دقیقې";
+"notif.reminder.body" = "د %1$@ د لمانځه وخت %2$@ بجې دی";
+"notif.test.title" = "د %@ د اذان ازموینه";
+"notif.test.ok" = "د اذان غږ باید وغږېږي";
+"notif.test.noSound" = "د اذان غږیز فایل په اپ کې نشته — تلوال غږ به وغږېږي";
+"notif.denied.title" = "خبرتیاوې بندې دي";
+"notif.denied.body" = "د خبرتیا له اجازې پرته اذان نه غږېږي";
+
+/* MARK: Settings */
+"settings.section.language" = "ژبه";
+"settings.language" = "د اپ ژبه";
+
+"settings.section.location" = "موقعیت";
+"settings.city" = "ښار";
+
+"settings.section.calculation" = "محاسبه";
+"settings.method" = "د محاسبې طریقه";
+"settings.madhab" = "مذهب (د مازديګر وخت)";
+"settings.calculation.footer" = "د دې دوو بدلول په حافظه کې خوندي شوي وختونه پاکوي او ټول بیا محاسبه کېږي.";
+
+"settings.section.azans" = "اذانونه";
+"settings.azanFor" = "د %@ اذان";
+"settings.azans.footer" = "د لمر ختلو لپاره اذان نه ویل کېږي؛ دا کیلۍ یوازې دا ټاکي چې په لیست کې وښودل شي که نه.";
+
+"settings.section.sound" = "یادونه او غږ";
+"settings.reminder" = "تر اذان دمخه یادونه";
+"settings.reminder.off" = "بې یادونې";
+"settings.reminder.minutes" = "%@ دقیقې";
+"settings.testNotification" = "د اذان د خبرتیا ازموینه";
+"settings.playAzan" = "اذان وغږوئ (د غږ ازموینه)";
+"settings.stopAzan" = "اذان ودروئ";
+"settings.sound.footer.cap" = "په iOS کې د خبرتیا غږ تر ۳۰ ثانیو زیات نه شي کېدای؛ بشپړ اذان یوازې هغه وخت غږېږي چې اپ خلاص وي.";
+"settings.sound.footer.vibration" = "د خبرتیاوو ښورېدل iOS کنټرولوي او له اپ څخه نه بدلېږي.";
+"settings.sound.footer.denied" = "خبرتیاوې بندې دي — له هغې پرته اذان نه غږېږي.";
+"settings.sound.footer.missing" = "د اذان لنډ غږیز فایل په دې نسخه کې نشته؛ تلوال غږ به وغږېږي.";
+
+"settings.section.appearance" = "بڼه";
+"settings.darkMode" = "تیاره بڼه";
+"settings.darkMode.footer" = "بند یعنې هماغه حالت چې ستاسو د موبایل په تنظیماتو کې ټاکل شوی دی.";
+
+"settings.section.about" = "په اړه";
+"settings.version" = "نسخه";
+"settings.support" = "ملاتړ";
+"settings.privacy" = "د محرمیت تګلاره";
+"settings.about.footer" = "د لمانځه وختونه د Aladhan له خدمت څخه اخیستل کېږي.";
+
+/* MARK: Widget */
+"widget.description" = "د راتلونکي لمانځه وخت او د نن ورځې وختونه";
+"widget.openApp" = "اپ پرانیزئ";

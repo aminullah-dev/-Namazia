@@ -12,11 +12,12 @@ struct PrayerEntry: TimelineEntry {
     let next: ScheduledPrayer?
     /// False when the widget cannot see the app's data at all.
     let hasData: Bool
+    var language: AppLanguage = .dari
 
     static func placeholder(_ date: Date = Date()) -> PrayerEntry {
         PrayerEntry(
             date: date,
-            cityName: AfghanCities.default.nameDari,
+            cityName: AfghanCities.default.displayName,
             hijriDate: "",
             rows: [],
             next: nil,
@@ -46,6 +47,9 @@ struct PrayerProvider: TimelineProvider {
         Task {
             let now = Date()
             let settings = AppSettings.load(from: AppGroup.defaults)
+            // The extension has its own bundle and its own process, so it has to be
+            // pointed at the chosen language itself — nothing the app did carries over.
+            L10n.use(settings.language)
             let days = await cachedDays(settings: settings, from: now)
 
             guard !days.isEmpty else {
@@ -98,6 +102,7 @@ struct PrayerProvider: TimelineProvider {
 
     private func entry(at date: Date) async -> PrayerEntry? {
         let settings = AppSettings.load(from: AppGroup.defaults)
+        L10n.use(settings.language)
         let days = await cachedDays(settings: settings, from: date)
         return await entry(at: date, days: days, settings: settings)
     }
@@ -116,11 +121,12 @@ struct PrayerProvider: TimelineProvider {
 
         return PrayerEntry(
             date: date,
-            cityName: settings.city.nameDari,
+            cityName: settings.city.displayName,
             hijriDate: today.hijriDate.persianDigits,
             rows: today.rows(settings, now: date),
             next: next,
-            hasData: true
+            hasData: true,
+            language: settings.language
         )
     }
 }
@@ -139,8 +145,8 @@ struct NamaziaWidget: Widget {
         StaticConfiguration(kind: "af.namazia.app.widget", provider: PrayerProvider()) { entry in
             PrayerWidgetView(entry: entry)
         }
-        .configurationDisplayName("اوقات نماز")
-        .description("وقت نماز بعدی و اوقات امروز")
+        .configurationDisplayName("app.name".localized)
+        .description("widget.description".localized)
         .supportedFamilies([
             .systemSmall,
             .systemMedium,

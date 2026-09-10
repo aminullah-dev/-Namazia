@@ -27,11 +27,13 @@
 	<string>$(EXECUTABLE_NAME)</string>
 
 	<!-- Declaring Persian first makes iOS treat the app as an RTL app: system
-	     controls, alerts and the share sheet all mirror to match our own UI. -->
+	     controls, alerts and the share sheet all mirror to match our own UI. Both
+	     entries have a matching .lproj in Localization/ — listing a language without
+	     one makes the App Store advertise a translation that does not exist. -->
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>fa</string>
-		<string>en</string>
+		<string>ps</string>
 	</array>
 
 	<!-- Every font must be listed here or it silently fails to load at runtime and

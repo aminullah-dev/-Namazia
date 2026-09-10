@@ -98,7 +98,7 @@ struct StaleDataNotice: View {
     let title: String
 
     var body: some View {
-        Text("\(title) — اوقات نمایش‌داده‌شده از حافظه است")
+        Text("state.staleData".localized(title))
             .appText(AppType.bodySmall)
             .foregroundStyle(colors.onErrorContainer)
             .frame(maxWidth: .infinity, alignment: .leading)

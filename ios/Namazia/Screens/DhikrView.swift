@@ -12,7 +12,7 @@ struct DhikrView: View {
     private enum Tab: String, CaseIterable, Identifiable {
         case adhkar, tasbih
         var id: String { rawValue }
-        var title: String { self == .adhkar ? "اذکار" : "تسبیح" }
+        var title: String { (self == .adhkar ? "tab.dhikr" : "dhikr.tasbih").localized }
     }
 
     var body: some View {
@@ -85,13 +85,13 @@ struct DhikrView: View {
                 .foregroundStyle(colors.onSurface)
                 .frame(maxWidth: .infinity, alignment: .trailing)
 
-            Text(dhikr.dari)
+            Text(dhikr.meaning)
                 .appText(AppType.bodyMedium)
                 .foregroundStyle(colors.onSurfaceVariant)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if dhikr.count > 1 {
-                Text("\(dhikr.count.persianDigits) بار")
+                Text("dhikr.repeat".localized(dhikr.count.persianDigits))
                     .appText(AppType.labelMedium)
                     .foregroundStyle(colors.onTertiaryContainer)
                     .padding(.horizontal, Spacing.md)
@@ -116,13 +116,13 @@ struct DhikrView: View {
                 .monospacedDigit()
                 .contentTransition(.numericText())
 
-            Text("برای شمردن، هرجای صفحه را لمس کنید")
+            Text("dhikr.tapHint".localized)
                 .appText(AppType.bodySmall)
                 .foregroundStyle(colors.onSurfaceVariant)
 
             Spacer()
 
-            Button("صفر کردن") {
+            Button("dhikr.reset".localized) {
                 settings.setTasbihCount(0)
             }
             .appText(AppType.labelLarge)

@@ -103,7 +103,7 @@ struct QiblaView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Spacing.xl) {
-                Text(city.nameDari)
+                Text(city.displayName)
                     .appText(AppType.titleLarge)
                     .foregroundStyle(colors.onSurface)
 
@@ -113,16 +113,16 @@ struct QiblaView: View {
 
                 if !provider.hasCompass {
                     MessageState(
-                        title: "این دستگاه قطب‌نما ندارد",
-                        message: "جهت قبله در بالا نوشته شده است؛ آن را با یک قطب‌نمای دیگر پیدا کنید.",
+                        title: "qibla.noCompass.title".localized,
+                        message: "qibla.noCompass.body".localized,
                         systemImage: "location.slash"
                     )
                 } else if provider.isDenied {
                     MessageState(
-                        title: "اجازه‌ی موقعیت داده نشده",
-                        message: "برای چرخیدن عقربه، اجازه‌ی دسترسی به موقعیت لازم است. جهت قبله بدون آن هم در بالا نوشته شده است.",
+                        title: "qibla.noPermission.title".localized,
+                        message: "qibla.noPermission.body".localized,
                         systemImage: "location.slash",
-                        actionLabel: "تنظیمات",
+                        actionLabel: "action.openSettings".localized,
                         action: {
                             guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                             UIApplication.shared.open(url)
@@ -153,7 +153,7 @@ struct QiblaView: View {
                     .rotationEffect(.degrees(Double(index) * 15 - (provider.heading ?? 0)))
             }
 
-            Text("ش")
+            Text("compass.north".localized)
                 .appText(AppType.labelLarge)
                 .foregroundStyle(colors.onSurfaceVariant)
                 .offset(y: -96)
@@ -165,7 +165,7 @@ struct QiblaView: View {
         }
         .frame(width: 280, height: 280)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("قبله \(Int(bearing).persianDigits) درجه از شمال")
+        .accessibilityLabel("qibla.a11y".localized(Int(bearing).persianDigits))
     }
 
     private var pointer: some View {
@@ -174,7 +174,7 @@ struct QiblaView: View {
                 .font(.system(size: 34))
                 .foregroundStyle(isAligned ? colors.tertiary : colors.primary)
 
-            Text("قبله")
+            Text("qibla.title".localized)
                 .appText(AppType.labelMedium)
                 .foregroundStyle(colors.onSurfaceVariant)
 
@@ -185,19 +185,19 @@ struct QiblaView: View {
 
     private var readout: some View {
         VStack(spacing: Spacing.sm) {
-            Text("\(Int(bearing.rounded()).persianDigits)° از شمال — \(Qibla.directionName(bearing))")
+            Text("qibla.readout".localized(Int(bearing.rounded()).persianDigits, Qibla.directionName(bearing)))
                 .appText(AppType.titleMedium)
                 .foregroundStyle(colors.onSurface)
 
             if provider.heading != nil {
-                Text(isAligned ? "رو به قبله ایستاده‌اید" : "گوشی را بچرخانید تا عقربه بالا برسد")
+                Text((isAligned ? "qibla.aligned" : "qibla.turn").localized)
                     .appText(AppType.bodySmall)
                     .foregroundStyle(isAligned ? colors.tertiary : colors.onSurfaceVariant)
             }
 
             // A magnetometer near metal or a speaker reads badly, and says so.
             if provider.accuracy > 15 {
-                Text("دقت قطب‌نما کم است — گوشی را به شکل ۸ بچرخانید")
+                Text("qibla.lowAccuracy".localized)
                     .appText(AppType.bodySmall)
                     .foregroundStyle(colors.error)
             }

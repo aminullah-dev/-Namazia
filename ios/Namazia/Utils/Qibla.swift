@@ -25,7 +25,7 @@ enum Qibla {
     /// A compass bearing as a Dari direction name, for the case where the phone has no
     /// usable compass and the only thing left is to tell the user which way to face.
     static func directionName(_ bearing: Double) -> String {
-        let names = ["شمال", "شمال‌شرق", "شرق", "جنوب‌شرق", "جنوب", "جنوب‌غرب", "غرب", "شمال‌غرب"]
+        let names = (0..<8).map { "direction.\($0)".localized }
         let index = Int((bearing / 45).rounded()) % 8
         return names[index]
     }

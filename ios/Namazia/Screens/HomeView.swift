@@ -61,11 +61,11 @@ struct HomeView: View {
     private var header: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("اوقات نماز")
+                Text("app.name".localized)
                     .appText(AppType.titleLarge)
                     .foregroundStyle(colors.onSurface)
 
-                Text(model.city.nameDari)
+                Text(model.city.displayName)
                     .appText(AppType.bodySmall)
                     .foregroundStyle(colors.onSurfaceVariant)
             }
@@ -83,7 +83,7 @@ struct HomeView: View {
                     .frame(width: Spacing.touchTarget, height: Spacing.touchTarget)
             }
             .tint(colors.tertiary)
-            .accessibilityLabel("تست اذان")
+            .accessibilityLabel("action.testAzan".localized)
             #endif
 
             Button {
@@ -94,7 +94,7 @@ struct HomeView: View {
                     .frame(width: Spacing.touchTarget, height: Spacing.touchTarget)
             }
             .tint(colors.primary)
-            .accessibilityLabel("بارگیری دوباره")
+            .accessibilityLabel("action.refresh".localized)
         }
         .padding(.horizontal, Spacing.lg)
         .padding(.vertical, Spacing.sm)
@@ -119,16 +119,16 @@ struct HomeView: View {
                     .foregroundStyle(colors.onErrorContainer)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("اعلان‌ها خاموش است")
+                    Text("notif.denied.title".localized)
                         .appText(AppType.labelLarge)
-                    Text("بدون اجازه‌ی اعلان، اذان پخش نمی‌شود")
+                    Text("notif.denied.body".localized)
                         .appText(AppType.bodySmall)
                 }
                 .foregroundStyle(colors.onErrorContainer)
 
                 Spacer(minLength: Spacing.sm)
 
-                Button("تنظیمات") {
+                Button("action.openSettings".localized) {
                     guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
                     UIApplication.shared.open(url)
                 }
@@ -153,7 +153,7 @@ struct HomeView: View {
                 MessageState(
                     title: error.title,
                     message: error.message,
-                    actionLabel: "تلاش دوباره",
+                    actionLabel: "action.retry".localized,
                     action: { Task { await model.refresh() } }
                 )
                 .padding(.top, Spacing.xxl)
@@ -211,10 +211,10 @@ struct HomeView: View {
                 CountdownRing(next: next, previous: model.previousPrayer, now: model.now)
             } else {
                 VStack(spacing: Spacing.sm) {
-                    Text("نمازهای امروز تمام شد")
+                    Text("home.dayFinished.title".localized)
                         .appText(AppType.headlineSmall)
                         .foregroundStyle(.white)
-                    Text("اذان فجر فردا به‌موقع پخش می‌شود")
+                    Text("home.dayFinished.body".localized)
                         .appText(AppType.bodyMedium)
                         .foregroundStyle(Color.white.opacity(0.85))
                 }

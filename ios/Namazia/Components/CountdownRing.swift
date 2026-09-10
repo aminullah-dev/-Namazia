@@ -41,11 +41,11 @@ struct CountdownRing: View {
                 .animation(.easeInOut(duration: 0.6), value: progress)
 
             VStack(spacing: Spacing.xs) {
-                Text("نماز بعدی")
+                Text("home.nextPrayer".localized)
                     .appText(AppType.labelMedium)
                     .foregroundStyle(Color.white.opacity(0.85))
 
-                Text(next.prayer.dari)
+                Text(next.prayer.localizedName)
                     .appText(AppType.headlineMedium)
                     .foregroundStyle(.white)
 
@@ -53,7 +53,7 @@ struct CountdownRing: View {
                     .appText(AppType.displayMedium)
                     .foregroundStyle(.white)
 
-                Text("تا اذان \(countdownText(seconds: secondsLeft))")
+                Text("home.untilAzan".localized(countdownText(seconds: secondsLeft)))
                     .appText(AppType.labelLarge)
                     .foregroundStyle(.white)
                     .monospacedDigit()
@@ -67,7 +67,11 @@ struct CountdownRing: View {
         .frame(width: diameter, height: diameter)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(
-            "نماز بعدی \(next.prayer.dari) ساعت \(next.clock.persianDigits)، \(countdownText(seconds: secondsLeft)) باقی مانده"
+            "a11y.ringSummary".localized(
+                next.prayer.localizedName,
+                next.clock.persianDigits,
+                countdownText(seconds: secondsLeft)
+            )
         )
     }
 }

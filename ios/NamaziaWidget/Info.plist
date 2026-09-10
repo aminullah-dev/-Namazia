@@ -37,6 +37,12 @@
 		<string>Vazirmatn-Bold.ttf</string>
 	</array>
 
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>fa</string>
+		<string>ps</string>
+	</array>
+
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>

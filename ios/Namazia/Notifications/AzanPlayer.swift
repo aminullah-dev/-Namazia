@@ -66,8 +66,8 @@ final class AzanPlayer: NSObject, ObservableObject {
     /// What the lock screen and Control Centre show while the azan plays.
     private func publishNowPlaying(for prayer: PrayerName) {
         var info: [String: Any] = [
-            MPMediaItemPropertyTitle: "اذان \(prayer.dari)",
-            MPMediaItemPropertyArtist: "اوقات نماز"
+            MPMediaItemPropertyTitle: "notif.azan.title".localized(prayer.localizedName),
+            MPMediaItemPropertyArtist: "app.name".localized
         ]
         if let player {
             info[MPMediaItemPropertyPlaybackDuration] = player.duration

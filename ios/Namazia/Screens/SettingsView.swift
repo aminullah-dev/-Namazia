@@ -17,6 +17,7 @@ struct SettingsView: View {
 
     var body: some View {
         List {
+            languageSection
             locationSection
             calculationSection
             azanSection
@@ -32,17 +33,33 @@ struct SettingsView: View {
 
     // MARK: - Sections
 
+    /// First on the screen on purpose: someone who opened Settings because the app is
+    /// in a language they do not read should not have to search for this.
+    private var languageSection: some View {
+        Section {
+            Picker(selection: languageBinding) {
+                ForEach(AppLanguage.allCases) { language in
+                    Text(language.nativeName).tag(language)
+                }
+            } label: {
+                label("settings.language".localized, systemImage: "globe")
+            }
+        } header: {
+            header("settings.section.language".localized)
+        }
+    }
+
     private var locationSection: some View {
         Section {
             Picker(selection: cityBinding) {
                 ForEach(AfghanCities.list.indices, id: \.self) { index in
-                    Text(AfghanCities.list[index].nameDari).tag(index)
+                    Text(AfghanCities.list[index].displayName).tag(index)
                 }
             } label: {
-                label("شهر", systemImage: "building.2")
+                label("settings.city".localized, systemImage: "building.2")
             }
         } header: {
-            header("موقعیت")
+            header("settings.section.location".localized)
         }
     }
 
@@ -50,23 +67,23 @@ struct SettingsView: View {
         Section {
             Picker(selection: methodBinding) {
                 ForEach(CalcMethods.list) { method in
-                    Text(method.nameDari).tag(method.id)
+                    Text(method.name).tag(method.id)
                 }
             } label: {
-                label("روش محاسبه", systemImage: "function")
+                label("settings.method".localized, systemImage: "function")
             }
 
             Picker(selection: schoolBinding) {
                 ForEach(Madhabs.list) { madhab in
-                    Text(madhab.nameDari).tag(madhab.school)
+                    Text(madhab.name).tag(madhab.school)
                 }
             } label: {
-                label("مذهب (وقت عصر)", systemImage: "book")
+                label("settings.madhab".localized, systemImage: "book")
             }
         } header: {
-            header("محاسبه")
+            header("settings.section.calculation".localized)
         } footer: {
-            footer("تغییر این دو، اوقات ذخیره‌شده را پاک می‌کند و همه دوباره محاسبه می‌شوند.")
+            footer("settings.calculation.footer".localized)
         }
     }
 
@@ -75,13 +92,15 @@ struct SettingsView: View {
             ForEach(PrayerName.allCases) { prayer in
                 Toggle(isOn: prayerBinding(prayer)) {
                     label(
-                        prayer.callsAzan ? "اذان \(prayer.dari)" : prayer.dari,
+                        prayer.callsAzan
+                            ? "settings.azanFor".localized(prayer.localizedName)
+                            : prayer.localizedName,
                         systemImage: prayer.callsAzan ? "bell" : "sunrise"
                     )
                 }
             }
         } header: {
-            header("اذان‌ها")
+            header("settings.section.azans".localized)
         } footer: {
             footer(
                 prayerFooter
@@ -93,42 +112,42 @@ struct SettingsView: View {
         // Sunrise is in the list because people want to see it, but it is a time
         // marker: no azan is called for it, and the switch only controls whether the
         // row appears.
-        "برای طلوع آفتاب اذانی گفته نمی‌شود؛ این کلید فقط نمایش آن را در لیست تعیین می‌کند."
+        "settings.azans.footer".localized
     }
 
     private var reminderSection: some View {
         Section {
             Picker(selection: reminderBinding) {
                 ForEach(reminderOptions, id: \.self) { minutes in
-                    Text(minutes == 0 ? "بدون یادآوری" : "\(minutes.persianDigits) دقیقه").tag(minutes)
+                    Text(minutes == 0 ? "settings.reminder.off".localized : "settings.reminder.minutes".localized(minutes.persianDigits)).tag(minutes)
                 }
             } label: {
-                label("یادآوری پیش از اذان", systemImage: "clock.badge")
+                label("settings.reminder".localized, systemImage: "clock.badge")
             }
 
             #if DEBUG
             Button {
                 Task { await notifications.scheduleTest() }
             } label: {
-                label("تست نوتیفیکیشن اذان", systemImage: "speaker.wave.2")
+                label("settings.testNotification".localized, systemImage: "speaker.wave.2")
             }
             #endif
 
             Button {
                 player.play(for: .maghrib)
             } label: {
-                label("پخش اذان (آزمایش صدا)", systemImage: "play.circle")
+                label("settings.playAzan".localized, systemImage: "play.circle")
             }
 
             if player.playing != nil {
                 Button(role: .destructive) {
                     player.stop()
                 } label: {
-                    label("توقف اذان", systemImage: "stop.circle")
+                    label("settings.stopAzan".localized, systemImage: "stop.circle")
                 }
             }
         } header: {
-            header("یادآوری و صدا")
+            header("settings.section.sound".localized)
         } footer: {
             footer(notificationFooter)
         }
@@ -138,14 +157,14 @@ struct SettingsView: View {
     /// wonder why the azan is short or why there is no vibration switch.
     private var notificationFooter: String {
         var lines = [
-            "در iOS صدای نوتیفیکیشن حداکثر ۳۰ ثانیه است؛ اذان کامل تنها وقتی پخش می‌شود که برنامه باز باشد.",
-            "لرزش اعلان‌ها را iOS کنترل می‌کند و از داخل برنامه قابل تغییر نیست."
+            "settings.sound.footer.cap".localized,
+            "settings.sound.footer.vibration".localized
         ]
         if notifications.authorization == .denied {
-            lines.insert("اعلان‌ها خاموش است — بدون آن اذان پخش نمی‌شود.", at: 0)
+            lines.insert("settings.sound.footer.denied".localized, at: 0)
         }
         if !notifications.hasAzanSound {
-            lines.append("فایل صوتی کوتاه اذان در این نسخه موجود نیست؛ صدای پیش‌فرض پخش می‌شود.")
+            lines.append("settings.sound.footer.missing".localized)
         }
         return lines.joined(separator: "\n\n")
     }
@@ -153,19 +172,19 @@ struct SettingsView: View {
     private var appearanceSection: some View {
         Section {
             Toggle(isOn: darkModeBinding) {
-                label("حالت تاریک", systemImage: "moon")
+                label("settings.darkMode".localized, systemImage: "moon")
             }
         } header: {
-            header("ظاهر")
+            header("settings.section.appearance".localized)
         } footer: {
-            footer("خاموش یعنی همان حالتی که در تنظیمات گوشی انتخاب کرده‌اید.")
+            footer("settings.darkMode.footer".localized)
         }
     }
 
     private var aboutSection: some View {
         Section {
             HStack {
-                label("نسخه", systemImage: "info.circle")
+                label("settings.version".localized, systemImage: "info.circle")
                 Spacer()
                 Text(appVersion.persianDigits)
                     .appText(AppType.bodyMedium)
@@ -173,16 +192,16 @@ struct SettingsView: View {
             }
 
             Link(destination: URL(string: "mailto:aminhashemi979@gmail.com")!) {
-                label("پشتیبانی", systemImage: "envelope")
+                label("settings.support".localized, systemImage: "envelope")
             }
 
             Link(destination: URL(string: "https://aminullah-dev.github.io/-Namazia/privacy-policy.html")!) {
-                label("سیاست حریم خصوصی", systemImage: "hand.raised")
+                label("settings.privacy".localized, systemImage: "hand.raised")
             }
         } header: {
-            header("درباره")
+            header("settings.section.about".localized)
         } footer: {
-            footer("اوقات نماز از سرویس Aladhan گرفته می‌شود.")
+            footer("settings.about.footer".localized)
         }
     }
 
@@ -199,6 +218,13 @@ struct SettingsView: View {
     // consequence beyond the value itself: the method and school also invalidate the
     // cache, and every one of them re-arms the notification queue through the home
     // screen's observation of the settings.
+
+    private var languageBinding: Binding<AppLanguage> {
+        Binding(
+            get: { settings.settings.language },
+            set: { settings.setLanguage($0) }
+        )
+    }
 
     private var cityBinding: Binding<Int> {
         Binding(get: { settings.settings.cityIndex }, set: { settings.setCityIndex($0) })

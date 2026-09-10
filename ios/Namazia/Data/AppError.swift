@@ -50,29 +50,28 @@ enum AppError: Error, Equatable {
     }
 }
 
-/// Wording lives here rather than in a strings file because the app ships in one
-/// language. If a second one is ever added (Pashto is the obvious candidate) these move
-/// to `Localizable.strings` and this becomes a lookup — the call sites do not change.
+/// Resolved at the edge, in the user's language. The call sites still pass a code and
+/// never a sentence, which is the point of the enum.
 extension AppError {
     var title: String {
         switch self {
-        case .offlineNoCache: return "اتصال به انترنت نیست"
-        case .server: return "سرور پاسخ نداد"
-        case .badResponse: return "پاسخ نامعتبر"
-        case .unknown: return "خطای نامشخص"
+        case .offlineNoCache: return "error.offline.title".localized
+        case .server: return "error.server.title".localized
+        case .badResponse: return "error.badResponse.title".localized
+        case .unknown: return "error.unknown.title".localized
         }
     }
 
     var message: String {
         switch self {
         case .offlineNoCache:
-            return "اوقات این روز در حافظه ذخیره نشده است. پس از وصل شدن به انترنت دوباره تلاش کنید."
+            return "error.offline.body".localized
         case .server:
-            return "در حال حاضر دریافت اوقات ممکن نیست. لطفاً چند لحظه بعد دوباره تلاش کنید."
+            return "error.server.body".localized
         case .badResponse:
-            return "اطلاعات دریافت‌شده کامل نبود. لطفاً دوباره تلاش کنید."
+            return "error.badResponse.body".localized
         case .unknown:
-            return "مشکلی پیش آمد. لطفاً دوباره تلاش کنید."
+            return "error.unknown.body".localized
         }
     }
 

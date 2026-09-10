@@ -125,8 +125,8 @@ final class NotificationScheduler: ObservableObject {
 
     private func azanRequest(day: String, entry: ScheduledPrayer) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
-        content.title = "اذان \(entry.prayer.dari)"
-        content.body = "وقت نماز \(entry.prayer.dari) — \(entry.clock.persianDigits)"
+        content.title = "notif.azan.title".localized(entry.prayer.localizedName)
+        content.body = "notif.azan.body".localized(entry.prayer.localizedName, entry.clock.persianDigits)
         content.sound = sound(for: entry.prayer)
         content.threadIdentifier = day
         content.userInfo = [
@@ -153,8 +153,8 @@ final class NotificationScheduler: ObservableObject {
         minutes: Int
     ) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
-        content.title = "\(minutes.persianDigits) دقیقه تا \(entry.prayer.dari)"
-        content.body = "وقت نماز \(entry.prayer.dari) ساعت \(entry.clock.persianDigits) است"
+        content.title = "notif.reminder.title".localized(minutes.persianDigits, entry.prayer.localizedName)
+        content.body = "notif.reminder.body".localized(entry.prayer.localizedName, entry.clock.persianDigits)
         // Deliberately not the azan: the azan belongs to the prayer time itself, and
         // hearing it early is worse than a plain chime.
         content.sound = .default
@@ -223,10 +223,8 @@ extension NotificationScheduler {
         guard isAllowed else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "تست اذان \(prayer.dari)"
-        content.body = hasAzanSound
-            ? "صدای اذان باید پخش شود"
-            : "فایل صوتی اذان در برنامه نیست — صدای پیش‌فرض پخش می‌شود"
+        content.title = "notif.test.title".localized(prayer.localizedName)
+        content.body = (hasAzanSound ? "notif.test.ok" : "notif.test.noSound").localized
         content.sound = sound(for: prayer)
         content.userInfo = [Keys.kind: Kind.azan, Keys.prayer: prayer.rawValue]
         content.interruptionLevel = .timeSensitive

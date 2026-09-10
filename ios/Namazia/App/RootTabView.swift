@@ -11,19 +11,19 @@ struct RootTabView: View {
     var body: some View {
         TabView {
             HomeView()
-                .tabItem { Label("اوقات", systemImage: "clock") }
+                .tabItem { Label("tab.times".localized, systemImage: "clock") }
 
             QiblaView()
-                .tabItem { Label("قبله", systemImage: "location.north.line") }
+                .tabItem { Label("tab.qibla".localized, systemImage: "location.north.line") }
 
             CalendarView()
-                .tabItem { Label("تقویم", systemImage: "calendar") }
+                .tabItem { Label("tab.calendar".localized, systemImage: "calendar") }
 
             DhikrView()
-                .tabItem { Label("اذکار", systemImage: "hands.sparkles") }
+                .tabItem { Label("tab.dhikr".localized, systemImage: "hands.sparkles") }
 
             SettingsView()
-                .tabItem { Label("تنظیمات", systemImage: "gearshape") }
+                .tabItem { Label("tab.settings".localized, systemImage: "gearshape") }
         }
         .tint(colors.primary)
     }

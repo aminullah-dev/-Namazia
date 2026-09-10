@@ -23,7 +23,7 @@ struct PrayerRowView: View {
             statusDot
 
             VStack(alignment: .leading, spacing: 0) {
-                Text(row.prayer.dari)
+                Text(row.prayer.localizedName)
                     .appText(row.isNext ? AppType.titleLarge : AppType.titleMedium)
                     .foregroundStyle(foreground)
                 Text(row.prayer.english)
@@ -93,10 +93,10 @@ struct PrayerRowView: View {
     }
 
     private var accessibilityText: String {
-        var parts = ["\(row.prayer.dari) \(row.clock.persianDigits)"]
-        if row.isNext { parts.append("نماز بعدی") }
-        else if row.isPast { parts.append("گذشته") }
-        if !row.isEnabled, row.prayer.callsAzan { parts.append("اذان خاموش") }
+        var parts = ["\(row.prayer.localizedName) \(row.clock.persianDigits)"]
+        if row.isNext { parts.append("a11y.nextPrayer".localized) }
+        else if row.isPast { parts.append("a11y.past".localized) }
+        if !row.isEnabled, row.prayer.callsAzan { parts.append("a11y.azanOff".localized) }
         return parts.joined(separator: "، ")
     }
 }

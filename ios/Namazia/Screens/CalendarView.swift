@@ -53,10 +53,9 @@ final class CalendarViewModel: ObservableObject {
 
     /// Gregorian months as they are named in Afghanistan — not the Persian solar month
     /// names, which belong to a different calendar entirely and would be wrong here.
+    /// Dari and Pashto spell several of them differently.
     var monthTitle: String {
-        let names = ["جنوری", "فبروری", "مارچ", "اپریل", "می", "جون",
-                     "جولای", "اگست", "سپتمبر", "اکتوبر", "نومبر", "دسمبر"]
-        let name = names.indices.contains(month - 1) ? names[month - 1] : ""
+        let name = (1...12).contains(month) ? "month.\(month)".localized : ""
         return "\(name) \(year.persianDigits)"
     }
 }
@@ -81,7 +80,7 @@ struct CalendarView: View {
                     MessageState(
                         title: error.title,
                         message: error.message,
-                        actionLabel: "تلاش دوباره",
+                        actionLabel: "action.retry".localized,
                         action: { Task { await model.load() } }
                     )
                 }
@@ -147,11 +146,11 @@ struct CalendarView: View {
 
     private var columnHeadings: some View {
         HStack(spacing: Spacing.xs) {
-            Text("روز")
+            Text("calendar.day".localized)
                 .frame(width: 44, alignment: .leading)
 
             ForEach(columns) { prayer in
-                Text(prayer.dari)
+                Text(prayer.localizedName)
                     .frame(maxWidth: .infinity)
             }
         }

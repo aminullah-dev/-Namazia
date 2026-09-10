@@ -126,16 +126,10 @@ enum PrayerName: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var dari: String {
-        switch self {
-        case .fajr: return "فجر"
-        case .sunrise: return "طلوع آفتاب"
-        case .dhuhr: return "ظهر"
-        case .asr: return "عصر"
-        case .maghrib: return "مغرب"
-        case .isha: return "عشا"
-        }
-    }
+    /// The prayer's name in the user's language. Pashto uses different names
+    /// entirely — ماسپښين for Dhuhr, مازديګر for Asr — so this is a translation, not
+    /// a transliteration.
+    var localizedName: String { "prayer.\(rawValue)".localized }
 
     var english: String {
         switch self {
@@ -155,31 +149,36 @@ enum PrayerName: String, Codable, CaseIterable, Identifiable {
 // MARK: - Cities
 
 struct AfghanCity: Codable, Equatable, Identifiable, Hashable {
-    let nameDari: String
+    /// The stable identity of a city: cache keys, the API request and the settings all
+    /// hang off this, so it must never be translated.
     let nameEn: String
     let latitude: Double
     let longitude: Double
 
     var id: String { nameEn }
+
+    /// What the user sees. A few names genuinely differ between the two languages —
+    /// لشکرگاه is لښکرګاه in Pashto — so this is looked up, not spelled once.
+    var displayName: String { "city.\(nameEn)".localized }
 }
 
 enum AfghanCities {
     static let list: [AfghanCity] = [
-        AfghanCity(nameDari: "کابل", nameEn: "Kabul", latitude: 34.5553, longitude: 69.2075),
-        AfghanCity(nameDari: "هرات", nameEn: "Herat", latitude: 34.3529, longitude: 62.2040),
-        AfghanCity(nameDari: "مزار شریف", nameEn: "Mazar-i-Sharif", latitude: 36.7069, longitude: 67.1100),
-        AfghanCity(nameDari: "قندهار", nameEn: "Kandahar", latitude: 31.6289, longitude: 65.7372),
-        AfghanCity(nameDari: "جلال‌آباد", nameEn: "Jalalabad", latitude: 34.4415, longitude: 70.4360),
-        AfghanCity(nameDari: "کندز", nameEn: "Kunduz", latitude: 36.7285, longitude: 68.8571),
-        AfghanCity(nameDari: "بامیان", nameEn: "Bamyan", latitude: 34.8203, longitude: 67.8294),
-        AfghanCity(nameDari: "غزنی", nameEn: "Ghazni", latitude: 33.5450, longitude: 68.4231),
-        AfghanCity(nameDari: "لشکرگاه", nameEn: "Lashkar Gah", latitude: 31.5933, longitude: 64.3599),
-        AfghanCity(nameDari: "تالقان", nameEn: "Taloqan", latitude: 36.7364, longitude: 69.5391),
-        AfghanCity(nameDari: "پل‌خمری", nameEn: "Pul-e-Khumri", latitude: 35.9439, longitude: 68.7152),
-        AfghanCity(nameDari: "میمنه", nameEn: "Maimana", latitude: 35.9231, longitude: 64.7686),
-        AfghanCity(nameDari: "شبرغان", nameEn: "Sheberghan", latitude: 36.6700, longitude: 65.7500),
-        AfghanCity(nameDari: "زرنج", nameEn: "Zaranj", latitude: 30.9587, longitude: 61.8686),
-        AfghanCity(nameDari: "فیض‌آباد", nameEn: "Fayzabad", latitude: 37.1194, longitude: 70.5797)
+        AfghanCity(nameEn: "Kabul", latitude: 34.5553, longitude: 69.2075),
+        AfghanCity(nameEn: "Herat", latitude: 34.3529, longitude: 62.204),
+        AfghanCity(nameEn: "Mazar-i-Sharif", latitude: 36.7069, longitude: 67.11),
+        AfghanCity(nameEn: "Kandahar", latitude: 31.6289, longitude: 65.7372),
+        AfghanCity(nameEn: "Jalalabad", latitude: 34.4415, longitude: 70.436),
+        AfghanCity(nameEn: "Kunduz", latitude: 36.7285, longitude: 68.8571),
+        AfghanCity(nameEn: "Bamyan", latitude: 34.8203, longitude: 67.8294),
+        AfghanCity(nameEn: "Ghazni", latitude: 33.545, longitude: 68.4231),
+        AfghanCity(nameEn: "Lashkar Gah", latitude: 31.5933, longitude: 64.3599),
+        AfghanCity(nameEn: "Taloqan", latitude: 36.7364, longitude: 69.5391),
+        AfghanCity(nameEn: "Pul-e-Khumri", latitude: 35.9439, longitude: 68.7152),
+        AfghanCity(nameEn: "Maimana", latitude: 35.9231, longitude: 64.7686),
+        AfghanCity(nameEn: "Sheberghan", latitude: 36.67, longitude: 65.75),
+        AfghanCity(nameEn: "Zaranj", latitude: 30.9587, longitude: 61.8686),
+        AfghanCity(nameEn: "Fayzabad", latitude: 37.1194, longitude: 70.5797)
     ]
 
     static let `default` = list[0]
@@ -196,38 +195,32 @@ enum AfghanCities {
 /// matters — most Afghans are Hanafi.
 struct Madhab: Identifiable, Equatable {
     let school: Int
-    let nameDari: String
 
     var id: Int { school }
+    var name: String { "madhab.\(school)".localized }
 }
 
 enum Madhabs {
-    static let list = [
-        Madhab(school: 1, nameDari: "حنفی"),
-        Madhab(school: 0, nameDari: "شافعی / مالکی / حنبلی")
-    ]
+    static let list = [Madhab(school: 1), Madhab(school: 0)]
 
     static func name(of school: Int) -> String {
-        list.first { $0.school == school }?.nameDari ?? "حنفی"
+        list.first { $0.school == school }?.name ?? Madhab(school: 1).name
     }
 }
 
 struct CalcMethod: Identifiable, Equatable {
     let id: Int
-    let nameDari: String
+
+    var name: String { "method.\(id)".localized }
 }
 
 enum CalcMethods {
-    static let list = [
-        CalcMethod(id: 1, nameDari: "دانشگاه علوم اسلامی کراچی"),
-        CalcMethod(id: 3, nameDari: "اتحادیه جهانی مسلمانان"),
-        CalcMethod(id: 4, nameDari: "ام القری مکه"),
-        CalcMethod(id: 2, nameDari: "انجمن اسلامی امریکای شمالی"),
-        CalcMethod(id: 5, nameDari: "سازمان عمومی مساحی مصر")
-    ]
+    /// Ordered by how likely an Afghan user is to want them, not by the API's numbering.
+    static let list = [CalcMethod(id: 1), CalcMethod(id: 3), CalcMethod(id: 4),
+                       CalcMethod(id: 2), CalcMethod(id: 5)]
 
     static func name(of id: Int) -> String {
-        list.first { $0.id == id }?.nameDari ?? "پیش‌فرض"
+        list.first { $0.id == id }?.name ?? "method.default".localized
     }
 }
 
@@ -246,6 +239,10 @@ struct AppSettings: Equatable {
     var reminderMinutes: Int = 15
     var vibrationEnabled: Bool = true
     var darkMode: Bool = false
+    /// Dari is the default because it is the wider second language in the cities this
+    /// app covers — not a judgement about the languages, just about who opens this app
+    /// first and has no idea there is a switch.
+    var language: AppLanguage = .dari
 
     var city: AfghanCity { AfghanCities.at(cityIndex) }
 
@@ -292,6 +289,7 @@ enum SettingsKeys {
     static let vibrationEnabled = "vibration_enabled"
     static let darkMode = "dark_mode"
     static let tasbihCount = "tasbih_count"
+    static let language = "language"
 
     static func enabledKey(for prayer: PrayerName) -> String {
         switch prayer {
@@ -336,6 +334,11 @@ extension AppSettings {
         settings.sunriseEnabled = bool(SettingsKeys.sunriseEnabled, settings.sunriseEnabled)
         settings.vibrationEnabled = bool(SettingsKeys.vibrationEnabled, settings.vibrationEnabled)
         settings.darkMode = bool(SettingsKeys.darkMode, settings.darkMode)
+
+        if let raw = defaults.string(forKey: SettingsKeys.language),
+           let language = AppLanguage(rawValue: raw) {
+            settings.language = language
+        }
 
         return settings
     }

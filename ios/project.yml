@@ -79,6 +79,9 @@ targets:
       - path: Namazia/Data
       - path: Namazia/Utils
       - path: Namazia/DesignSystem
+      # The extension resolves its own strings — nothing the app does carries across
+      # process boundaries — so it needs both the lookup and the .lproj bundles.
+      - path: Namazia/Localization
       # Fonts have to be in the extension's own bundle as well as the app's.
       - path: Namazia/Resources/Fonts
 

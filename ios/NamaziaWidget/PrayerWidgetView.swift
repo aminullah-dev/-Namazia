@@ -9,12 +9,12 @@ struct PrayerWidgetView: View {
     var body: some View {
         content
             // Two environment values do the heavy lifting here. The layout direction
-            // mirrors the widget like the app. The Persian locale is what makes the
-            // live countdown below render as ۰۱:۲۳:۴۵ — `Text(timerInterval:)` is
-            // formatted by the system, so it is the locale, not our own digit
-            // conversion, that decides the numerals.
+            // mirrors the widget like the app. The locale is what makes the live
+            // countdown below render as ۰۱:۲۳:۴۵ — `Text(timerInterval:)` is formatted
+            // by the system, so it is the locale, not our own digit conversion, that
+            // decides the numerals. Both Afghan locales use the same numerals.
             .environment(\.layoutDirection, .rightToLeft)
-            .environment(\.locale, Locale(identifier: "fa_AF"))
+            .environment(\.locale, Locale(identifier: "\(entry.language.rawValue)_AF"))
             .widgetBackground(background)
     }
 
@@ -43,7 +43,7 @@ struct PrayerWidgetView: View {
             Spacer(minLength: 0)
 
             if let next = entry.next {
-                Text(next.prayer.dari)
+                Text(next.prayer.localizedName)
                     .appText(AppType.titleLarge)
                     .foregroundStyle(.white)
 
@@ -55,7 +55,7 @@ struct PrayerWidgetView: View {
                     .appText(AppType.labelMedium)
                     .foregroundStyle(Color.white.opacity(0.85))
             } else {
-                Text("اوقات امروز تمام شد")
+                Text("home.dayFinished.title".localized)
                     .appText(AppType.titleMedium)
                     .foregroundStyle(.white)
             }
@@ -73,7 +73,7 @@ struct PrayerWidgetView: View {
                     .foregroundStyle(Color.white.opacity(0.75))
 
                 if let next = entry.next {
-                    Text(next.prayer.dari)
+                    Text(next.prayer.localizedName)
                         .appText(AppType.titleLarge)
                         .foregroundStyle(.white)
                     Text(next.clock.persianDigits)
@@ -95,7 +95,7 @@ struct PrayerWidgetView: View {
             VStack(spacing: 3) {
                 ForEach(entry.rows.filter { $0.prayer.callsAzan }) { row in
                     HStack {
-                        Text(row.prayer.dari)
+                        Text(row.prayer.localizedName)
                             .appText(AppType.labelMedium)
                         Spacer(minLength: Spacing.sm)
                         Text(row.clock.persianDigits)
@@ -118,12 +118,12 @@ struct PrayerWidgetView: View {
     private var rectangular: some View {
         VStack(alignment: .leading, spacing: 1) {
             if let next = entry.next {
-                Text("\(next.prayer.dari) \(next.clock.persianDigits)")
+                Text("\(next.prayer.localizedName) \(next.clock.persianDigits)")
                     .appText(AppType.titleMedium)
                 countdown(to: next.date)
                     .appText(AppType.labelMedium)
             } else {
-                Text("اوقات نماز")
+                Text("app.name".localized)
                     .appText(AppType.titleMedium)
             }
         }
@@ -133,7 +133,7 @@ struct PrayerWidgetView: View {
     private var circular: some View {
         VStack(spacing: 0) {
             if let next = entry.next {
-                Text(next.prayer.dari)
+                Text(next.prayer.localizedName)
                     .appText(AppType.labelSmall)
                 Text(next.clock.persianDigits)
                     .appText(AppType.labelLarge)
@@ -156,7 +156,7 @@ struct PrayerWidgetView: View {
         VStack(spacing: Spacing.xs) {
             Image(systemName: "arrow.down.app")
                 .foregroundStyle(Color.white.opacity(0.9))
-            Text("برنامه را باز کنید")
+            Text("widget.openApp".localized)
                 .appText(AppType.labelMedium)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
