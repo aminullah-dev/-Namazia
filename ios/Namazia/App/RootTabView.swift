@@ -7,6 +7,10 @@ import SwiftUI
 /// should reach it in one tap.
 struct RootTabView: View {
     @Environment(\.colors) private var colors
+    @EnvironmentObject private var settings: SettingsStore
+
+    /// Held here, outside the tree the language rebuilds, so switching language in
+    /// Settings leaves you on Settings.
     @State private var selection = RootTabView.initialTab
 
     var body: some View {
@@ -31,6 +35,10 @@ struct RootTabView: View {
                 .tabItem { Label("tab.settings".localized, systemImage: "gearshape") }
                 .tag(4)
         }
+        // A language switch rebuilds every tab. Re-rendering is not enough: the tab bar
+        // titles and the value a Picker shows for its selection are cached on the UIKit
+        // side and kept their old language until something else changed them.
+        .id(settings.settings.language)
         .tint(colors.primary)
     }
 
