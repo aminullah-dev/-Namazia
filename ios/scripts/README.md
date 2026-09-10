@@ -79,10 +79,12 @@ usually for a missing icon size or a bad Info.plist value.
 
 ---
 
-## Not tested on a Mac
+## Known good
 
-This script was written on Linux and has never been run. The first run may need a small
-fix — the likely candidates are the `sed -i ''` build-number bump (BSD sed syntax) and
-whether your Xcode version accepts `method: app-store-connect` (Xcode 15+) rather than
-the older `app-store`. Run it with `--dry-run` first; that exercises everything except
-the upload itself.
+First run on a Mac with Xcode 26.6 uploaded build 2 of 1.0. The one fix it needed
+was in `project.yml`, not here: XcodeGen wrote no scheme, so `-scheme Namazia` found
+nothing. On that first run Xcode created the Apple Distribution certificate itself,
+through the key.
+
+`--dry-run` still writes the bumped build number into `project.yml`. After a dry run,
+`git checkout project.yml` so the real run doesn't skip a number.
