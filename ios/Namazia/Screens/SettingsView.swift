@@ -34,6 +34,7 @@ struct SettingsView: View {
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(colors.background)
+        .statusBarBackdrop(colors.background)
         .tint(colors.primary)
     }
 

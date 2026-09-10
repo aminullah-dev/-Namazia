@@ -134,6 +134,7 @@ struct QiblaView: View {
             .frame(maxWidth: .infinity)
         }
         .background(colors.background)
+        .statusBarBackdrop(colors.background)
         .onAppear { provider.start() }
         .onDisappear { provider.stop() }
     }

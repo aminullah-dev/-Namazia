@@ -22,6 +22,18 @@ enum Radii {
     static let xl: CGFloat = 28
 }
 
+extension View {
+    /// Paints `color` behind the status bar. A screen that scrolls edge to edge with no
+    /// header of its own otherwise runs its rows straight through the clock. The inset
+    /// is zero high, so the layout does not move; only its background reaches up into
+    /// the safe area.
+    func statusBarBackdrop(_ color: Color) -> some View {
+        safeAreaInset(edge: .top, spacing: 0) {
+            Color.clear.frame(height: 0).background(color)
+        }
+    }
+}
+
 /// Converts Latin digits to Perso-Arabic ones, matching `utils/Format.kt`.
 ///
 /// Prayer times arrive from the API as "05:14"; showing them as ۰۵:۱۴ is what makes
