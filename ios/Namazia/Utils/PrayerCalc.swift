@@ -57,13 +57,18 @@ struct PrayerRow: Identifiable, Equatable {
 }
 
 extension DayPrayerTimes {
-    /// Every prayer of the day — including the ones whose azan is switched off, which
-    /// are still shown, just marked. Only the first upcoming *enabled* prayer is
-    /// "next", matching the Android list.
+    /// The rows the list shows.
+    ///
+    /// A prayer whose azan is switched off still appears — its time is what the user
+    /// came to read, and the crossed-out bell says the azan is silent. Sunrise is the
+    /// exception: no azan is ever called for it, so its switch can only mean "show this
+    /// line or don't", which is exactly what the settings screen promises.
+    ///
+    /// Only the first upcoming *enabled* prayer is marked "next".
     func rows(_ settings: AppSettings, now: Date = Date()) -> [PrayerRow] {
         var nextFound = false
 
-        return schedule.map { entry in
+        return schedule.filter { settings.isEnabled($0.prayer) || $0.prayer.callsAzan }.map { entry in
             let isPast = entry.date <= now
             let enabled = settings.isEnabled(entry.prayer)
             let isNext = !isPast && !nextFound && enabled
