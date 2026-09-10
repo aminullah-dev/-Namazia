@@ -26,6 +26,9 @@ android {
 
     buildFeatures {
         compose true
+        // Needed for BuildConfig.VERSION_NAME in the settings screen. AGP 8 turns this
+        // off by default, and the class simply does not exist without it.
+        buildConfig true
     }
 
     compileOptions {

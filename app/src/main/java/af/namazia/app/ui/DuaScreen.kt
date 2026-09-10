@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import af.namazia.app.R
 import af.namazia.app.data.Dua
 import af.namazia.app.data.DuaCategory
 import af.namazia.app.data.DuaData
@@ -55,12 +57,12 @@ fun DuaScreen(
     onTasbihReset: () -> Unit
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    val tabs = listOf("اذکار و ادعیه", "تسبیح")
+    val tabs = listOf(stringResource(R.string.dhikr_tab_list), stringResource(R.string.dhikr_tab_tasbih))
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("ذکر و دعا", style = MaterialTheme.typography.titleLarge) },
+                title = { Text(stringResource(R.string.dhikr_title), style = MaterialTheme.typography.titleLarge) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -136,14 +138,14 @@ private fun CategoryCard(category: DuaCategory) {
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = "${category.duas.size.toPersianDigits()} ذکر",
+                        text = stringResource(R.string.dhikr_count_label, category.duas.size.toPersianDigits()),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Icon(
                     if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = if (expanded) "بستن" else "باز کردن",
+                    contentDescription = stringResource(if (expanded) R.string.dhikr_collapse else R.string.dhikr_expand),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -195,7 +197,7 @@ private fun DuaCard(dua: Dua, ordinal: Int) {
                         color = MaterialTheme.colorScheme.tertiaryContainer
                     ) {
                         Text(
-                            text = "${dua.count.toPersianDigits()} مرتبه",
+                            text = stringResource(R.string.dhikr_repeat, dua.count.toPersianDigits()),
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onTertiaryContainer,
@@ -221,7 +223,7 @@ private fun DuaCard(dua: Dua, ordinal: Int) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
             Text(
-                text = dua.dari,
+                text = stringResource(dua.meaningRes),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Right,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -278,7 +280,7 @@ private fun TasbihContent(
         }
 
         Text(
-            text = if (rounds > 0) "دور کامل: ${rounds.toPersianDigits()}" else " ",
+            text = if (rounds > 0) stringResource(R.string.tasbih_rounds, rounds.toPersianDigits()) else " ",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -329,7 +331,7 @@ private fun TasbihContent(
                         color = Color.White
                     )
                     Text(
-                        text = "از ${target.toPersianDigits()}",
+                        text = stringResource(R.string.tasbih_of_target, target.toPersianDigits()),
                         style = MaterialTheme.typography.labelLarge,
                         color = Color.White.copy(alpha = 0.85f)
                     )
@@ -338,7 +340,7 @@ private fun TasbihContent(
         }
 
         Text(
-            text = "برای شمردن، دایره را لمس کنید",
+            text = stringResource(R.string.tasbih_tap_hint),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -349,7 +351,7 @@ private fun TasbihContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "مجموع: ${count.toPersianDigits()}",
+                text = stringResource(R.string.tasbih_total, count.toPersianDigits()),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -364,7 +366,7 @@ private fun TasbihContent(
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(Modifier.width(Spacing.xs))
-                Text("صفر کردن", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.tasbih_reset), style = MaterialTheme.typography.labelLarge)
             }
         }
     }

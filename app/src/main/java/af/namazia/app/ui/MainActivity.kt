@@ -14,11 +14,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import af.namazia.app.ui.theme.AzanAppTheme
+import af.namazia.app.utils.withLanguage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -61,9 +63,20 @@ class MainActivity : ComponentActivity() {
             val tasbihCount by viewModel.tasbihCount.collectAsStateWithLifecycle()
             val calendarState by viewModel.calendarState.collectAsStateWithLifecycle()
 
+            // The chosen language is the app's own setting, not the phone's: an Afghan
+            // phone is very often set to English, and someone who wants Pashto should
+            // not have to change their whole device. Providing a context built for that
+            // language is what makes every `stringResource` below resolve through it,
+            // and swapping it recomposes the whole tree — so the switch is instant.
+            val localizedContext = LocalContext.current.withLanguage(settings.language)
+
             AzanAppTheme(darkTheme = settings.darkMode) {
-                // The whole UI is Dari — force right-to-left regardless of device locale.
-                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                // Both languages are right-to-left, so this is pinned rather than left
+                // to the device locale.
+                CompositionLocalProvider(
+                    LocalLayoutDirection provides LayoutDirection.Rtl,
+                    LocalContext provides localizedContext
+                ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -80,6 +93,7 @@ class MainActivity : ComponentActivity() {
                         onAsrSchoolChanged = viewModel::updateAsrSchool,
                         onDarkModeToggled = viewModel::toggleDarkMode,
                         onVibrationToggled = viewModel::toggleVibration,
+                        onLanguageChanged = viewModel::updateLanguage,
                         onTasbihIncrement = viewModel::incrementTasbih,
                         onTasbihReset = viewModel::resetTasbih,
                         onMonthChanged = viewModel::loadMonthlyCalendar,

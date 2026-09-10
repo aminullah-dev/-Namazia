@@ -20,9 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
+import af.namazia.app.BuildConfig
+import af.namazia.app.R
 import af.namazia.app.data.AfghanCity
+import af.namazia.app.data.AppLanguage
 import af.namazia.app.data.AppSettings
 import af.namazia.app.data.CalcMethods
 import af.namazia.app.data.Madhabs
@@ -34,7 +39,7 @@ import af.namazia.app.utils.toPersianDigits
 private const val SUPPORT_EMAIL = "aminhashemi979@gmail.com"
 
 private data class PrayerToggle(
-    val label: String,
+    @StringRes val labelRes: Int,
     val prayer: PrayerName,
     val enabled: Boolean
 )
@@ -51,23 +56,30 @@ fun SettingsScreen(
     onAsrSchoolChanged: (Int) -> Unit,
     onDarkModeToggled: (Boolean) -> Unit,
     onVibrationToggled: (Boolean) -> Unit,
+    onLanguageChanged: (AppLanguage) -> Unit,
     onTestAzan: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
 
+    // Read before the intent is built: `stringResource` is a composable and cannot be
+    // called from inside a click handler.
+    val emailSubject = stringResource(R.string.settings_email_subject)
+    val emailChooser = stringResource(R.string.settings_email_chooser)
+    val versionName = BuildConfig.VERSION_NAME.toPersianDigits()
+
     val prayerToggles = listOf(
-        PrayerToggle("فجر", PrayerName.FAJR, settings.fajrEnabled),
-        PrayerToggle("طلوع آفتاب", PrayerName.SUNRISE, settings.sunriseEnabled),
-        PrayerToggle("ظهر", PrayerName.DHUHR, settings.dhuhrEnabled),
-        PrayerToggle("عصر", PrayerName.ASR, settings.asrEnabled),
-        PrayerToggle("مغرب", PrayerName.MAGHRIB, settings.maghribEnabled),
-        PrayerToggle("عشا", PrayerName.ISHA, settings.ishaEnabled)
+        PrayerToggle(R.string.prayer_fajr, PrayerName.FAJR, settings.fajrEnabled),
+        PrayerToggle(R.string.prayer_sunrise, PrayerName.SUNRISE, settings.sunriseEnabled),
+        PrayerToggle(R.string.prayer_dhuhr, PrayerName.DHUHR, settings.dhuhrEnabled),
+        PrayerToggle(R.string.prayer_asr, PrayerName.ASR, settings.asrEnabled),
+        PrayerToggle(R.string.prayer_maghrib, PrayerName.MAGHRIB, settings.maghribEnabled),
+        PrayerToggle(R.string.prayer_isha, PrayerName.ISHA, settings.ishaEnabled)
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("تنظیمات", style = MaterialTheme.typography.titleLarge) },
+                title = { Text(stringResource(R.string.settings_title), style = MaterialTheme.typography.titleLarge) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -87,7 +99,18 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.sm)
         ) {
             item {
-                SettingsGroup("محل و محاسبه") {
+                // First on the screen on purpose: someone who opened Settings because
+                // the app is in a language they do not read should not have to hunt.
+                SettingsGroup(stringResource(R.string.settings_group_language)) {
+                    LanguageRow(
+                        selected = settings.language,
+                        onSelected = onLanguageChanged
+                    )
+                }
+            }
+
+            item {
+                SettingsGroup(stringResource(R.string.settings_group_location)) {
                     CityDropdown(
                         cities = cities,
                         selectedIndex = settings.cityIndex,
@@ -105,7 +128,7 @@ fun SettingsScreen(
                     )
                     Spacer(Modifier.height(Spacing.sm))
                     Text(
-                        text = "مذهب تنها بر وقت عصر تأثیر دارد. در حنفی عصر دیرتر می‌شود.",
+                        text = stringResource(R.string.settings_madhab_note),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -113,10 +136,10 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsGroup("اذان برای کدام وقت‌ها") {
+                SettingsGroup(stringResource(R.string.settings_group_azans)) {
                     prayerToggles.forEachIndexed { index, toggle ->
                         SwitchRow(
-                            label = toggle.label,
+                            label = stringResource(toggle.labelRes),
                             checked = toggle.enabled,
                             onChange = { onPrayerToggled(toggle.prayer, it) }
                         )
@@ -128,7 +151,7 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsGroup("یادآوری پیش از اذان") {
+                SettingsGroup(stringResource(R.string.settings_group_reminder)) {
                     ReminderChips(
                         minutes = settings.reminderMinutes,
                         onChanged = onReminderChanged
@@ -137,23 +160,23 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsGroup("پخش اذان") {
+                SettingsGroup(stringResource(R.string.settings_group_azan_playback)) {
                     ActionRow(
-                        title = "تست اذان",
-                        subtitle = "برای اطمینان از پخش صدا، همین حالا پخش می‌شود",
+                        title = stringResource(R.string.settings_test_azan),
+                        subtitle = stringResource(R.string.settings_test_azan_note),
                         icon = Icons.Default.PlayCircle,
                         onClick = { onTestAzan(false) }
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     ActionRow(
-                        title = "تست اذان صبح",
-                        subtitle = "فایل جداگانه اذان فجر",
+                        title = stringResource(R.string.settings_test_fajr),
+                        subtitle = stringResource(R.string.settings_test_fajr_note),
                         icon = Icons.Default.PlayCircle,
                         onClick = { onTestAzan(true) }
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SwitchRow(
-                        label = "لرزش هنگام اذان",
+                        label = stringResource(R.string.settings_vibration),
                         checked = settings.vibrationEnabled,
                         onChange = onVibrationToggled
                     )
@@ -167,9 +190,9 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsGroup("نمایش") {
+                SettingsGroup(stringResource(R.string.settings_group_display)) {
                     SwitchRow(
-                        label = "حالت شب",
+                        label = stringResource(R.string.settings_dark_mode),
                         checked = settings.darkMode,
                         onChange = onDarkModeToggled
                     )
@@ -177,27 +200,27 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsGroup("پشتیبانی") {
+                SettingsGroup(stringResource(R.string.settings_group_support)) {
                     ActionRow(
-                        title = "تماس با پشتیبانی",
+                        title = stringResource(R.string.settings_contact),
                         subtitle = SUPPORT_EMAIL,
                         icon = Icons.Default.Email,
                         onClick = {
                             val intent = Intent(Intent.ACTION_SENDTO).apply {
                                 data = Uri.parse("mailto:$SUPPORT_EMAIL")
-                                putExtra(Intent.EXTRA_SUBJECT, "پشتیبانی اپ اوقات نماز")
+                                putExtra(Intent.EXTRA_SUBJECT, emailSubject)
                             }
                             runCatching {
                                 context.startActivity(
-                                    Intent.createChooser(intent, "ارسال ایمیل")
+                                    Intent.createChooser(intent, emailChooser)
                                 )
                             }
                         }
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     ActionRow(
-                        title = "نسخه برنامه",
-                        subtitle = "۱.۰.۰",
+                        title = stringResource(R.string.settings_version),
+                        subtitle = versionName,
                         icon = Icons.Default.Info,
                         onClick = null
                     )
@@ -324,8 +347,8 @@ private fun BatteryOptimisationCard(context: Context) {
         ) {
             Column(modifier = Modifier.padding(Spacing.lg)) {
                 ActionRow(
-                    title = "بهینه‌سازی باتری را غیرفعال کنید",
-                    subtitle = "بدون این کار، سیستم ممکن است اذان را به‌موقع پخش نکند",
+                    title = stringResource(R.string.settings_battery_title),
+                    subtitle = stringResource(R.string.settings_battery_body),
                     icon = Icons.Default.BatteryAlert,
                     highlight = true,
                     onClick = {
@@ -337,6 +360,42 @@ private fun BatteryOptimisationCard(context: Context) {
                         runCatching { context.startActivity(direct) }
                             .recoverCatching { context.startActivity(fallback) }
                     }
+                )
+            }
+        }
+    }
+}
+
+/** Two languages, both worth showing at once — a dropdown would hide half the choice. */
+@Composable
+private fun LanguageRow(
+    selected: AppLanguage,
+    onSelected: (AppLanguage) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
+    ) {
+        AppLanguage.entries.forEach { language ->
+            val isSelected = language == selected
+            FilledTonalButton(
+                onClick = { onSelected(language) },
+                shape = Radii.pill,
+                colors = if (isSelected) {
+                    ButtonDefaults.filledTonalButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    ButtonDefaults.filledTonalButtonColors()
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = Spacing.touchTarget)
+            ) {
+                Text(
+                    text = stringResource(language.nameRes),
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }
@@ -357,10 +416,10 @@ private fun CityDropdown(
         onExpandedChange = { expanded = it }
     ) {
         OutlinedTextField(
-            value = cities.getOrNull(selectedIndex)?.nameDari ?: "",
+            value = cities.getOrNull(selectedIndex)?.let { stringResource(it.nameRes) } ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text("شهر") },
+            label = { Text(stringResource(R.string.settings_city)) },
             textStyle = MaterialTheme.typography.bodyLarge,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             shape = Radii.md,
@@ -375,7 +434,7 @@ private fun CityDropdown(
             cities.forEachIndexed { index, city ->
                 DropdownMenuItem(
                     text = {
-                        Text(city.nameDari, style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(city.nameRes), style = MaterialTheme.typography.bodyLarge)
                     },
                     onClick = {
                         onSelected(index)
@@ -400,10 +459,10 @@ private fun CalcMethodDropdown(
         onExpandedChange = { expanded = it }
     ) {
         OutlinedTextField(
-            value = CalcMethods.nameOf(selectedId),
+            value = stringResource(CalcMethods.nameResOf(selectedId)),
             onValueChange = {},
             readOnly = true,
-            label = { Text("روش محاسبه") },
+            label = { Text(stringResource(R.string.settings_method)) },
             textStyle = MaterialTheme.typography.bodyLarge,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             shape = Radii.md,
@@ -418,7 +477,7 @@ private fun CalcMethodDropdown(
             CalcMethods.list.forEach { method ->
                 DropdownMenuItem(
                     text = {
-                        Text(method.nameDari, style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(method.nameRes), style = MaterialTheme.typography.bodyLarge)
                     },
                     onClick = {
                         onSelected(method.id)
@@ -443,10 +502,10 @@ private fun MadhabDropdown(
         onExpandedChange = { expanded = it }
     ) {
         OutlinedTextField(
-            value = Madhabs.nameOf(selectedSchool),
+            value = stringResource(Madhabs.nameResOf(selectedSchool)),
             onValueChange = {},
             readOnly = true,
-            label = { Text("مذهب") },
+            label = { Text(stringResource(R.string.settings_madhab)) },
             textStyle = MaterialTheme.typography.bodyLarge,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             shape = Radii.md,
@@ -461,7 +520,7 @@ private fun MadhabDropdown(
             Madhabs.list.forEach { madhab ->
                 DropdownMenuItem(
                     text = {
-                        Text(madhab.nameDari, style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(madhab.nameRes), style = MaterialTheme.typography.bodyLarge)
                     },
                     onClick = {
                         onSelected(madhab.school)
@@ -479,9 +538,9 @@ private fun ReminderChips(minutes: Int, onChanged: (Int) -> Unit) {
     Column {
         Text(
             text = if (minutes == 0) {
-                "یادآوری خاموش است"
+                stringResource(R.string.settings_reminder_off)
             } else {
-                "${minutes.toPersianDigits()} دقیقه پیش از اذان"
+                stringResource(R.string.settings_reminder_minutes, minutes.toPersianDigits())
             },
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -500,9 +559,9 @@ private fun ReminderChips(minutes: Int, onChanged: (Int) -> Unit) {
                     label = {
                         Text(
                             text = if (option == 0) {
-                                "خاموش"
+                                stringResource(R.string.settings_reminder_off_short)
                             } else {
-                                "${option.toPersianDigits()} دقیقه"
+                                stringResource(R.string.settings_reminder_minutes_short, option.toPersianDigits())
                             },
                             style = MaterialTheme.typography.labelLarge
                         )

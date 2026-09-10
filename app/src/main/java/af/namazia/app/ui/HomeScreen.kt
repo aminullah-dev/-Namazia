@@ -57,7 +57,7 @@ fun HomeScreen(
                             style = MaterialTheme.typography.titleLarge
                         )
                         Text(
-                            text = uiState.currentCity.nameDari,
+                            text = stringResource(uiState.currentCity.nameRes),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -65,7 +65,7 @@ fun HomeScreen(
                 },
                 actions = {
                     IconButton(onClick = onRefresh) {
-                        Icon(Icons.Default.Refresh, contentDescription = "بارگزاری مجدد")
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.action_refresh))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -187,13 +187,13 @@ private fun NextPrayerHero(
             if (next == null) {
                 // Every prayer of the day is behind us; Fajr arrives with tomorrow's data.
                 Text(
-                    text = "نمازهای امروز تمام شد",
+                    text = stringResource(R.string.home_day_finished_title),
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White
                 )
                 Spacer(Modifier.height(Spacing.sm))
                 Text(
-                    text = "اذان فجر فردا به‌موقع پخش می‌شود",
+                    text = stringResource(R.string.home_day_finished_body),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.85f)
                 )
@@ -272,7 +272,7 @@ private fun CountdownRing(
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "نماز بعدی",
+                text = stringResource(R.string.home_next_prayer),
                 style = MaterialTheme.typography.labelMedium,
                 color = Color.White.copy(alpha = 0.85f)
             )
@@ -293,7 +293,7 @@ private fun CountdownRing(
                 color = Color.White.copy(alpha = 0.18f)
             ) {
                 Text(
-                    text = "تا اذان ${formatRemaining(secondsLeft).toPersianDigits()}",
+                    text = stringResource(R.string.home_until_azan, formatRemaining(secondsLeft).toPersianDigits()),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color.White,
                     modifier = Modifier.padding(
@@ -343,7 +343,7 @@ private fun PrayerRow(prayer: PrayerTime) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = prayer.name,
+                    text = stringResource(prayer.nameRes),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = if (prayer.isNext) FontWeight.Bold else FontWeight.Medium,
                     color = contentColor
@@ -358,7 +358,7 @@ private fun PrayerRow(prayer: PrayerTime) {
             if (!prayer.enabled) {
                 Icon(
                     Icons.Default.NotificationsOff,
-                    contentDescription = "اذان این وقت خاموش است",
+                    contentDescription = stringResource(R.string.home_azan_off),
                     tint = contentColor.copy(alpha = 0.5f),
                     modifier = Modifier.size(18.dp)
                 )
@@ -390,7 +390,7 @@ private fun StatusDot(prayer: PrayerTime) {
         ) {
             Icon(
                 Icons.Default.NotificationsActive,
-                contentDescription = "نماز بعدی",
+                contentDescription = stringResource(R.string.home_next_prayer),
                 tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(iconSize)
             )
@@ -405,7 +405,7 @@ private fun StatusDot(prayer: PrayerTime) {
         ) {
             Icon(
                 Icons.Default.Check,
-                contentDescription = "گذشته",
+                contentDescription = stringResource(R.string.home_past),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(iconSize)
             )
@@ -436,7 +436,7 @@ private fun StaleDataNotice(title: String) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "$title — اوقات نمایش‌داده‌شده از حافظه است",
+            text = stringResource(R.string.home_stale_data, title),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onErrorContainer,
             modifier = Modifier.padding(Spacing.md)

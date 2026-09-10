@@ -20,18 +20,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.annotation.StringRes
+import androidx.compose.ui.res.stringResource
+import af.namazia.app.R
 import af.namazia.app.data.AfghanCities
+import af.namazia.app.data.AppLanguage
 import af.namazia.app.data.AppSettings
 import af.namazia.app.data.PrayerName
 
-private data class NavItem(val route: String, val label: String, val icon: ImageVector)
+private data class NavItem(val route: String, @StringRes val labelRes: Int, val icon: ImageVector)
 
 private val navItems = listOf(
-    NavItem("home", "نماز", Icons.Filled.Home),
-    NavItem("calendar", "تقویم", Icons.Filled.DateRange),
-    NavItem("qibla", "قبله", Icons.Filled.Explore),
-    NavItem("dhikr", "ذکر", Icons.Filled.MenuBook),
-    NavItem("settings", "تنظیمات", Icons.Filled.Settings)
+    NavItem("home", R.string.nav_home, Icons.Filled.Home),
+    NavItem("calendar", R.string.nav_calendar, Icons.Filled.DateRange),
+    NavItem("qibla", R.string.nav_qibla, Icons.Filled.Explore),
+    NavItem("dhikr", R.string.nav_dhikr, Icons.Filled.MenuBook),
+    NavItem("settings", R.string.nav_settings, Icons.Filled.Settings)
 )
 
 @Composable
@@ -47,6 +51,7 @@ fun AzanNavGraph(
     onAsrSchoolChanged: (Int) -> Unit,
     onDarkModeToggled: (Boolean) -> Unit,
     onVibrationToggled: (Boolean) -> Unit,
+    onLanguageChanged: (AppLanguage) -> Unit,
     onTasbihIncrement: () -> Unit,
     onTasbihReset: () -> Unit,
     onMonthChanged: (Int, Int) -> Unit,
@@ -80,7 +85,7 @@ fun AzanNavGraph(
                         icon = { Icon(item.icon, contentDescription = null) },
                         label = {
                             Text(
-                                text = item.label,
+                                text = stringResource(item.labelRes),
                                 style = MaterialTheme.typography.labelMedium
                             )
                         },
@@ -131,6 +136,7 @@ fun AzanNavGraph(
                     onAsrSchoolChanged = onAsrSchoolChanged,
                     onDarkModeToggled = onDarkModeToggled,
                     onVibrationToggled = onVibrationToggled,
+                onLanguageChanged = onLanguageChanged,
                     onTestAzan = onTestAzan
                 )
             }

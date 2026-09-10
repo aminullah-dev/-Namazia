@@ -9,6 +9,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import af.namazia.app.R
 import af.namazia.app.data.AfghanCities
+import af.namazia.app.utils.withLanguage
 import af.namazia.app.data.PrayerTimesRepository
 import af.namazia.app.data.SettingsDataStore
 import af.namazia.app.ui.MainActivity
@@ -40,6 +41,9 @@ class AzanWidget : AppWidgetProvider() {
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
                 val settings = settingsDataStore.settings.first()
+                // The widget draws its own text, in its own process, so it has to
+                // resolve strings through the chosen language itself.
+                val localized = appContext.withLanguage(settings.language)
                 val city = AfghanCities.list.getOrElse(settings.cityIndex) { AfghanCities.default }
                 val method = settings.calculationMethod
                 val school = settings.asrSchool
@@ -55,9 +59,9 @@ class AzanWidget : AppWidgetProvider() {
                 appWidgetIds.forEach { id ->
                     updateWidget(
                         appContext, appWidgetManager, id,
-                        nextPrayerName = next?.prayer?.dari ?: "—",
+                        nextPrayerName = next?.prayer?.let { localized.getString(it.nameRes) } ?: "—",
                         nextPrayerTime = next?.time?.toPersianDigits() ?: "--:--",
-                        cityName = city.nameDari
+                        cityName = localized.getString(city.nameRes)
                     )
                 }
             } catch (e: Exception) {
@@ -77,7 +81,7 @@ class AzanWidget : AppWidgetProvider() {
             appWidgetId: Int,
             nextPrayerName: String = "—",
             nextPrayerTime: String = "--:--",
-            cityName: String = "کابل"
+            cityName: String = ""
         ) {
             val launchIntent = PendingIntent.getActivity(
                 context, 0,

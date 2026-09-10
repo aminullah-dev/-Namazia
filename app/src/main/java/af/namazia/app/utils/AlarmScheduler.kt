@@ -94,20 +94,20 @@ object AlarmScheduler {
             val now = System.currentTimeMillis()
             if (triggerMs <= now) return
 
-            val azanIntent = createAlarmIntent(context, prayer, timeStr, isReminder = false, vibrate = settings.vibrationEnabled)
+            val azanIntent = createAlarmIntent(context, prayer, timeStr, isReminder = false, settings = settings)
             setExactAlarm(alarmManager, triggerMs, azanIntent)
 
             if (settings.reminderMinutes > 0 && prayer != PrayerName.SUNRISE) {
                 val reminderMs = triggerMs - (settings.reminderMinutes * 60 * 1000L)
                 if (reminderMs > now) {
-                    val reminderIntent = createAlarmIntent(context, prayer, timeStr, isReminder = true, vibrate = settings.vibrationEnabled)
+                    val reminderIntent = createAlarmIntent(context, prayer, timeStr, isReminder = true, settings = settings)
                     setExactAlarm(alarmManager, reminderMs, reminderIntent)
                 }
             }
 
-            Log.d("AlarmScheduler", "Scheduled ${prayer.dari} at $timeStr")
+            Log.d("AlarmScheduler", "Scheduled ${prayer.name} at $timeStr")
         } catch (e: Exception) {
-            Log.e("AlarmScheduler", "Failed to schedule ${prayer.dari}", e)
+            Log.e("AlarmScheduler", "Failed to schedule ${prayer.name}", e)
         }
     }
 
@@ -116,15 +116,21 @@ object AlarmScheduler {
         prayer: PrayerName,
         time: String,
         isReminder: Boolean,
-        vibrate: Boolean = true
+        settings: AppSettings
     ): PendingIntent {
         val intent = Intent(context, AzanAlarmReceiver::class.java).apply {
             action = if (isReminder) ACTION_REMINDER else ACTION_AZAN
             putExtra(EXTRA_PRAYER_NAME, prayer.name)
-            putExtra(EXTRA_PRAYER_DARI, prayer.dari)
+            // Rendered here, at schedule time, in the language chosen then. A later
+            // language change reschedules everything, which is what keeps this honest.
+            putExtra(
+                EXTRA_PRAYER_DARI,
+                context.withLanguage(settings.language).getString(prayer.nameRes)
+            )
             putExtra(EXTRA_PRAYER_TIME, time)
             putExtra(EXTRA_IS_REMINDER, isReminder)
-            putExtra(EXTRA_VIBRATE, vibrate)
+            putExtra(EXTRA_VIBRATE, settings.vibrationEnabled)
+            putExtra(EXTRA_LANGUAGE, settings.language.code)
         }
 
         val requestCode = "${prayer.name}_${if (isReminder) "reminder" else "azan"}".hashCode()
@@ -169,4 +175,7 @@ object AlarmScheduler {
     const val EXTRA_PRAYER_TIME = "prayer_time"
     const val EXTRA_IS_REMINDER = "is_reminder"
     const val EXTRA_VIBRATE = "vibrate"
+    /** The language chosen when the alarm was scheduled; the service builds its
+     *  notification text in it. A later language change reschedules everything. */
+    const val EXTRA_LANGUAGE = "language"
 }

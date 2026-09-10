@@ -37,9 +37,15 @@ data class CalendarUiState(
     val error: AppError? = null
 )
 
-private val gregorianMonthsDari = listOf(
-    "جنوری", "فبروری", "مارچ", "اپریل", "می", "جون",
-    "جولای", "آگست", "سپتمبر", "اکتوبر", "نوامبر", "دسمبر"
+/**
+ * Gregorian months as they are named in Afghanistan — not the Persian solar month
+ * names, which belong to a different calendar entirely. Dari and Pashto spell several
+ * of them differently, hence resources rather than one hard-coded list.
+ */
+private val gregorianMonths = listOf(
+    R.string.month_1, R.string.month_2, R.string.month_3, R.string.month_4,
+    R.string.month_5, R.string.month_6, R.string.month_7, R.string.month_8,
+    R.string.month_9, R.string.month_10, R.string.month_11, R.string.month_12
 )
 
 // Day column is narrower than the five time columns; weights keep the grid aligned
@@ -75,11 +81,11 @@ fun CalendarScreen(
                 title = {
                     Column {
                         Text(
-                            text = "تقویم اوقات",
+                            text = stringResource(R.string.calendar_title),
                             style = MaterialTheme.typography.titleLarge
                         )
                         Text(
-                            text = "${gregorianMonthsDari.getOrElse(calendarState.month - 1) { "" }} " +
+                            text = "${gregorianMonths.getOrNull(calendarState.month - 1)?.let { stringResource(it) } ?: ""} " +
                                     calendarState.year.toPersianDigits(),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -96,7 +102,7 @@ fun CalendarScreen(
                         }
                         onMonthChanged(y, m)
                     }) {
-                        Icon(Icons.Default.ChevronRight, contentDescription = "ماه قبل")
+                        Icon(Icons.Default.ChevronRight, contentDescription = stringResource(R.string.calendar_prev_month))
                     }
                 },
                 actions = {
@@ -108,7 +114,7 @@ fun CalendarScreen(
                         }
                         onMonthChanged(y, m)
                     }) {
-                        Icon(Icons.Default.ChevronLeft, contentDescription = "ماه بعد")
+                        Icon(Icons.Default.ChevronLeft, contentDescription = stringResource(R.string.calendar_next_month))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -176,12 +182,12 @@ private fun CalendarHeaderRow() {
                 .fillMaxWidth()
                 .padding(horizontal = Spacing.md, vertical = Spacing.md)
         ) {
-            HeaderCell("روز", DAY_WEIGHT)
-            HeaderCell("فجر", TIME_WEIGHT)
-            HeaderCell("ظهر", TIME_WEIGHT)
-            HeaderCell("عصر", TIME_WEIGHT)
-            HeaderCell("مغرب", TIME_WEIGHT)
-            HeaderCell("عشا", TIME_WEIGHT)
+            HeaderCell(stringResource(R.string.calendar_day), DAY_WEIGHT)
+            HeaderCell(stringResource(R.string.prayer_fajr), TIME_WEIGHT)
+            HeaderCell(stringResource(R.string.prayer_dhuhr), TIME_WEIGHT)
+            HeaderCell(stringResource(R.string.prayer_asr), TIME_WEIGHT)
+            HeaderCell(stringResource(R.string.prayer_maghrib), TIME_WEIGHT)
+            HeaderCell(stringResource(R.string.prayer_isha), TIME_WEIGHT)
         }
     }
 }

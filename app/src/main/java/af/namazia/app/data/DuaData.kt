@@ -1,106 +1,115 @@
 package af.namazia.app.data
 
-data class Dua(val arabic: String, val dari: String, val count: Int = 1)
-data class DuaCategory(val title: String, val duas: List<Dua>)
+import androidx.annotation.StringRes
+import af.namazia.app.R
+
+/**
+ * Adhkar with their meaning.
+ *
+ * The Arabic is the dhikr itself and is never translated. What is localized is the
+ * *meaning*, which is why only that side carries a resource id.
+ */
+data class Dua(val arabic: String, @StringRes val meaningRes: Int, val count: Int = 1)
+data class DuaCategory(@StringRes val titleRes: Int, val duas: List<Dua>)
 
 object DuaData {
     val categories = listOf(
         DuaCategory(
-            title = "اذکار صبح",
+            titleRes = R.string.dhikr_category_morning,
             duas = listOf(
                 Dua(
                     arabic = "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
-                    dari = "صبح کردیم در حالی که ملک از آنِ الله است و ستایش از آنِ الله است؛ معبودی جز الله نیست که تنها و بی‌شریک است."
+                    meaningRes = R.string.dhikr_morning_1
                 ),
                 Dua(
                     arabic = "اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
-                    dari = "بار الها، به لطف تو صبح کردیم، به لطف تو شام کردیم، به تو زنده‌ایم، به تقدیر تو می‌میریم و بازگشت به سوی توست."
+                    meaningRes = R.string.dhikr_morning_2
                 ),
                 Dua(
                     arabic = "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ",
-                    dari = "بار الها، تو پروردگار منی، معبودی جز تو نیست؛ مرا آفریدی و من بنده‌ات هستم و تا آنجا که توانم بر عهد و پیمانت هستم."
+                    meaningRes = R.string.dhikr_morning_3
                 ),
                 Dua(
                     arabic = "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
-                    dari = "خداوند منزه است و ستایش از آنِ اوست.",
+                    meaningRes = R.string.dhikr_morning_4,
                     count = 100
                 )
             )
         ),
         DuaCategory(
-            title = "اذکار شام",
+            titleRes = R.string.dhikr_category_evening,
             duas = listOf(
                 Dua(
                     arabic = "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
-                    dari = "شام کردیم در حالی که ملک از آنِ الله است؛ معبودی جز الله نیست که تنها و بی‌شریک است."
+                    meaningRes = R.string.dhikr_evening_1
                 ),
                 Dua(
                     arabic = "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ",
-                    dari = "بار الها، به لطف تو شام کردیم، به لطف تو صبح کردیم، به تو زنده‌ایم و به تقدیر تو می‌میریم و بازگشت به سوی توست."
+                    meaningRes = R.string.dhikr_evening_2
                 ),
                 Dua(
                     arabic = "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلَّا أَنْتَ",
-                    dari = "بار الها، شام کردم در حالی که تو و حاملان عرشت و فرشتگانت و همه مخلوقاتت را گواه می‌گیرم که تو الله هستی و معبودی جز تو نیست.",
+                    meaningRes = R.string.dhikr_evening_3,
                     count = 4
                 )
             )
         ),
         DuaCategory(
-            title = "بعد از نماز",
+            titleRes = R.string.dhikr_category_after_prayer,
             duas = listOf(
                 Dua(
                     arabic = "سُبْحَانَ اللَّهِ",
-                    dari = "خداوند منزه است.",
+                    meaningRes = R.string.dhikr_after_prayer_1,
                     count = 33
                 ),
                 Dua(
                     arabic = "الْحَمْدُ لِلَّهِ",
-                    dari = "ستایش از آنِ الله است.",
+                    meaningRes = R.string.dhikr_after_prayer_2,
                     count = 33
                 ),
                 Dua(
                     arabic = "اللَّهُ أَكْبَرُ",
-                    dari = "الله بزرگ‌تر است.",
+                    meaningRes = R.string.dhikr_after_prayer_3,
                     count = 33
                 ),
                 Dua(
                     arabic = "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
-                    dari = "معبودی جز الله نیست که تنها و بی‌شریک است؛ ملک از آنِ اوست و ستایش از آنِ اوست و او بر همه چیز تواناست."
+                    meaningRes = R.string.dhikr_after_prayer_4
                 ),
                 Dua(
                     arabic = "آيَةُ الْكُرْسِيِّ: اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
-                    dari = "آیة الکرسی: الله معبودی جز او نیست؛ زنده و قائم به ذات است..."
+                    meaningRes = R.string.dhikr_after_prayer_5
                 )
             )
         ),
         DuaCategory(
-            title = "قبل از خواب",
+            titleRes = R.string.dhikr_category_sleep,
             duas = listOf(
                 Dua(
                     arabic = "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
-                    dari = "بار الها، با نام تو می‌میرم و زنده می‌شوم."
+                    meaningRes = R.string.dhikr_sleep_1
                 ),
                 Dua(
                     arabic = "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",
-                    dari = "بار الها، مرا از عذابت در روزی که بندگانت را برمی‌انگیزی نگه‌دار.",
+                    meaningRes = R.string.dhikr_sleep_2,
                     count = 3
                 ),
                 Dua(
                     arabic = "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
-                    dari = "خداوندا، تو منزهی و ستایش از آنِ توست؛ گواهی می‌دهم که معبودی جز تو نیست؛ از تو آمرزش می‌خواهم و به سوی تو توبه می‌کنم."
+                    meaningRes = R.string.dhikr_sleep_3
                 )
             )
         ),
         DuaCategory(
-            title = "دعای سفر",
+            titleRes = R.string.dhikr_category_travel,
             duas = listOf(
                 Dua(
                     arabic = "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
-                    dari = "منزه است آن که این را برای ما رام کرد، در حالی که ما توان آن را نداشتیم، و ما به سوی پروردگارمان باز خواهیم گشت."
+                    meaningRes = R.string.dhikr_travel_1
                 ),
                 Dua(
                     arabic = "اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى، وَمِنَ الْعَمَلِ مَا تَرْضَى",
-                    dari = "بار الها، در این سفر نیکی و تقوا می‌خواهیم و از عمل آنچه را که تو راضی هستی."
+                    meaningRes = R.string.dhikr_travel_2
                 )
             )
         )

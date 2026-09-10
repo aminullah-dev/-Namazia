@@ -14,7 +14,9 @@ import androidx.core.app.NotificationCompat
 import af.namazia.app.AzanApplication
 import af.namazia.app.R
 import af.namazia.app.ui.MainActivity
+import af.namazia.app.data.AppLanguage
 import af.namazia.app.utils.AlarmScheduler
+import af.namazia.app.utils.withLanguage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,6 +24,18 @@ class AzanService : Service() {
 
     private var mediaPlayer: MediaPlayer? = null
     private val handler = Handler(Looper.getMainLooper())
+
+    /**
+     * Strings are resolved through the language the alarm was scheduled in, not the
+     * device's. Without this the prayer name would arrive in Pashto inside a Dari
+     * sentence on a phone set to English.
+     */
+    private var strings: android.content.Context = this
+
+    private fun useLanguage(intent: Intent) {
+        val code = intent.getStringExtra(AlarmScheduler.EXTRA_LANGUAGE)
+        strings = applicationContext.withLanguage(AppLanguage.fromCode(code))
+    }
 
     companion object {
         const val NOTIFICATION_ID_AZAN = 1001
@@ -33,8 +47,14 @@ class AzanService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            AlarmScheduler.ACTION_AZAN -> handleAzan(intent)
-            AlarmScheduler.ACTION_REMINDER -> handleReminder(intent)
+            AlarmScheduler.ACTION_AZAN -> {
+                useLanguage(intent)
+                handleAzan(intent)
+            }
+            AlarmScheduler.ACTION_REMINDER -> {
+                useLanguage(intent)
+                handleReminder(intent)
+            }
             ACTION_STOP_AZAN -> stopAzan()
             else -> stopSelf()
         }
@@ -43,7 +63,7 @@ class AzanService : Service() {
 
     private fun handleAzan(intent: Intent) {
         val prayerName = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_NAME) ?: ""
-        val prayerDari = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_DARI) ?: "نماز"
+        val prayerDari = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_DARI) ?: strings.getString(R.string.prayer_generic)
         val prayerTime = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_TIME) ?: ""
         val shouldVibrate = intent.getBooleanExtra(AlarmScheduler.EXTRA_VIBRATE, true)
         val isFajr = prayerName == "FAJR"
@@ -55,7 +75,7 @@ class AzanService : Service() {
     }
 
     private fun handleReminder(intent: Intent) {
-        val prayerDari = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_DARI) ?: "نماز"
+        val prayerDari = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_DARI) ?: strings.getString(R.string.prayer_generic)
         val prayerTime = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_TIME) ?: ""
         val shouldVibrate = intent.getBooleanExtra(AlarmScheduler.EXTRA_VIBRATE, true)
 
@@ -151,11 +171,11 @@ class AzanService : Service() {
         )
 
         return NotificationCompat.Builder(this, AzanApplication.CHANNEL_AZAN)
-            .setContentTitle("وقت $prayerDari")
-            .setContentText("ساعت $time — الله اکبر")
+            .setContentTitle(strings.getString(R.string.notif_azan_title, prayerDari))
+            .setContentText(strings.getString(R.string.notif_azan_body, time))
             .setSmallIcon(R.drawable.ic_mosque)
             .setContentIntent(openAppIntent)
-            .addAction(R.drawable.ic_stop, "قطع اذان", stopIntent)
+            .addAction(R.drawable.ic_stop, strings.getString(R.string.notif_azan_stop), stopIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setOngoing(true)
@@ -171,8 +191,8 @@ class AzanService : Service() {
         )
 
         return NotificationCompat.Builder(this, AzanApplication.CHANNEL_REMINDER)
-            .setContentTitle("یادآوری وقت $prayerDari")
-            .setContentText("ساعت $time اذان خواهد بود")
+            .setContentTitle(strings.getString(R.string.notif_reminder_title, prayerDari))
+            .setContentText(strings.getString(R.string.notif_reminder_body, time))
             .setSmallIcon(R.drawable.ic_mosque)
             .setContentIntent(openAppIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

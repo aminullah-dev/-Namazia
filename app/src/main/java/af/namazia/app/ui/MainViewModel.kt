@@ -8,7 +8,10 @@ import androidx.lifecycle.viewModelScope
 import af.namazia.app.data.*
 import af.namazia.app.service.AzanService
 import af.namazia.app.ui.CalendarUiState
+import af.namazia.app.R
+import af.namazia.app.data.AppLanguage
 import af.namazia.app.utils.AlarmScheduler
+import af.namazia.app.utils.withLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -109,6 +112,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Changing the language re-renders the UI, but the pending alarms carry text that
+     * was written when they were scheduled — so they are rebuilt too, or the azan would
+     * arrive in the old language for the rest of the day.
+     */
+    fun updateLanguage(language: AppLanguage) {
+        viewModelScope.launch {
+            settingsDataStore.updateLanguage(language)
+            loadPrayerTimes()
+        }
+    }
+
     fun toggleDarkMode(enabled: Boolean) {
         viewModelScope.launch {
             settingsDataStore.updateDarkMode(enabled)
@@ -168,7 +183,10 @@ class MainViewModel @Inject constructor(
         val intent = Intent(context, AzanService::class.java).apply {
             action = AlarmScheduler.ACTION_AZAN
             putExtra(AlarmScheduler.EXTRA_PRAYER_NAME, if (fajr) "FAJR" else "DHUHR")
-            putExtra(AlarmScheduler.EXTRA_PRAYER_DARI, "تست اذان")
+            putExtra(
+                AlarmScheduler.EXTRA_PRAYER_DARI,
+                context.withLanguage(settings.value.language).getString(R.string.notif_test_label)
+            )
             putExtra(AlarmScheduler.EXTRA_PRAYER_TIME, "")
             putExtra(AlarmScheduler.EXTRA_VIBRATE, settings.value.vibrationEnabled)
         }
@@ -207,7 +225,7 @@ class MainViewModel @Inject constructor(
             if (isNext) nextFound = true
 
             PrayerTime(
-                name = prayer.dari,
+                nameRes = prayer.nameRes,
                 nameEn = prayer.arabic,
                 time = timeStr,
                 isNext = isNext,

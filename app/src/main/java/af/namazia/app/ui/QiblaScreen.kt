@@ -28,9 +28,11 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import af.namazia.app.R
 import af.namazia.app.data.AfghanCity
 import af.namazia.app.ui.components.MessageState
 import af.namazia.app.ui.theme.Radii
@@ -129,7 +131,7 @@ fun QiblaScreen(city: AfghanCity) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("قبله‌نما", style = MaterialTheme.typography.titleLarge) },
+                title = { Text(stringResource(R.string.qibla_title), style = MaterialTheme.typography.titleLarge) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -153,7 +155,7 @@ fun QiblaScreen(city: AfghanCity) {
                 )
                 Spacer(Modifier.width(Spacing.xs))
                 Text(
-                    text = city.nameDari,
+                    text = stringResource(city.nameRes),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -232,14 +234,14 @@ fun QiblaScreen(city: AfghanCity) {
 
             Row(horizontalArrangement = Arrangement.spacedBy(Spacing.md)) {
                 InfoTile(
-                    label = "جهت قبله",
+                    label = stringResource(R.string.qibla_direction_label),
                     value = "${qiblaBearing.roundToInt().toPersianDigits()}°",
-                    caption = "از شمال حقیقی"
+                    caption = stringResource(R.string.qibla_from_true_north)
                 )
                 InfoTile(
-                    label = "اختلاف",
+                    label = stringResource(R.string.qibla_offset_label),
                     value = "${offBy.roundToInt().toPersianDigits()}°",
-                    caption = if (aligned) "در جهت قبله" else "بچرخانید"
+                    caption = stringResource(if (aligned) R.string.qibla_on_target else R.string.qibla_turn_short)
                 )
             }
 
@@ -265,7 +267,7 @@ fun QiblaScreen(city: AfghanCity) {
                         )
                         Spacer(Modifier.width(Spacing.sm))
                         Text(
-                            text = "دقت قطب‌نما کم است — گوشی را چند بار به شکل ۸ بچرخانید",
+                            text = stringResource(R.string.qibla_low_accuracy),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
@@ -308,7 +310,7 @@ private fun AlignmentBadge(aligned: Boolean, offBy: Float) {
                 Spacer(Modifier.width(Spacing.sm))
             }
             Text(
-                text = if (aligned) "رو به قبله ایستاده‌اید" else "گوشی را بچرخانید",
+                text = stringResource(if (aligned) R.string.qibla_aligned else R.string.qibla_turn),
                 style = MaterialTheme.typography.labelLarge,
                 color = content
             )
@@ -353,7 +355,7 @@ private fun QiblaNoSensor(city: AfghanCity, bearing: Float) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("قبله‌نما", style = MaterialTheme.typography.titleLarge) },
+                title = { Text(stringResource(R.string.qibla_title), style = MaterialTheme.typography.titleLarge) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -362,10 +364,12 @@ private fun QiblaNoSensor(city: AfghanCity, bearing: Float) {
     ) { padding ->
         Box(Modifier.padding(padding)) {
             MessageState(
-                title = "این دستگاه قطب‌نما ندارد",
-                body = "جهت قبله از ${city.nameDari} برابر است با " +
-                        "${bearing.roundToInt().toPersianDigits()}° نسبت به شمال حقیقی. " +
-                        "می‌توانید با یک قطب‌نمای دیگر این زاویه را پیدا کنید.",
+                title = stringResource(R.string.qibla_no_compass_title),
+                body = stringResource(
+                    R.string.qibla_no_compass_body,
+                    stringResource(city.nameRes),
+                    bearing.roundToInt().toPersianDigits()
+                ),
                 icon = Icons.Default.ExploreOff
             )
         }

@@ -32,6 +32,7 @@ class SettingsDataStore @Inject constructor(
         val USE_AUTO_LOCATION = booleanPreferencesKey("use_auto_location")
         val DARK_MODE = booleanPreferencesKey("dark_mode")
         val TASBIH_COUNT = intPreferencesKey("tasbih_count")
+        val LANGUAGE = stringPreferencesKey("language")
     }
 
     val settings: Flow<AppSettings> = context.dataStore.data
@@ -50,7 +51,8 @@ class SettingsDataStore @Inject constructor(
                 reminderMinutes = prefs[Keys.REMINDER_MINUTES] ?: 15,
                 vibrationEnabled = prefs[Keys.VIBRATION_ENABLED] ?: true,
                 useAutoLocation = prefs[Keys.USE_AUTO_LOCATION] ?: false,
-                darkMode = prefs[Keys.DARK_MODE] ?: false
+                darkMode = prefs[Keys.DARK_MODE] ?: false,
+                language = AppLanguage.fromCode(prefs[Keys.LANGUAGE])
             )
         }
 
@@ -100,5 +102,9 @@ class SettingsDataStore @Inject constructor(
 
     suspend fun updateTasbihCount(count: Int) = context.dataStore.edit {
         it[Keys.TASBIH_COUNT] = count
+    }
+
+    suspend fun updateLanguage(language: AppLanguage) = context.dataStore.edit {
+        it[Keys.LANGUAGE] = language.code
     }
 }
