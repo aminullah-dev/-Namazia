@@ -276,3 +276,67 @@ struct AppSettings: Equatable {
         }
     }
 }
+
+/// Storage keys, shared by the app's settings store and the widget.
+enum SettingsKeys {
+    static let cityIndex = "city_index"
+    static let calcMethod = "calc_method"
+    static let asrSchool = "asr_school"
+    static let fajrEnabled = "fajr_enabled"
+    static let dhuhrEnabled = "dhuhr_enabled"
+    static let asrEnabled = "asr_enabled"
+    static let maghribEnabled = "maghrib_enabled"
+    static let ishaEnabled = "isha_enabled"
+    static let sunriseEnabled = "sunrise_enabled"
+    static let reminderMinutes = "reminder_minutes"
+    static let vibrationEnabled = "vibration_enabled"
+    static let darkMode = "dark_mode"
+    static let tasbihCount = "tasbih_count"
+
+    static func enabledKey(for prayer: PrayerName) -> String {
+        switch prayer {
+        case .fajr: return fajrEnabled
+        case .sunrise: return sunriseEnabled
+        case .dhuhr: return dhuhrEnabled
+        case .asr: return asrEnabled
+        case .maghrib: return maghribEnabled
+        case .isha: return ishaEnabled
+        }
+    }
+}
+
+extension AppSettings {
+    /// Reads the stored settings.
+    ///
+    /// A free function rather than a method on `SettingsStore` because the widget needs
+    /// exactly this and nothing else — it has no business owning a main-actor
+    /// observable object just to find out which city was picked.
+    static func load(from defaults: UserDefaults) -> AppSettings {
+        var settings = AppSettings()
+
+        // `integer(forKey:)` and `bool(forKey:)` return 0 / false for a key that was
+        // never written, which is indistinguishable from a stored 0 / false — hence the
+        // explicit presence check before overriding each default.
+        func int(_ key: String, _ current: Int) -> Int {
+            defaults.object(forKey: key) == nil ? current : defaults.integer(forKey: key)
+        }
+        func bool(_ key: String, _ current: Bool) -> Bool {
+            defaults.object(forKey: key) == nil ? current : defaults.bool(forKey: key)
+        }
+
+        settings.cityIndex = int(SettingsKeys.cityIndex, settings.cityIndex)
+        settings.calculationMethod = int(SettingsKeys.calcMethod, settings.calculationMethod)
+        settings.asrSchool = int(SettingsKeys.asrSchool, settings.asrSchool)
+        settings.reminderMinutes = int(SettingsKeys.reminderMinutes, settings.reminderMinutes)
+        settings.fajrEnabled = bool(SettingsKeys.fajrEnabled, settings.fajrEnabled)
+        settings.dhuhrEnabled = bool(SettingsKeys.dhuhrEnabled, settings.dhuhrEnabled)
+        settings.asrEnabled = bool(SettingsKeys.asrEnabled, settings.asrEnabled)
+        settings.maghribEnabled = bool(SettingsKeys.maghribEnabled, settings.maghribEnabled)
+        settings.ishaEnabled = bool(SettingsKeys.ishaEnabled, settings.ishaEnabled)
+        settings.sunriseEnabled = bool(SettingsKeys.sunriseEnabled, settings.sunriseEnabled)
+        settings.vibrationEnabled = bool(SettingsKeys.vibrationEnabled, settings.vibrationEnabled)
+        settings.darkMode = bool(SettingsKeys.darkMode, settings.darkMode)
+
+        return settings
+    }
+}

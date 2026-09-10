@@ -85,6 +85,35 @@ on its own, with no network call.
 
 ---
 
+## The widget
+
+Home screen (small and medium) and lock screen (rectangular and circular).
+
+**The widget never touches the network.** It reads the prayer times the app already
+cached in the App Group container. It cannot ask the user for anything, it runs on a
+budget the system controls, and a cached day's times never change — so reading is both
+cheaper and more predictable than fetching.
+
+Two details worth knowing before changing anything here:
+
+- **The countdown is not a timeline entry.** `Text(timerInterval:countsDown:)` is
+  redrawn by WidgetKit itself every second. Entries exist only at the moments the *next
+  prayer* changes — one per prayer time — which is why the timeline is a few dozen
+  entries rather than thousands.
+- **Perso-Arabic digits in that countdown come from the locale**, not from
+  `persianDigits`: the system formats the text, so the widget sets
+  `.environment(\.locale, Locale(identifier: "fa_AF"))`.
+
+If the widget shows «برنامه را باز کنید», it means it found no cached day — either the
+app has never run, or the App Group is not in place, in which case the app and the
+widget are each reading their own private container.
+
+The widget target compiles `Data/`, `Utils/` and `DesignSystem/` but deliberately not
+`Screens/`: those use `UIApplication`, which is unavailable in an app extension and
+would not build.
+
+---
+
 ## Layout
 
 ```
@@ -119,6 +148,12 @@ Data/
 Utils/
   AppTime.swift             Kabul timezone, POSIX formatters, HH:mm → instant
   PrayerCalc.swift          schedule, next prayer, countdown text
+  Qibla.swift               great-circle bearing to the Kaaba
+
+../NamaziaWidget/
+  NamaziaWidget.swift       widget definition + timeline provider
+  PrayerWidgetView.swift    the four families
+  Info.plist                extension point + its own font registration
 ```
 
 Two rules that the Android app learned the hard way and that this port keeps:

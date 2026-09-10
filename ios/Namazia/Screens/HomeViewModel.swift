@@ -1,4 +1,5 @@
 import Foundation
+import WidgetKit
 
 /// State for the home screen, ported from `HomeUiState` and the loading half of
 /// `MainViewModel.kt`.
@@ -57,6 +58,11 @@ final class HomeViewModel: ObservableObject {
             )
             times = loaded
             error = nil
+
+            // The widget reads the same cache but cannot fill it. Whenever the app
+            // learns something new, the widget is told to redraw — otherwise it keeps
+            // showing whatever it last managed to read, for hours.
+            WidgetCenter.shared.reloadAllTimelines()
 
             // Fetch the coming week in the background, then arm the azan from it. This
             // is the only thing that keeps notifications alive: iOS cannot wake the app

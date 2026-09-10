@@ -60,3 +60,33 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         SUPPORTS_MACCATALYST: NO
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+
+    # Embeds the widget in the app bundle. Without this the extension builds but never
+    # appears in the widget gallery.
+    dependencies:
+      - target: NamaziaWidget
+        embed: true
+
+  NamaziaWidget:
+    type: app-extension
+    platform: iOS
+
+    sources:
+      - path: NamaziaWidget
+      # The widget shares the app's model, time handling and design language, but not
+      # its screens: those reach for UIApplication, which is unavailable in an
+      # extension and would not compile here.
+      - path: Namazia/Data
+      - path: Namazia/Utils
+      - path: Namazia/DesignSystem
+      # Fonts have to be in the extension's own bundle as well as the app's.
+      - path: Namazia/Resources/Fonts
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: af.namazia.app.widget
+        PRODUCT_NAME: NamaziaWidget
+        INFOPLIST_FILE: NamaziaWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: NamaziaWidget/NamaziaWidget.entitlements
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: YES

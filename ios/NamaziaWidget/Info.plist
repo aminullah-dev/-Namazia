@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>fa</string>
+
+	<key>CFBundleDisplayName</key>
+	<string>اوقات نماز</string>
+
+	<key>CFBundleName</key>
+	<string>NamaziaWidget</string>
+
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+
+	<key>CFBundlePackageType</key>
+	<string>XPC!</string>
+
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+
+	<!-- An extension has its own bundle, so the fonts have to be registered here too.
+	     Without this the widget silently falls back to the system face while the app
+	     next to it renders in Vazirmatn. -->
+	<key>UIAppFonts</key>
+	<array>
+		<string>Vazirmatn-Light.ttf</string>
+		<string>Vazirmatn-Regular.ttf</string>
+		<string>Vazirmatn-Medium.ttf</string>
+		<string>Vazirmatn-Bold.ttf</string>
+	</array>
+
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.widgetkit-extension</string>
+	</dict>
+</dict>
+</plist>
