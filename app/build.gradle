@@ -20,8 +20,8 @@ android {
         // Play permanently retires a versionCode once a bundle with it has been uploaded,
         // even to a test track and even if that bundle was never published. Raise this for
         // every single upload, including re-uploads after a rejected or discarded one.
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.1.0"
     }
 
     buildFeatures {
