@@ -153,11 +153,16 @@ struct QiblaView: View {
                     .rotationEffect(.degrees(Double(index) * 15 - (provider.heading ?? 0)))
             }
 
+            // The label orbits with the dial but stays upright: the inner rotation
+            // cancels the outer one on the glyph, while the offset between them still
+            // gets carried around the circle. Without it, "ش" ends up sideways or
+            // upside down as soon as the phone turns.
             Text("compass.north".localized)
                 .appText(AppType.labelLarge)
                 .foregroundStyle(colors.onSurfaceVariant)
+                .rotationEffect(.degrees(provider.heading ?? 0))
                 .offset(y: -96)
-                .rotationEffect(.degrees(-(provider.heading ?? 0)), anchor: .center)
+                .rotationEffect(.degrees(-(provider.heading ?? 0)))
 
             pointer
                 .rotationEffect(.degrees(rotation))
@@ -174,9 +179,11 @@ struct QiblaView: View {
                 .font(.system(size: 34))
                 .foregroundStyle(isAligned ? colors.tertiary : colors.primary)
 
+            // Same trick as the north label: the arrow turns, the word does not.
             Text("qibla.title".localized)
                 .appText(AppType.labelMedium)
                 .foregroundStyle(colors.onSurfaceVariant)
+                .rotationEffect(.degrees(-rotation))
 
             Spacer()
         }
