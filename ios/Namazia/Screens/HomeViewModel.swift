@@ -58,20 +58,32 @@ final class HomeViewModel: ObservableObject {
             times = loaded
             error = nil
 
-            // Warm the coming week in the background: it keeps the app usable offline
-            // and gives the notification scheduler days to work with.
-            Task {
-                await self.services.repository.prefetchWeek(
-                    city: settings.city,
-                    method: settings.calculationMethod,
-                    school: settings.asrSchool
-                )
-            }
+            // Fetch the coming week in the background, then arm the azan from it. This
+            // is the only thing that keeps notifications alive: iOS cannot wake the app
+            // at a prayer time, so every run has to re-arm the window ahead.
+            Task { await self.armNotifications(for: settings) }
         } catch {
             self.error = AppError.classify(error)
         }
 
         isLoading = false
+    }
+
+    /// Re-arms the azan from the coming week's times.
+    private func armNotifications(for settings: AppSettings) async {
+        let days = await services.repository.week(
+            city: settings.city,
+            method: settings.calculationMethod,
+            school: settings.asrSchool
+        )
+        guard !days.isEmpty else { return }
+        await services.notifications.reschedule(days: days, settings: settings)
+    }
+
+    /// Which prayers call the azan, and how early the reminder comes, changed. The
+    /// times on screen are still right — only the pending notifications are stale.
+    func rescheduleNotifications() async {
+        await armNotifications(for: settings)
     }
 
     /// Pull-to-refresh and the retry button.

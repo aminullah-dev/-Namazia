@@ -2,12 +2,18 @@ import SwiftUI
 
 @main
 struct NamaziaApp: App {
+    /// The notification delegate has to be installed before launch finishes, and
+    /// SwiftUI offers no hook that early — hence the UIKit delegate.
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     @StateObject private var settings = AppServices.shared.settings
+    @StateObject private var notifications = AppServices.shared.notifications
 
     var body: some Scene {
         WindowGroup {
             HomeView()
                 .environmentObject(settings)
+                .environmentObject(notifications)
                 .themed()
                 // Off means "follow the phone", not "force light" — a reader who has
                 // set their whole device to dark should not be handed a white screen

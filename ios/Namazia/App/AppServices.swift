@@ -12,6 +12,8 @@ final class AppServices {
 
     let repository: PrayerTimesRepository
     let settings: SettingsStore
+    let notifications: NotificationScheduler
+    let player: AzanPlayer
 
     /// The parameters take `nil` rather than a constructed default.
     ///
@@ -23,6 +25,8 @@ final class AppServices {
     init(repository: PrayerTimesRepository? = nil, settings: SettingsStore? = nil) {
         self.repository = repository ?? PrayerTimesRepository()
         self.settings = settings ?? SettingsStore()
+        self.notifications = NotificationScheduler()
+        self.player = AzanPlayer()
     }
 
     /// Changing the calculation method or the fiqh school changes every prayer time,

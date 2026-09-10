@@ -36,6 +36,17 @@ targets:
 
     sources:
       - path: Namazia
+      # The full-length azan is played in-app when a prayer arrives while the app is
+      # open. The files are referenced where they already live on the Android side
+      # rather than copied here: 8 MB of audio duplicated in git is 8 MB that can drift
+      # out of sync. The short .caf notification sounds are generated into
+      # Namazia/Resources/Sounds and picked up by the folder above.
+      - path: ../app/src/main/res/raw/azan.mp3
+        type: file
+        buildPhase: resources
+      - path: ../app/src/main/res/raw/azan_fajr.mp3
+        type: file
+        buildPhase: resources
 
     settings:
       base:

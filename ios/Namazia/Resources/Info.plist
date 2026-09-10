@@ -44,6 +44,20 @@
 		<string>Vazirmatn-Bold.ttf</string>
 	</array>
 
+	<!-- iOS can only sound an azan that was scheduled in advance, and it caps the
+	     queue at 64 pending notifications — about six days of prayers. Background
+	     refresh lets the system top that queue up while the app is closed, so the
+	     azan does not quietly stop for someone who has not opened the app all week. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+	</array>
+
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>af.namazia.app.refresh</string>
+	</array>
+
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

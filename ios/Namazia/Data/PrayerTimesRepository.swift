@@ -38,18 +38,28 @@ final class PrayerTimesRepository {
         }
     }
 
-    /// Warms the cache for the coming week so the app keeps working offline and the
-    /// notification scheduler has days to schedule.
+    /// The coming week, fetching and caching whatever is missing.
     ///
-    /// Failures are deliberately swallowed: this runs in the background and a missing
-    /// future day is not something to interrupt the user about — the day is fetched
-    /// again when it is actually needed.
-    func prefetchWeek(city: AfghanCity, method: Int, school: Int) async {
-        for offset in 0..<7 {
+    /// This keeps the app working offline and gives the notification scheduler days to
+    /// arm — iOS can only sound an azan that was scheduled in advance, so how far ahead
+    /// this reaches is how long the app can go unopened and still call the prayer.
+    ///
+    /// Failures are deliberately swallowed: a missing future day is not worth
+    /// interrupting anyone about, and it is fetched again when it is actually needed.
+    /// The days that *were* obtained are returned so a partial week still schedules.
+    @discardableResult
+    func week(city: AfghanCity, method: Int, school: Int, days: Int = 7) async -> [DayPrayerTimes] {
+        var result: [DayPrayerTimes] = []
+
+        for offset in 0..<days {
             let day = AppTime.dayKey(byAddingDays: offset)
-            _ = try? await prayerTimes(day: day, city: city, method: method, school: school)
+            if let times = try? await prayerTimes(day: day, city: city, method: method, school: school) {
+                result.append(times)
+            }
         }
+
         await cache.prune()
+        return result
     }
 
     /// A whole month in one request. The rows are written into the same cache the daily

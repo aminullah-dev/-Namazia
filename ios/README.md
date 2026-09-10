@@ -81,6 +81,11 @@ Components/
   CountdownRing.swift       the hero ring
   PrayerRowView.swift       one line of the list
   StateViews.swift          skeleton, error state, stale-data notice
+Notifications/
+  NotificationScheduler.swift   the rolling window of pending azans
+  NotificationDelegate.swift    foreground behaviour + the UIKit app delegate
+  BackgroundRefresh.swift       tops the queue up while the app is closed
+  AzanPlayer.swift              the full azan, in-app
 Data/
   Models.swift              API payloads, cities, settings, calculation methods
   AppError.swift            four failure codes + their Dari wording
@@ -138,8 +143,42 @@ silent lead-in — trim the start with `-s` if the recording opens with silence:
 afinfo azan30.caf | grep duration
 ```
 
-The full-length MP3s get bundled too, for in-app playback, in the phase that adds
-notifications.
+The full-length MP3s are bundled too — `project.yml` references them where they already
+live in `app/src/main/res/raw/` rather than keeping a second 8 MB copy under `ios/`.
+`AzanPlayer` plays those when a prayer arrives while the app is open, and the
+notification's own short sound is suppressed so the two do not overlap.
+
+**Until the two `.caf` files exist, notifications use the default iOS chime.** Nothing
+breaks; the azan just is not the azan. In a debug build the speaker button in the header
+fires a test notification a few seconds out, and its text says which sound you are
+getting.
+
+---
+
+## How the azan actually gets called
+
+This is the part that differs most from Android, and the part most likely to be
+misunderstood later:
+
+- iOS cannot wake the app at a prayer time. Everything must be **scheduled in advance**
+  as local notifications, and the system keeps at most **64 pending** ones.
+- So the app arms a rolling window: the next seven days of prayers, azan plus reminder,
+  taken in time order until the budget of 60 runs out — about six days. Nearest first,
+  because a reminder eight days out is worthless if it costs tomorrow's Fajr.
+- The window is re-armed on every launch, on returning to the foreground, and whenever
+  the settings change.
+- `BackgroundRefresh` asks iOS to top the queue up while the app is closed. iOS decides
+  whether to honour that, so it is a safety net, not the mechanism.
+
+Triggers are `UNCalendarNotificationTrigger` with the timezone pinned to Kabul, so a
+phone that travels still fires at the right wall-clock time.
+
+### Optional: Time Sensitive
+
+The notifications are marked `.timeSensitive` so they can break through a Focus mode —
+which is exactly right for a prayer time. It only takes effect with the **Time Sensitive
+Notifications** capability enabled for the App ID on the developer portal. Without it
+iOS quietly treats them as ordinary notifications; nothing fails to build.
 
 ---
 

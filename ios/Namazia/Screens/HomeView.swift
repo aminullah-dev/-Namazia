@@ -1,10 +1,12 @@
 import SwiftUI
+import UIKit
 
 /// The screen the app exists for: what time the next prayer is, and how long is left.
 struct HomeView: View {
     @Environment(\.colors) private var colors
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var settings: SettingsStore
+    @EnvironmentObject private var notifications: NotificationScheduler
     @StateObject private var model = HomeViewModel()
 
     /// One-second tick for the countdown. Owned by the view so it stops with the view,
@@ -14,18 +16,37 @@ struct HomeView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
+            permissionBanner
             content
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(colors.background)
-        .task { await model.load() }
+        // Times first, then the permission prompt, then arm the azan now that the
+        // answer is known. Asking before anything is on screen would be asking someone
+        // to say yes to a blank page.
+        .task {
+            await model.load()
+            await notifications.requestAuthorizationIfNeeded()
+            await model.rescheduleNotifications()
+        }
         .onReceive(tick) { model.tick($0) }
+        // Which azans are on, and how early the reminder is, change the pending queue
+        // without changing a single time on screen.
+        .onChange(of: settings.settings) { _ in
+            Task { await model.rescheduleNotifications() }
+        }
         // The timer does not run in the background, so a phone reopened the next
         // morning would otherwise still be showing yesterday.
         .onChange(of: scenePhase) { phase in
             guard phase == .active else { return }
             model.tick(Date())
-            Task { await model.load() }
+            Task {
+                await model.load()
+                // The user may have turned notifications on (or off) in Settings while
+                // the app was in the background.
+                await notifications.refreshAuthorization()
+                await model.rescheduleNotifications()
+            }
         }
         // The city, method and school decide what was fetched, so a change to any of
         // them invalidates what is on screen. Toggling an azan on or off does not —
@@ -51,6 +72,20 @@ struct HomeView: View {
 
             Spacer()
 
+            #if DEBUG
+            // Until the settings screen exists (Phase 5) there is no other way to hear
+            // the azan without waiting for a prayer time. Debug builds only.
+            Button {
+                Task { await notifications.scheduleTest() }
+            } label: {
+                Image(systemName: "speaker.wave.2")
+                    .font(.system(size: 15))
+                    .frame(width: Spacing.touchTarget, height: Spacing.touchTarget)
+            }
+            .tint(colors.tertiary)
+            .accessibilityLabel("تست اذان")
+            #endif
+
             Button {
                 Task { await model.refresh() }
             } label: {
@@ -68,6 +103,41 @@ struct HomeView: View {
             Rectangle()
                 .fill(colors.outlineVariant)
                 .frame(height: 0.5)
+        }
+    }
+
+    // MARK: - Notification permission
+
+    /// Notifications refused means no azan at all — and iOS never asks a second time,
+    /// so the app has to say what happened and point at the only place that can undo
+    /// it. Silence here is how a prayer app ends up seeming broken.
+    @ViewBuilder
+    private var permissionBanner: some View {
+        if notifications.authorization == .denied {
+            HStack(spacing: Spacing.md) {
+                Image(systemName: "bell.slash.fill")
+                    .foregroundStyle(colors.onErrorContainer)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("اعلان‌ها خاموش است")
+                        .appText(AppType.labelLarge)
+                    Text("بدون اجازه‌ی اعلان، اذان پخش نمی‌شود")
+                        .appText(AppType.bodySmall)
+                }
+                .foregroundStyle(colors.onErrorContainer)
+
+                Spacer(minLength: Spacing.sm)
+
+                Button("تنظیمات") {
+                    guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                    UIApplication.shared.open(url)
+                }
+                .appText(AppType.labelLarge)
+                .tint(colors.onErrorContainer)
+            }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.vertical, Spacing.md)
+            .background(colors.errorContainer)
         }
     }
 
