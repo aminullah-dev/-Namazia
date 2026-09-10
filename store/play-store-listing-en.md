@@ -84,6 +84,8 @@ Namazia has no account, no advertising and no analytics. Nothing about you is co
 For the azan to be called on time, please allow notifications and turn off battery optimisation for the app when it asks — some phones stop background alarms otherwise.
 
 Questions or problems: aminhashemi979@gmail.com
+
+Fajr azan recording: "Morning call to prayer on Bodufolhudhoo, Maldives" by jrosin (freesound.org), CC BY 4.0.
 ```
 
 *(~2,650 characters — well inside the limit)*

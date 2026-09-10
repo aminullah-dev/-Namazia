@@ -218,11 +218,12 @@ Both short files are committed in `Namazia/Resources/Sounds/`, cut from the Andr
 
 | File | Length | Where it ends |
 |---|---|---|
-| `azan30.caf` | 24.35 s | a silent pause between phrases |
-| `azan_fajr30.caf` | 14.5 s | the pause after the first phrase — Fajr is recited slowly, and the next one runs past 30 s |
+| `azan30.caf` | 29.35 s | the pause after the second phrase |
+| `azan_fajr30.caf` | 28 s | the pause after the second phrase |
 
-Each starts at the first sound (the MP3s open with 0.2 s and 0.7 s of silence) and ends
-in a pause rather than mid-word, which is why neither is a flat 30 seconds. They are
+Each starts at the first sound and ends in a pause rather than mid-word, which is why
+neither is a flat 30 seconds. Where the recordings come from, and the credit one of them
+requires, is in `../licenses/azan-recordings.md`. They are
 mono IMA4, which notification sounds support, so together they weigh under 1 MB.
 
 To redo them, decode with `afconvert in.mp3 out.wav -f WAVE -d LEI16@44100`, cut the

@@ -192,7 +192,7 @@
 "settings.support" = "پشتیبانی";
 "settings.support.copied" = "آدرس کاپی شد";
 "settings.privacy" = "سیاست حریم خصوصی";
-"settings.about.footer" = "اوقات نماز از سرویس Aladhan گرفته می‌شود.";
+"settings.about.footer" = "اوقات نماز از سرویس Aladhan گرفته می‌شود.\nاذان صبح: jrosin (Freesound)، CC BY 4.0";
 
 /* MARK: Widget */
 "widget.description" = "وقت نماز بعدی و اوقات امروز";

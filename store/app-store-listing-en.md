@@ -93,6 +93,8 @@ Namazia has no account, no advertising and no analytics. Nothing you do in the a
 
 A NOTE ABOUT THE AZAN ON iPHONE
 When a prayer arrives while the app is open, the full azan is played. When your phone is locked or the app is closed, iOS plays the opening of the azan as a notification sound, which the system limits to 30 seconds. This is a limit of iOS itself and applies to every prayer app on the App Store.
+
+Fajr azan recording: "Morning call to prayer on Bodufolhudhoo, Maldives" by jrosin (freesound.org), CC BY 4.0.
 ```
 *(about 2,300 characters)*
 

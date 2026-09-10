@@ -198,7 +198,7 @@
 "settings.support" = "ملاتړ";
 "settings.support.copied" = "پته کاپي شوه";
 "settings.privacy" = "د محرمیت تګلاره";
-"settings.about.footer" = "د لمانځه وختونه د Aladhan له خدمت څخه اخیستل کېږي.";
+"settings.about.footer" = "د لمانځه وختونه د Aladhan له خدمت څخه اخیستل کېږي.\nد سهار اذان: jrosin (Freesound)، CC BY 4.0";
 
 /* MARK: Widget */
 "widget.description" = "د راتلونکي لمانځه وخت او د نن ورځې وختونه";
