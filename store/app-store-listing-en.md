@@ -35,9 +35,13 @@ Azan, Qibla, Hijri calendar
 Ramadan, Eid, or a new feature.*
 
 ```
-Prayer times for 15 Afghan cities, the full azan at every prayer, a Qibla compass and a Hijri calendar. In Dari and Pashto, Hanafi Asr by default, works offline.
+Prayer times for 15 Afghan cities, the azan at every prayer, a Qibla compass and a Hijri calendar. In Dari and Pashto, Hanafi Asr by default, works offline.
 ```
-*(159 characters)*
+*(156 characters)*
+
+Not "the full azan", as on Play: on iOS the full azan plays only while the app is open.
+A reviewer who hears a 24-second notification after reading "full" has a metadata
+rejection (2.3) to write.
 
 ---
 
@@ -88,7 +92,7 @@ PRIVACY
 Namazia has no account, no advertising and no analytics. Nothing you do in the app is sent anywhere, and nothing about you is collected. Prayer times are requested by city name from a public prayer-times service; your device's location is never sent.
 
 A NOTE ABOUT THE AZAN ON iPHONE
-When a prayer arrives while the app is open, the full azan is played. When your phone is locked or the app is closed, iOS plays a notification sound, which the system limits to 30 seconds. This is a limit of iOS itself and applies to every prayer app on the App Store.
+When a prayer arrives while the app is open, the full azan is played. When your phone is locked or the app is closed, iOS plays the opening of the azan as a notification sound, which the system limits to 30 seconds. This is a limit of iOS itself and applies to every prayer app on the App Store.
 ```
 *(about 2,300 characters)*
 
@@ -99,9 +103,9 @@ When a prayer arrives while the app is open, the full azan is played. When your 
 already in the app name or subtitle — Apple indexes those separately.*
 
 ```
-namaz,salah,adhan,athan,namaaz,kabul,afghanistan,dari,pashto,muslim,islam,ramadan,qibla
+namaz,salah,adhan,athan,namaaz,kabul,afghanistan,dari,pashto,muslim,islam,ramadan,hanafi,tasbih
 ```
-*(90 characters)*
+*(95 characters)* — "qibla" is left out because the subtitle already carries it.
 
 ---
 
