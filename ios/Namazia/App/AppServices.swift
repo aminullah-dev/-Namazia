@@ -13,12 +13,16 @@ final class AppServices {
     let repository: PrayerTimesRepository
     let settings: SettingsStore
 
-    init(
-        repository: PrayerTimesRepository = PrayerTimesRepository(),
-        settings: SettingsStore = SettingsStore()
-    ) {
-        self.repository = repository
-        self.settings = settings
+    /// The parameters take `nil` rather than a constructed default.
+    ///
+    /// A default *argument* is evaluated in a nonisolated context, so
+    /// `settings: SettingsStore = SettingsStore()` would be calling a main-actor
+    /// isolated initialiser from outside the actor — which does not compile. Building
+    /// the real objects inside the body, which is main-actor isolated like the rest of
+    /// the class, is the way to keep both the convenience and the injection point.
+    init(repository: PrayerTimesRepository? = nil, settings: SettingsStore? = nil) {
+        self.repository = repository ?? PrayerTimesRepository()
+        self.settings = settings ?? SettingsStore()
     }
 
     /// Changing the calculation method or the fiqh school changes every prayer time,

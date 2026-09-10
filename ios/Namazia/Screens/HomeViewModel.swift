@@ -17,8 +17,10 @@ final class HomeViewModel: ObservableObject {
 
     private let services: AppServices
 
-    init(services: AppServices = .shared) {
-        self.services = services
+    /// `nil`, not `.shared`, as the default — a default argument is evaluated in a
+    /// nonisolated context, where a main-actor isolated static property is off limits.
+    init(services: AppServices? = nil) {
+        self.services = services ?? .shared
     }
 
     var settings: AppSettings { services.settings.settings }
