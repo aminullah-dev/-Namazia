@@ -2,10 +2,17 @@ import SwiftUI
 
 @main
 struct NamaziaApp: App {
+    @StateObject private var settings = AppServices.shared.settings
+
     var body: some Scene {
         WindowGroup {
-            RootView()
+            HomeView()
+                .environmentObject(settings)
                 .themed()
+                // Off means "follow the phone", not "force light" — a reader who has
+                // set their whole device to dark should not be handed a white screen
+                // by an app they never configured.
+                .preferredColorScheme(settings.settings.darkMode ? .dark : nil)
         }
     }
 }

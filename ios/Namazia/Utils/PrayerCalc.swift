@@ -44,6 +44,43 @@ extension DayPrayerTimes {
     var isToday: Bool { day == AppTime.dayKey() }
 }
 
+/// A prayer as the list renders it: when it is, and where it sits relative to now.
+struct PrayerRow: Identifiable, Equatable {
+    let prayer: PrayerName
+    let clock: String
+    let date: Date
+    let isNext: Bool
+    let isPast: Bool
+    let isEnabled: Bool
+
+    var id: String { prayer.rawValue }
+}
+
+extension DayPrayerTimes {
+    /// Every prayer of the day — including the ones whose azan is switched off, which
+    /// are still shown, just marked. Only the first upcoming *enabled* prayer is
+    /// "next", matching the Android list.
+    func rows(_ settings: AppSettings, now: Date = Date()) -> [PrayerRow] {
+        var nextFound = false
+
+        return schedule.map { entry in
+            let isPast = entry.date <= now
+            let enabled = settings.isEnabled(entry.prayer)
+            let isNext = !isPast && !nextFound && enabled
+            if isNext { nextFound = true }
+
+            return PrayerRow(
+                prayer: entry.prayer,
+                clock: entry.clock,
+                date: entry.date,
+                isNext: isNext,
+                isPast: isPast,
+                isEnabled: enabled
+            )
+        }
+    }
+}
+
 extension ScheduledPrayer {
     /// Seconds until this prayer, never negative.
     func secondsAway(from now: Date = Date()) -> Int {

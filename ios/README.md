@@ -34,42 +34,53 @@ in the whole `Namazia` folder — but the project must be regenerated so Xcode s
 
 ---
 
-## What the scaffold screen verifies
+## The home screen
 
-`RootView` is not the real UI — it is a probe for the things that otherwise fail
-*silently*:
+`HomeView` is the app's only screen so far — Qibla, calendar, dhikr and settings arrive
+in Phase 5, behind a tab bar.
+
+What to look for when it runs:
+
+- **The hero card** counts down to the next prayer. The ring measures the *real* gap
+  between the previous prayer and the next one, so it closes at a different rate at
+  different times of day; before Fajr, with no earlier prayer, it falls back to a
+  six-hour window.
+- **The list** marks each prayer past / next / upcoming with a shape as well as a
+  colour, so the state survives greyscale and colour-blindness.
+- **Pull down** to refresh; the circular arrow in the header does the same.
+- **Times stay on screen when a refresh fails**, with a red strip saying they came from
+  the cache. An empty screen would be worse than slightly old times that cannot change.
+- **The date rolls over at midnight** without a relaunch — a phone left open overnight
+  reloads itself into the new day.
+
+The countdown re-derives the list every second, so "next" moves to the following prayer
+on its own, with no network call.
+
+### Things that fail silently — check them once
 
 | Check | What a failure looks like |
 |---|---|
 | Vazirmatn loads | Text renders in the system font, slightly off, no error |
-| Palette resolves | Wrong or washed-out colours in light or dark |
 | Layout is right-to-left | Content sits left-aligned |
 | Perso-Arabic renders | Latin digits, or disconnected letterforms |
-| Data layer works | Prayer times never appear, or appear with the wrong Asr |
-
-It is replaced by the home screen in Phase 3.
-
-### Reading the probe
-
-- **Times appear** → the API is reachable and the response decoded.
-- **The line under the buttons** shows city, how long the load took, and whether the
-  App Group container is in use. First load is a network round trip (hundreds of ms);
-  after that it should read single-digit ms, which is the cache being hit. **پاک کردن
-  حافظه** clears the cache, so the next load goes back over the network.
-- **The city menu** writes to `UserDefaults` — pick another city, force-quit, relaunch,
-  and it should still be selected.
-- **The countdown** ticks every second toward the next enabled prayer, computed in
-  Kabul time no matter what the simulator's timezone is set to.
-
-If the App Group has not been created on the developer portal yet, the line reads
-حافظه‌ی داخلی instead of App Group. That is expected and harmless until the widget
-exists — nothing else changes.
+| Kabul time | Countdown and "next" are right for your timezone, not Kabul's |
+| Hanafi Asr | Asr about an hour earlier than the local mosque |
 
 ---
 
-## The data layer
+## Layout
 
 ```
+App/
+  NamaziaApp.swift          entry point, theme container, RTL
+  AppServices.swift         the shared repository and settings store
+Screens/
+  HomeView.swift            the home screen
+  HomeViewModel.swift       its state
+Components/
+  CountdownRing.swift       the hero ring
+  PrayerRowView.swift       one line of the list
+  StateViews.swift          skeleton, error state, stale-data notice
 Data/
   Models.swift              API payloads, cities, settings, calculation methods
   AppError.swift            four failure codes + their Dari wording
@@ -87,7 +98,9 @@ Two rules that the Android app learned the hard way and that this port keeps:
 
 - **`school = 1` (Hanafi) is the default.** It moves Asr by about an hour.
 - **Changing the calculation method or the school must clear the cache**, or
-  differently-calculated times keep being served as if still valid.
+  differently-calculated times keep being served as if still valid. Use
+  `AppServices.setCalculationMethod` / `setAsrSchool`, which do both together — that is
+  why they exist rather than writing the setting directly.
 
 ---
 

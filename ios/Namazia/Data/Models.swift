@@ -249,6 +249,11 @@ struct AppSettings: Equatable {
 
     var city: AfghanCity { AfghanCities.at(cityIndex) }
 
+    /// The three settings that decide *which* times get fetched. Everything else —
+    /// which azans are on, vibration, theme — changes how they are presented, not what
+    /// they are, so only a change to this identity is worth a refetch.
+    var calculationIdentity: String { "\(cityIndex)-\(calculationMethod)-\(asrSchool)" }
+
     func isEnabled(_ prayer: PrayerName) -> Bool {
         switch prayer {
         case .fajr: return fajrEnabled
