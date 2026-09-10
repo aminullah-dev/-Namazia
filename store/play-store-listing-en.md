@@ -38,7 +38,7 @@ Accurate Afghan prayer times, full azan, Qibla compass and dhikr — offline.
 ```
 Namazia gives you accurate daily prayer times for cities across Afghanistan, with the full azan called at each prayer — even when your phone is offline.
 
-The app is built for Afghan users: the interface is entirely in Dari, laid out right to left, and Asr is calculated for the Hanafi school by default.
+The app is built for Afghan users: the interface is in Dari and Pashto, switchable at any time, laid out right to left, and Asr is calculated for the Hanafi school by default.
 
 ━━━━━━━━━━━━━━━━━━━━
 
@@ -66,7 +66,7 @@ QIBLA COMPASS
 
 DHIKR AND DUA
 • Adhkar for morning, evening, after prayer, before sleep and for travel
-• Arabic text with a Dari translation, and the number of repetitions for each
+• Arabic text with its meaning in your language, and the number of repetitions for each
 • Tasbih counter with targets of 33, 99 or 100, vibration feedback, and your count saved between sessions
 
 SETTINGS
@@ -110,7 +110,7 @@ First release.
 • Prayer times for 15 Afghan cities, with the full azan and a separate Fajr recitation
 • Live countdown to the next prayer, and a monthly calendar
 • Qibla compass corrected to true north
-• Adhkar and dua with Dari translation, plus a tasbih counter
+• Adhkar and dua with their meaning in Dari or Pashto, plus a tasbih counter
 • Works offline, and reschedules itself after a restart
 • Hanafi Asr by default, with five calculation methods to choose from
 ```

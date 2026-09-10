@@ -4,8 +4,8 @@ Copy each block into the matching field in **App Store Connect → your app → 
 under Distribution**. Character limits are noted; the counts given are the actual length
 of the text below.
 
-> **Why English?** App Store Connect has no Dari localization, and Persian is not
-> offered either. The app itself is entirely in Dari — the listing is the only part of
+> **Why English?** App Store Connect offers neither Dari nor Pashto as a listing
+> language. The app itself is entirely in those two — the listing is the only part of
 > this that is in English, which is the same position every Afghan app is in.
 
 ---
@@ -35,9 +35,9 @@ Azan, Qibla, Hijri calendar
 Ramadan, Eid, or a new feature.*
 
 ```
-Prayer times for 15 Afghan cities, the full azan at every prayer, a Qibla compass and a Hijri calendar. Entirely in Dari, Hanafi Asr by default, works offline.
+Prayer times for 15 Afghan cities, the full azan at every prayer, a Qibla compass and a Hijri calendar. In Dari and Pashto, Hanafi Asr by default, works offline.
 ```
-*(156 characters)*
+*(159 characters)*
 
 ---
 
@@ -47,7 +47,7 @@ Prayer times for 15 Afghan cities, the full azan at every prayer, a Qibla compas
 ```
 Namazia gives you accurate daily prayer times for cities across Afghanistan, with the azan called at each prayer time — and it keeps working when you have no internet connection.
 
-The app is built for Afghan users: the interface is entirely in Dari, laid out right to left, with Perso-Arabic numerals throughout, and Asr calculated for the Hanafi school by default.
+The app is built for Afghan users: the interface is in Dari and Pashto, switchable at any time, laid out right to left, with Perso-Arabic numerals throughout, and Asr calculated for the Hanafi school by default.
 
 PRAYER TIMES
 • Daily times for Fajr, sunrise, Dhuhr, Asr, Maghrib and Isha
@@ -68,7 +68,7 @@ QIBLA
 
 DHIKR AND TASBIH
 • Morning and evening adhkar, adhkar after prayer, before sleep, and for travel
-• Each with its Arabic text and its meaning in Dari
+• Each with its Arabic text and its meaning in your language
 • A tasbih counter that remembers your count
 
 WIDGETS
@@ -77,6 +77,9 @@ WIDGETS
 
 CITIES
 Kabul, Herat, Mazar-i-Sharif, Kandahar, Jalalabad, Kunduz, Bamyan, Ghazni, Lashkar Gah, Taloqan, Pul-e-Khumri, Maimana, Sheberghan, Zaranj and Fayzabad.
+
+LANGUAGE
+Dari and Pashto, switched in Settings and applied immediately. The prayers carry their Pashto names — ماسپښين, مازديګر, ماخستن — rather than transliterated Dari ones.
 
 CALCULATION
 Choose between the Muslim World League, University of Islamic Sciences Karachi, Umm al-Qura Makkah, Islamic Society of North America, and the Egyptian General Authority of Survey. Asr can be set to the Hanafi school or to Shafi'i, Maliki and Hanbali.
@@ -96,9 +99,9 @@ When a prayer arrives while the app is open, the full azan is played. When your 
 already in the app name or subtitle — Apple indexes those separately.*
 
 ```
-namaz,salah,adhan,athan,namaaz,kabul,afghanistan,dari,muslim,islam,ramadan,qibla,masjid
+namaz,salah,adhan,athan,namaaz,kabul,afghanistan,dari,pashto,muslim,islam,ramadan,qibla
 ```
-*(86 characters)*
+*(90 characters)*
 
 ---
 
