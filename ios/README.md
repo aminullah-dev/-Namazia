@@ -214,34 +214,34 @@ So the plan is the one every iOS prayer app uses:
 - a **30-second azan** as the notification sound, and
 - the **full azan** played only while the app is open.
 
-macOS has the converter built in, so run this on your Mac from the repo root:
+Both short files are committed in `Namazia/Resources/Sounds/`, cut from the Android MP3s:
+
+| File | Length | Where it ends |
+|---|---|---|
+| `azan30.caf` | 24.35 s | a silent pause between phrases |
+| `azan_fajr30.caf` | 14.5 s | the pause after the first phrase — Fajr is recited slowly, and the next one runs past 30 s |
+
+Each starts at the first sound (the MP3s open with 0.2 s and 0.7 s of silence) and ends
+in a pause rather than mid-word, which is why neither is a flat 30 seconds. They are
+mono IMA4, which notification sounds support, so together they weigh under 1 MB.
+
+To redo them, decode with `afconvert in.mp3 out.wav -f WAVE -d LEI16@44100`, cut the
+WAV at a pause (any tool), then encode:
 
 ```bash
-cd ios/Namazia/Resources/Sounds
-
-# Regular azan — first 30 seconds
-afconvert ../../../../app/src/main/res/raw/azan.mp3 \
-  azan30.caf -f caff -d LEI16@44100 -t 0:30
-
-# Fajr azan — first 30 seconds
-afconvert ../../../../app/src/main/res/raw/azan_fajr.mp3 \
-  azan_fajr30.caf -f caff -d LEI16@44100 -t 0:30
+afconvert cut.wav azan30.caf -f caff -d ima4 -c 1 --mix
+afinfo azan30.caf | grep duration     # must be under 30
 ```
 
-Check both are under 30 seconds and that they start on "الله اکبر" rather than a
-silent lead-in — trim the start with `-s` if the recording opens with silence:
-
-```bash
-afinfo azan30.caf | grep duration
-```
+`afconvert` has no option to trim by time, so the cutting has to happen in between.
 
 The full-length MP3s are bundled too — `project.yml` references them where they already
 live in `app/src/main/res/raw/` rather than keeping a second 8 MB copy under `ios/`.
 `AzanPlayer` plays those when a prayer arrives while the app is open, and the
 notification's own short sound is suppressed so the two do not overlap.
 
-**Until the two `.caf` files exist, notifications use the default iOS chime.** Nothing
-breaks; the azan just is not the azan. In a debug build the speaker button in the header
+**If the two `.caf` files go missing, notifications fall back to the default iOS
+chime.** Nothing breaks; the azan just is not the azan. In a debug build the speaker button in the header
 fires a test notification a few seconds out, and its text says which sound you are
 getting.
 
@@ -287,7 +287,7 @@ ios/
       Namazia.entitlements     App Group for the widget
       Assets.xcassets/         app icon, launch background
       Fonts/                   Vazirmatn, 4 weights
-      Sounds/                  azan30.caf, azan_fajr30.caf  (you generate these)
+      Sounds/                  azan30.caf, azan_fajr30.caf  (notification azans)
 ```
 
 ---
