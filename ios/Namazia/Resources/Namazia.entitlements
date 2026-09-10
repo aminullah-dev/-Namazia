@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  The App Group lets the widget read the same cached prayer times and settings the
+	  app writes. It is declared now, before the widget exists, because adding it later
+	  means re-provisioning: the group has to be registered on the Apple Developer
+	  portal and both targets rebuilt against a new profile.
+
+	  You must create this exact group in Certificates, Identifiers & Profiles →
+	  Identifiers → App Groups before the first device build.
+	-->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.af.namazia.app</string>
+	</array>
+</dict>
+</plist>

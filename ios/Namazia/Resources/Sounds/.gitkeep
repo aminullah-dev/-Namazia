@@ -1,0 +1,2 @@
+Generated locally — see ios/README.md, "Audio: the 30-second azan".
+azan30.caf and azan_fajr30.caf are built from the Android MP3s with afconvert.
