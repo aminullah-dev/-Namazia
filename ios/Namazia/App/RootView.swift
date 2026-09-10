@@ -1,16 +1,13 @@
 import SwiftUI
 
-/// Phase 1 smoke test.
+/// Development scaffold, replaced by the real home screen in Phase 3.
 ///
-/// This screen exists to prove four things work before any real feature is built on
-/// top of them, because each one fails silently rather than loudly:
-///   1. the bundled Vazirmatn faces actually load (a missing font falls back to the
-///      system face and just looks slightly off, with no error),
+/// It exists to prove the things that fail *silently* rather than loudly:
+///   1. the bundled Vazirmatn faces load (a missing font falls back to the system face
+///      and just looks slightly off, with no error),
 ///   2. the palette resolves in both light and dark,
-///   3. layout is mirrored right-to-left,
-///   4. Perso-Arabic digits and joined script render correctly.
-///
-/// It is replaced by the real home screen in Phase 3.
+///   3. layout is mirrored right-to-left, and Perso-Arabic renders,
+///   4. the data layer works end to end — network, decode, cache, settings, timing.
 struct RootView: View {
     @Environment(\.colors) private var colors
 
@@ -19,31 +16,21 @@ struct RootView: View {
             VStack(alignment: .leading, spacing: Spacing.xl) {
                 header
 
-                section("وزن‌های فونت") {
+                section("اوقات امروز — از سرور") {
+                    DataProbeView()
+                }
+
+                section("فونت، ارقام و رنگ") {
                     row("سبک — Light", AppType.displayMedium)
                     row("معمولی — Regular", AppType.bodyLarge)
-                    row("متوسط — Medium", AppType.titleMedium)
                     row("ضخیم — Bold", AppType.headlineSmall)
-                }
-
-                section("ارقام فارسی") {
-                    Text("۰۱۲۳۴۵۶۷۸۹")
-                        .appText(AppType.headlineMedium)
-                    Text("اذان مغرب: \("18:35".persianDigits)")
-                        .appText(AppType.bodyLarge)
-                }
-
-                section("متن عربی") {
                     Text("سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ")
                         .appText(AppType.arabicVerse)
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                }
-
-                section("پالت رنگ") {
                     swatches
                 }
 
-                Text("اگر این صفحه از راست چیده شده، فونت‌ها متفاوت‌اند و ارقام فارسی‌اند — فاز ۱ موفق بوده است.")
+                Text("اگر اوقات نماز بالا آمد، کش کار می‌کند و شمارش معکوس پیش می‌رود — فاز ۲ موفق بوده است.")
                     .appText(AppType.bodySmall)
                     .foregroundStyle(colors.onSurfaceVariant)
             }

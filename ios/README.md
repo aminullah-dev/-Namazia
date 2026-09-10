@@ -34,9 +34,10 @@ in the whole `Namazia` folder — but the project must be regenerated so Xcode s
 
 ---
 
-## What Phase 1 gives you
+## What the scaffold screen verifies
 
-A single screen that verifies the four things that otherwise fail *silently*:
+`RootView` is not the real UI — it is a probe for the things that otherwise fail
+*silently*:
 
 | Check | What a failure looks like |
 |---|---|
@@ -44,9 +45,49 @@ A single screen that verifies the four things that otherwise fail *silently*:
 | Palette resolves | Wrong or washed-out colours in light or dark |
 | Layout is right-to-left | Content sits left-aligned |
 | Perso-Arabic renders | Latin digits, or disconnected letterforms |
+| Data layer works | Prayer times never appear, or appear with the wrong Asr |
 
-If the screen reads right-to-left, the four weights look different from each other,
-and the digits are ۰۱۲۳۴۵۶۷۸۹, Phase 1 is good.
+It is replaced by the home screen in Phase 3.
+
+### Reading the probe
+
+- **Times appear** → the API is reachable and the response decoded.
+- **The line under the buttons** shows city, how long the load took, and whether the
+  App Group container is in use. First load is a network round trip (hundreds of ms);
+  after that it should read single-digit ms, which is the cache being hit. **پاک کردن
+  حافظه** clears the cache, so the next load goes back over the network.
+- **The city menu** writes to `UserDefaults` — pick another city, force-quit, relaunch,
+  and it should still be selected.
+- **The countdown** ticks every second toward the next enabled prayer, computed in
+  Kabul time no matter what the simulator's timezone is set to.
+
+If the App Group has not been created on the developer portal yet, the line reads
+حافظه‌ی داخلی instead of App Group. That is expected and harmless until the widget
+exists — nothing else changes.
+
+---
+
+## The data layer
+
+```
+Data/
+  Models.swift              API payloads, cities, settings, calculation methods
+  AppError.swift            four failure codes + their Dari wording
+  AppGroup.swift            shared container, with an app-private fallback
+  PrayerTimesAPI.swift      aladhan client (URLSession, async/await)
+  PrayerTimesCache.swift    JSON cache in the App Group, an actor
+  PrayerTimesRepository.swift   cache-first reads, week prefetch, month fetch
+  SettingsStore.swift       UserDefaults, one key per setting
+Utils/
+  AppTime.swift             Kabul timezone, POSIX formatters, HH:mm → instant
+  PrayerCalc.swift          schedule, next prayer, countdown text
+```
+
+Two rules that the Android app learned the hard way and that this port keeps:
+
+- **`school = 1` (Hanafi) is the default.** It moves Asr by about an hour.
+- **Changing the calculation method or the school must clear the cache**, or
+  differently-calculated times keep being served as if still valid.
 
 ---
 
