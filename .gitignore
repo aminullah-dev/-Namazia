@@ -18,3 +18,8 @@ ios/*.xcodeproj/
 ios/*.xcworkspace/
 ios/DerivedData/
 .DS_Store
+
+# iOS release tooling — keys and build output never go in the repo
+ios/scripts/.env
+ios/build/
+*.p8

@@ -294,8 +294,14 @@ ios/
 
 ## Shipping
 
-`../store/app-store-checklist.md` is the step-by-step: membership, identifiers,
-screenshots, archive, TestFlight, review notes. `../store/app-store-listing-en.md` has
+```bash
+cd ios && ./scripts/upload.sh
+```
+
+Archives and uploads in one command, bumping the build number on the way — see
+`scripts/README.md` for the one-time API key setup. `../store/app-store-checklist.md`
+is the wider step-by-step: membership, identifiers, screenshots, TestFlight, review
+notes. `../store/app-store-listing-en.md` has
 every field of the listing itself.
 
 Two things in the repo that exist for the store and are easy to break:
