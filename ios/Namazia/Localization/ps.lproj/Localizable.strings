@@ -196,6 +196,7 @@
 "settings.section.about" = "په اړه";
 "settings.version" = "نسخه";
 "settings.support" = "ملاتړ";
+"settings.support.copied" = "پته کاپي شوه";
 "settings.privacy" = "د محرمیت تګلاره";
 "settings.about.footer" = "د لمانځه وختونه د Aladhan له خدمت څخه اخیستل کېږي.";
 

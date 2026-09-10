@@ -190,6 +190,7 @@
 "settings.section.about" = "درباره";
 "settings.version" = "نسخه";
 "settings.support" = "پشتیبانی";
+"settings.support.copied" = "آدرس کاپی شد";
 "settings.privacy" = "سیاست حریم خصوصی";
 "settings.about.footer" = "اوقات نماز از سرویس Aladhan گرفته می‌شود.";
 

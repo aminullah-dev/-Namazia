@@ -11,6 +11,12 @@ struct SettingsView: View {
     /// Observed, not just held: the stop row appears and disappears with playback.
     @ObservedObject private var player = AppServices.shared.player
 
+    /// Shown in the row as well as used for the link, so the address is readable even
+    /// when nothing can open it.
+    static let supportEmail = "aminhashemi979@gmail.com"
+
+    @State private var copiedEmail = false
+
     /// The offsets worth offering. Anything finer is fiddling, and zero is how the
     /// reminder gets turned off entirely.
     private let reminderOptions = [0, 5, 10, 15, 20, 30]
@@ -191,8 +197,16 @@ struct SettingsView: View {
                     .foregroundStyle(colors.onSurfaceVariant)
             }
 
-            Link(destination: URL(string: "mailto:aminhashemi979@gmail.com")!) {
-                label("settings.support".localized, systemImage: "envelope")
+            Button {
+                contactSupport()
+            } label: {
+                HStack {
+                    label("settings.support".localized, systemImage: "envelope")
+                    Spacer()
+                    Text(copiedEmail ? "settings.support.copied".localized : SettingsView.supportEmail)
+                        .appText(AppType.bodySmall)
+                        .foregroundStyle(copiedEmail ? colors.primary : colors.onSurfaceVariant)
+                }
             }
 
             Link(destination: URL(string: "https://aminullah-dev.github.io/-Namazia/privacy-policy.html")!) {
@@ -202,6 +216,22 @@ struct SettingsView: View {
             header("settings.section.about".localized)
         } footer: {
             footer("settings.about.footer".localized)
+        }
+    }
+
+    /// Opens the mail composer, and falls back to copying the address.
+    ///
+    /// A `mailto:` link does nothing at all on a device with no mail account — every
+    /// simulator, and plenty of real phones — and a row that silently does nothing is
+    /// how an app looks broken. `open` reports whether it actually opened, so the
+    /// fallback is driven by what happened rather than by guessing beforehand.
+    private func contactSupport() {
+        guard let url = URL(string: "mailto:\(SettingsView.supportEmail)") else { return }
+
+        UIApplication.shared.open(url) { opened in
+            guard !opened else { return }
+            UIPasteboard.general.string = SettingsView.supportEmail
+            copiedEmail = true
         }
     }
 
