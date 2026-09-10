@@ -21,7 +21,7 @@ settings:
   base:
     SWIFT_VERSION: "5.9"
     MARKETING_VERSION: "1.0"
-    CURRENT_PROJECT_VERSION: "3"
+    CURRENT_PROJECT_VERSION: "4"
     CODE_SIGN_STYLE: Automatic
     # Xcode fills the team in from your Apple account the first time you open the
     # project; leaving it blank here keeps a personal team ID out of git.
