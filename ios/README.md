@@ -58,6 +58,9 @@ Things worth knowing before touching the strings:
   `%2$@`) rather than bare `%@`.
 - **The widget resolves its own strings.** It is a separate process with its own bundle,
   so it calls `L10n.use` from the timeline provider; nothing the app did carries over.
+- **`L10n.swift` lives in `Utils/`, not beside the `.lproj` folders.** A directory named
+  as a target's source is treated as a resource group once it contains `.lproj`
+  subfolders, and a Swift file inside it is then never compiled into that target.
 - Notifications are written at *schedule* time, so a language change re-arms the whole
   pending queue — which happens already, because any settings change does.
 
@@ -175,9 +178,9 @@ Data/
   PrayerTimesRepository.swift   cache-first reads, week prefetch, month fetch
   SettingsStore.swift       UserDefaults, one key per setting
 Localization/
-  L10n.swift                the chosen-language lookup
   fa.lproj/, ps.lproj/      Dari and Pashto, 155 keys each
 Utils/
+  L10n.swift                the chosen-language lookup
   AppTime.swift             Kabul timezone, POSIX formatters, HH:mm → instant
   PrayerCalc.swift          schedule, next prayer, countdown text
   Qibla.swift               great-circle bearing to the Kaaba

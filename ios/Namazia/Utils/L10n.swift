@@ -22,6 +22,11 @@ enum AppLanguage: String, CaseIterable, Identifiable {
 
 /// Resolves strings against the language the user picked, rather than the phone's.
 ///
+/// This file sits in `Utils/` rather than next to the `.lproj` folders on purpose: a
+/// directory listed as a target's source is treated as a resource group once it
+/// contains `.lproj` subfolders, and a Swift file inside it is then never compiled into
+/// that target — which is exactly how the widget ended up without this lookup.
+///
 /// iOS normally decides this from the device language list, which is the wrong owner
 /// here: an Afghan phone is often set to English, and someone who wants the app in
 /// Pashto should not have to change their whole device to get it. So the app carries

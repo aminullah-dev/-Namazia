@@ -80,7 +80,10 @@ targets:
       - path: Namazia/Utils
       - path: Namazia/DesignSystem
       # The extension resolves its own strings — nothing the app does carries across
-      # process boundaries — so it needs both the lookup and the .lproj bundles.
+      # process boundaries — so it needs the .lproj bundles too. `L10n.swift` itself
+      # lives in Utils/, not here: a directory named as a source is treated as a
+      # resource group once it contains .lproj folders, and any Swift file inside it
+      # is then never compiled into this target.
       - path: Namazia/Localization
       # Fonts have to be in the extension's own bundle as well as the app's.
       - path: Namazia/Resources/Fonts
