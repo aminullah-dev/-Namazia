@@ -257,6 +257,23 @@ ios/
 
 ---
 
+## Shipping
+
+`../store/app-store-checklist.md` is the step-by-step: membership, identifiers,
+screenshots, archive, TestFlight, review notes. `../store/app-store-listing-en.md` has
+every field of the listing itself.
+
+Two things in the repo that exist for the store and are easy to break:
+
+- **`PrivacyInfo.xcprivacy`**, in both the app and the widget. Apple cross-checks it
+  against the answers given in App Store Connect, so if the app ever starts collecting
+  something, this file has to say so.
+- **The app icon** is the same artwork as the Play icon (`store/reference/`), at
+  1024×1024 with **no alpha channel** — App Store Connect rejects a transparent icon
+  outright.
+
+---
+
 ## Before the first device build
 
 The App Group in `Namazia.entitlements` must exist on the Apple Developer portal, or

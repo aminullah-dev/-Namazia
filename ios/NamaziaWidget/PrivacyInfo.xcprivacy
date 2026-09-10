@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Privacy manifest. Apple requires one, and requires that it be accurate — it is
+	  cross-checked against the answers given in App Store Connect, so anything claimed
+	  here has to match the app's actual behaviour.
+
+	  This app collects nothing. Prayer times are fetched by city name from a public
+	  API; there is no account, no analytics, no advertising SDK, and no identifier of
+	  any kind leaves the device. The compass reads the phone's own orientation and
+	  never reports it anywhere.
+	-->
+
+	<key>NSPrivacyTracking</key>
+	<false/>
+
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<!--
+			  Settings and the cached prayer times live in the App Group's UserDefaults
+			  so the widget can read what the app wrote. CA92.1 is the declared reason
+			  for exactly that: access to information within the app or its group
+			  container, and nowhere else.
+			-->
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
