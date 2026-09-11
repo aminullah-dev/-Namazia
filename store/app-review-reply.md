@@ -117,34 +117,27 @@ Third-party material included in the app:
 - The supplications (adhkar) are Qur'anic verses and well-known supplications from the
   standard hadith collections. These are religious texts in the public domain; the Dari
   and Pashto renderings of their meaning were written for this app.
-- The azan recordings: {{AZAN_AUDIO}}
+- The two azan recordings are used under open licences, and are documented with their
+  sources in the project:
+  - The regular azan is "Beautiful adhan" by Adam-synagda, from Wikimedia Commons
+    (https://commons.wikimedia.org/wiki/File:Beautiful_adhan.ogg), released under CC0
+    1.0, a public domain dedication with no conditions.
+  - The Fajr azan is "Morning call to prayer on Bodufolhudhoo, Maldives" by jrosin,
+    from Freesound (https://freesound.org/people/jrosin/sounds/861625/), licensed under
+    CC BY 4.0, which permits commercial use with attribution. The required credit is
+    shown inside the app, in the Settings screen, and in the App Store description.
+
+  Both were trimmed for length only; neither was otherwise altered.
 ```
 
 ---
 
-## Before sending: the azan audio
+## The azan audio
 
-`{{AZAN_AUDIO}}` is the one line that cannot be filled in from the repository, and the
-honest answer today is that **nobody knows**. The files were added by a Claude session
-in commit `3a76d7e` with only their internal names recorded — no source, no licence —
-and the ID3 tags had already been stripped by an ffmpeg re-encode. See
-`licenses/AUDIO.md`.
-
-A recording of the call to prayer is a performance and someone holds the rights to it,
-so guessing here is worse than waiting. **Replace both files with recordings whose
-licence you can name, then answer with that.** `licenses/AUDIO.md` lists what is needed
-and the two ways to get it.
-
-Once the audio is replaced, the line becomes something like:
-
-> obtained from {source}, licensed under {licence}
-
-or, if you record it yourself:
-
-> recorded for this app with the muezzin's permission. No third-party recording is used.
-
-Replacing the audio means a new build for both stores — which is also the moment to
-answer Apple, since the reply and the new build go together.
+Already answered in the reply above. Both recordings carry open licences and their
+sources are recorded in `licenses/azan-recordings.md`; the CC BY credit the Fajr
+recording requires is in the app's Settings screen and in the store description, and
+has to stay there as long as that recording ships.
 
 ---
 
