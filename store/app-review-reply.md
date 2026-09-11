@@ -132,6 +132,57 @@ Third-party material included in the app:
 
 ---
 
+## For the Notes field — a shorter version
+
+**App Review Information → Notes caps at 4000 characters**, and the reply above is 5843,
+so it cannot go there as it stands. Paste the full reply in the message thread, and this
+condensed version — 3120 characters — into Notes.
+
+It drops the parts that only answer *this* letter (the reasoning about the audience, the
+screen recording) and keeps what a reviewer needs on every future submission: how to
+reach each feature without an account, what the Dari tabs are, and where the content
+comes from.
+
+```
+Namazia is a prayer-times app for Afghanistan. It shows Islamic prayer times for 15 Afghan cities, calls the azan at each prayer time, and gives the Qibla direction, a Hijri calendar and supplications. The interface is in Dari and Pashto, right to left.
+
+NO ACCOUNT, NO PURCHASES
+There is no account, login, subscription or in-app purchase, and no user-generated content. Every feature works on first launch, so no demo credentials exist.
+
+THE FIVE TABS (right to left, as they appear)
+  اوقات    Times     today's prayer times, with a countdown
+  قبله     Qibla     compass pointing to the Kaaba
+  تقویم    Calendar  a month of prayer times
+  اذکار    Dhikr     supplications, and a tasbih counter
+  تنظیمات  Settings  city, calculation, azan switches, language
+
+HOW TO TEST THE MAIN FEATURES
+- Hear the azan without waiting for a prayer time: Settings tab (gear icon) -> "پخش اذان (آزمایش صدا)" = "Play azan (sound test)". It plays immediately, continues with the phone locked, and shows a stop control on the Lock Screen.
+- Switch language: Settings tab -> first section -> "پښتو" or "دری". The whole interface changes at once.
+- Change city: Settings tab -> "موقعیت" -> "شهر", a list of 15 Afghan cities.
+- Widgets: Home Screen and Lock Screen widgets show the next prayer and a live countdown.
+
+PERMISSIONS
+- Notifications, asked on first launch: without it the azan cannot sound at prayer time. If refused, all times still show and the app says on screen that the azan is off.
+- Location, asked only when the Qibla tab is opened, and only to rotate the compass dial with the phone. The direction to the Kaaba is computed from the city the user selected, so the screen still gives the direction in degrees if location is refused. No location data is stored or transmitted.
+
+EXTERNAL SERVICES
+One only: the Aladhan Prayer Times API (https://aladhan.com/prayer-times-api), a free public API needing no key or account. The app sends the coordinates of the selected city, a calculation method and a fiqh school, and receives that day's times. Nothing identifying the user or device is sent. No analytics, advertising, authentication, payment, AI services or third-party SDKs of any kind. Nothing is collected, matching the privacy manifest and the App Privacy answers.
+
+REGIONAL DIFFERENCES
+None. Identical features and content in every region and storefront. No geo-gating and no server-side configuration.
+
+THIRD-PARTY MATERIAL
+- Regular azan: "Beautiful adhan" by Adam-synagda, Wikimedia Commons, CC0 1.0 (public domain dedication).
+- Fajr azan: "Morning call to prayer on Bodufolhudhoo, Maldives" by jrosin, Freesound, CC BY 4.0. The required credit is shown in the app's Settings screen and in the App Store description.
+- Vazirmatn typeface by Saber Rastikerdar, SIL Open Font License 1.1, which permits bundling in an app.
+- The supplications are Qur'anic verses and well-known supplications from the standard hadith collections — public domain religious texts. Their Dari and Pashto renderings were written for this app.
+
+Namazia does not operate in a regulated industry and makes no claims requiring a licence.
+```
+
+---
+
 ## The azan audio
 
 Already answered in the reply above. Both recordings carry open licences and their
