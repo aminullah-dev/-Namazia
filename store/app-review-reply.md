@@ -74,9 +74,13 @@ On a real iPhone, not a simulator — Apple asks for this explicitly.
    - Dhikr tab: open a supplication, then the tasbih, tap it a few times
    - Settings tab: switch to Pashto and back, change the city, then press "پخش اذان" so
      the azan is heard
-   - Lock the phone while the azan plays, so the Lock Screen control is visible — this
-     answers, in advance, any question about the background audio mode
-   - Unlock, go to the Home Screen, show the widget
+   - While the azan is still playing, swipe down from the top-right corner to open
+     Control Center: the Now Playing card shows the azan with a stop button. That is the
+     same evidence as the Lock Screen — audio continuing outside the app, with a control
+     for it — and it answers, in advance, any question about the background audio mode.
+
+     Do **not** lock the phone to show this: locking ends the screen recording.
+   - Close Control Center, go to the Home Screen, show the widget
 5. Stop, then attach the video to the reply
 
 ## The audio rights
