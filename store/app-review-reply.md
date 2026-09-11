@@ -124,28 +124,27 @@ Third-party material included in the app:
 
 ## Before sending: the azan audio
 
-Point 6 is the only one that cannot be answered from the repository. Replace
-`{{AZAN_AUDIO}}` with whichever of these is true — and it must actually be true, because
-Apple can ask for the documentation:
+`{{AZAN_AUDIO}}` is the one line that cannot be filled in from the repository, and the
+honest answer today is that **nobody knows**. The files were added by a Claude session
+in commit `3a76d7e` with only their internal names recorded — no source, no licence —
+and the ID3 tags had already been stripped by an ffmpeg re-encode. See
+`licenses/AUDIO.md`.
 
-**If you recorded it, or a muezzin recorded it for you:**
+A recording of the call to prayer is a performance and someone holds the rights to it,
+so guessing here is worse than waiting. **Replace both files with recordings whose
+licence you can name, then answer with that.** `licenses/AUDIO.md` lists what is needed
+and the two ways to get it.
 
-> recorded for this app, with the permission of the muezzin. No third-party recording is
-> used.
+Once the audio is replaced, the line becomes something like:
 
-**If it came from a site that licenses it for reuse** (public domain, Creative Commons,
-a royalty-free library):
+> obtained from {source}, licensed under {licence}
 
-> obtained from {source and URL}, which licenses the recording for use in applications
-> under {licence}. A copy of the licence is available on request.
+or, if you record it yourself:
 
-**If you do not know where it came from:** do not guess. Replace the recordings with
-ones whose origin you can name before replying. An azan recording is someone's
-performance and is copyrightable, and a wrong answer here is far worse than a delayed
-submission.
+> recorded for this app with the muezzin's permission. No third-party recording is used.
 
-Whatever the answer, write it down in the repository afterwards so the next submission
-does not have to reconstruct it.
+Replacing the audio means a new build for both stores — which is also the moment to
+answer Apple, since the reply and the new build go together.
 
 ---
 
