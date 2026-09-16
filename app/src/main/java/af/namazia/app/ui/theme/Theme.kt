@@ -7,7 +7,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -85,9 +84,11 @@ fun AzanAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Match the bars to the top-bar / nav-bar surface so the chrome reads as one piece.
-            window.statusBarColor = colorScheme.surface.toArgb()
-            window.navigationBarColor = colorScheme.surface.toArgb()
+            // No bar colours here: from API 35 the system ignores statusBarColor and
+            // navigationBarColor, and the app draws behind both bars anyway. What the
+            // user sees through them is the top bar and the navigation bar we draw
+            // ourselves — so all that is left to set is the icon contrast over them,
+            // and it follows the in-app dark-mode setting, not the phone's.
             WindowCompat.getInsetsController(window, view).apply {
                 isAppearanceLightStatusBars = !darkTheme
                 isAppearanceLightNavigationBars = !darkTheme

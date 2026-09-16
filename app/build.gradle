@@ -10,17 +10,19 @@ plugins {
 
 android {
     namespace 'af.namazia.app'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "af.namazia.app"
         minSdk 26
-        // Play requires 35 as of this release.
-        targetSdk 35
+        // Play rejects a production upload below 36 as of this release. Raising it also
+        // ends the edge-to-edge opt-out — see the manifest and MainActivity.
+        targetSdk 36
         // Play permanently retires a versionCode once a bundle with it has been uploaded,
         // even to a test track and even if that bundle was never published. Raise this for
         // every single upload, including re-uploads after a rejected or discarded one.
-        versionCode 3
+        // 3 is spent: it reached the production draft and was rejected for targetSdk.
+        versionCode 4
         versionName "1.1.0"
     }
 
@@ -66,8 +68,8 @@ dependencies {
 
     implementation 'androidx.navigation:navigation-compose:2.8.4'
 
-    implementation 'com.google.dagger:hilt-android:2.52'
-    kapt 'com.google.dagger:hilt-android-compiler:2.52'
+    implementation 'com.google.dagger:hilt-android:2.56.2'
+    kapt 'com.google.dagger:hilt-android-compiler:2.56.2'
     implementation 'androidx.hilt:hilt-work:1.2.0'
     kapt 'androidx.hilt:hilt-compiler:1.2.0'
     implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'

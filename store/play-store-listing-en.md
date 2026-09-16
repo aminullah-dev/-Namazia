@@ -180,9 +180,14 @@ location detection in this release.
 - **`versionCode` must go up on every upload.** Play retires a code the moment a bundle
   carrying it is uploaded — to any track, published or not — and will not accept it again.
   Bump `versionCode` in `app/build.gradle` before each new bundle you build.
-  Currently at `versionCode 2`, `versionName "1.0.1"`.
-- `minSdk 26` (Android 8.0), `targetSdk 34` (Android 14) — targetSdk 34 satisfies Play's current
-  requirement.
+  Currently at `versionCode 4`, `versionName "1.1.0"`. Codes 1–3 are spent: 3 reached the
+  production draft and was rejected there for targeting an old API level, which retires it
+  just the same.
+- `minSdk 26` (Android 8.0), `targetSdk 36` (Android 16). Play raises this floor every year
+  and rejects the release outright — not the app, the upload — when the bundle is below it.
+  Raising targetSdk to 36 also ends the edge-to-edge opt-out: the app now draws behind the
+  status and navigation bars, and `MainActivity` calls `enableEdgeToEdge()` so every Android
+  version behaves alike. Check the top and bottom of each tab after a targetSdk bump.
 - The app ships two azan recordings (~8 MB total), so expect a bundle of roughly 12–15 MB.
 - There is no `buildTypes { release { ... } }` block, so the release build runs unminified.
   That is fine for a first release; enabling `minifyEnabled` later needs Room, Hilt, Retrofit and

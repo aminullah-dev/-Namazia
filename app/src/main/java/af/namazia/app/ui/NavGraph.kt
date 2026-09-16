@@ -1,5 +1,7 @@
 package af.namazia.app.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -61,6 +63,11 @@ fun AzanNavGraph(
     val navController = rememberNavController()
 
     Scaffold(
+        // Every screen below carries its own Scaffold and TopAppBar, and those already
+        // inset themselves against the status bar. If this outer one did it too the
+        // result would be a status bar's worth of empty space above every top bar.
+        // So the outer Scaffold claims nothing and only the bottom bar is its business.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             NavigationBar(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -98,7 +105,12 @@ fun AzanNavGraph(
         NavHost(
             navController = navController,
             startDestination = "home",
-            modifier = Modifier.padding(padding)
+            // padding here is the bottom bar, which already includes the gesture-bar
+            // inset. Consuming it stops the inner Scaffolds from adding that inset a
+            // second time and leaving a gap above the navigation bar.
+            modifier = Modifier
+                .padding(padding)
+                .consumeWindowInsets(padding)
         ) {
             composable("home") {
                 HomeScreen(uiState = uiState, onRefresh = onRefresh)

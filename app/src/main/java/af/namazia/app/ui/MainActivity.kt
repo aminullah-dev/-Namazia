@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +47,11 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // From targetSdk 36 the system draws the app behind the status and navigation
+        // bars and the manifest opt-out is ignored. Asking for it here rather than
+        // leaving it to the system means every Android version we support behaves the
+        // same way, so what we see on an old phone is what a new one does.
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         // Only ask when we do not already hold it — launching the request on every start
