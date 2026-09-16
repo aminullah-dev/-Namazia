@@ -106,17 +106,56 @@ Fajr azan recording: "Morning call to prayer on Bodufolhudhoo, Maldives" by jros
 ## What's new (release notes)
 *Limit: 500 characters per language*
 
+These read as a first release because that is what it is: production has never been
+live. Versions 1.0 and 1.0.1 only ever reached the closed testing track, so no member
+of the public has seen them and there is nothing to describe as "changed".
+
+Play Console shows one box per language already added to the store listing. Fill in
+every box it shows — a language left empty falls back to the default listing language.
+
+**English (en-US)** — 452 characters
 ```
 First release.
 
 • Prayer times for 15 Afghan cities, with the full azan and a separate Fajr recitation
-• Live countdown to the next prayer, and a monthly calendar
+• Interface in Dari and Pashto, switchable inside the app
+• Live countdown to the next prayer, a monthly calendar, and a home screen widget
 • Qibla compass corrected to true north
-• Adhkar and dua with their meaning in Dari or Pashto, plus a tasbih counter
+• Adhkar and dua with their meaning, plus a tasbih counter
 • Works offline, and reschedules itself after a restart
-• Hanafi Asr by default, with five calculation methods to choose from
+• Hanafi Asr by default, with five calculation methods
 ```
-*(~370 characters)*
+
+**Dari / Persian (fa)** — 398 characters
+```
+نخستین نسخه.
+
+• اوقات نماز ۱۵ شهر افغانستان، با اذان کامل و اذان جداگانهٔ صبح
+• برنامه به دری و پشتو، قابل تعویض در داخل برنامه
+• شمارش معکوس تا نماز بعدی، تقویم ماهانه و ویجت صفحهٔ اصلی
+• قطب‌نمای قبله، تصحیح‌شده نسبت به شمال حقیقی
+• اذکار و دعا با ترجمه، همراه با تسبیح‌شمار
+• بدون انترنت کار می‌کند و پس از روشن شدن دوبارهٔ گوشی خودش را تنظیم می‌کند
+• عصر حنفی به‌صورت پیش‌فرض، با پنج روش محاسبه
+```
+
+**Pashto (ps)** — 387 characters. Only if Play offers Pashto as a listing language;
+it is not on every storefront's list.
+```
+لومړۍ نسخه.
+
+• د افغانستان د ۱۵ ښارونو د لمانځه وختونه، بشپړ اذان او د سهار جلا اذان
+• دري او پښتو ژبې، په اپ کې د بدلولو وړ
+• تر راتلونکي لمانځه پورې شمېرنه، میاشتنی کالیز او ویجټ
+• د قبلې قطب‌نما، د ریښتیني شمال سره سمه
+• اذکار او دعاګانې له ژباړې سره، او تسبیح‌شمار
+• پرته له انټرنټه کار کوي او له بیا پیلېدو وروسته پخپله تنظیمېږي
+• حنفي مازدیګر په ډیفالټ توګه، او پنځه د محاسبې طریقې
+```
+
+The Pashto wording follows the app's own vocabulary — لمونځ, کالیز, قبله‌نما, انټرنټ,
+مازدیګر — so the listing and the interface do not use two different words for the same
+thing. It is worth a native reader's eye before it goes up.
 
 ---
 
