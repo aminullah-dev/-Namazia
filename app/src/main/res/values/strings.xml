@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dari (دری) — the app's default language. The Pashto set is in values-ps/. -->
+<resources>
+    <string name="app_name">اوقات نماز</string>
+    <string name="widget_description">ویجت اوقات نماز — نماز بعدی را نشان می‌دهد</string>
+    <string name="channel_azan_name">اذان</string>
+    <string name="channel_azan_description">اعلان وقت نماز همراه با پخش اذان</string>
+    <string name="channel_reminder_name">یادآوری نماز</string>
+    <string name="channel_reminder_description">یادآوری چند دقیقه پیش از وقت نماز</string>
+
+    <!-- Failure states. Codes live in data/AppError.kt; these are only the wording. -->
+    <string name="error_offline_title">اتصال به انترنت نیست</string>
+    <string name="error_offline_body">اوقات این روز در حافظه ذخیره نشده است. پس از وصل شدن به انترنت دوباره تلاش کنید.</string>
+    <string name="error_server_title">سرور پاسخ نداد</string>
+    <string name="error_server_body">در حال حاضر دریافت اوقات ممکن نیست. لطفاً چند لحظه بعد دوباره تلاش کنید.</string>
+    <string name="error_bad_response_title">پاسخ نامعتبر</string>
+    <string name="error_bad_response_body">اطلاعات دریافت‌شده کامل نبود. لطفاً دوباره تلاش کنید.</string>
+    <string name="error_unknown_title">خطای نامشخص</string>
+    <string name="error_unknown_body">مشکلی پیش آمد. لطفاً دوباره تلاش کنید.</string>
+    <string name="action_retry">تلاش دوباره</string>
+    <string name="calendar_empty_title">اطلاعاتی موجود نیست</string>
+
+    <!-- Prayers. Pashto has its own names, so these are translated, not transliterated. -->
+    <string name="prayer_fajr">فجر</string>
+    <string name="prayer_sunrise">طلوع آفتاب</string>
+    <string name="prayer_dhuhr">ظهر</string>
+    <string name="prayer_asr">عصر</string>
+    <string name="prayer_maghrib">مغرب</string>
+    <string name="prayer_isha">عشا</string>
+    <string name="prayer_generic">نماز</string>
+
+    <!-- Cities -->
+    <string name="city_kabul">کابل</string>
+    <string name="city_herat">هرات</string>
+    <string name="city_mazar">مزار شریف</string>
+    <string name="city_kandahar">قندهار</string>
+    <string name="city_jalalabad">جلال‌آباد</string>
+    <string name="city_kunduz">کندز</string>
+    <string name="city_bamyan">بامیان</string>
+    <string name="city_ghazni">غزنی</string>
+    <string name="city_lashkargah">لشکرگاه</string>
+    <string name="city_taloqan">تالقان</string>
+    <string name="city_pulekhumri">پل‌خمری</string>
+    <string name="city_maimana">میمنه</string>
+    <string name="city_sheberghan">شبرغان</string>
+    <string name="city_zaranj">زرنج</string>
+    <string name="city_fayzabad">فیض‌آباد</string>
+
+    <!-- Fiqh school and calculation method -->
+    <string name="madhab_hanafi">حنفی</string>
+    <string name="madhab_other">شافعی / مالکی / حنبلی</string>
+    <string name="method_karachi">دانشگاه علوم اسلامی کراچی</string>
+    <string name="method_mwl">اتحادیه جهانی مسلمانان</string>
+    <string name="method_makkah">ام القری مکه</string>
+    <string name="method_isna">انجمن اسلامی امریکای شمالی</string>
+    <string name="method_egypt">سازمان عمومی مساحی مصر</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">نماز</string>
+    <string name="nav_calendar">تقویم</string>
+    <string name="nav_qibla">قبله</string>
+    <string name="nav_dhikr">ذکر</string>
+    <string name="nav_settings">تنظیمات</string>
+
+    <!-- Home -->
+    <string name="action_refresh">بارگزاری مجدد</string>
+    <string name="home_day_finished_title">نمازهای امروز تمام شد</string>
+    <string name="home_day_finished_body">اذان فجر فردا به‌موقع پخش می‌شود</string>
+    <string name="home_next_prayer">نماز بعدی</string>
+    <string name="home_until_azan">تا اذان %1$s</string>
+    <string name="home_azan_off">اذان این وقت خاموش است</string>
+    <string name="home_past">گذشته</string>
+    <string name="home_stale_data">%1$s — اوقات نمایش‌داده‌شده از حافظه است</string>
+
+    <!-- Calendar -->
+    <string name="calendar_title">تقویم اوقات</string>
+    <string name="calendar_prev_month">ماه قبل</string>
+    <string name="calendar_next_month">ماه بعد</string>
+    <string name="calendar_day">روز</string>
+    <string name="month_1">جنوری</string>
+    <string name="month_2">فبروری</string>
+    <string name="month_3">مارچ</string>
+    <string name="month_4">اپریل</string>
+    <string name="month_5">می</string>
+    <string name="month_6">جون</string>
+    <string name="month_7">جولای</string>
+    <string name="month_8">آگست</string>
+    <string name="month_9">سپتمبر</string>
+    <string name="month_10">اکتوبر</string>
+    <string name="month_11">نوامبر</string>
+    <string name="month_12">دسمبر</string>
+
+    <!-- Qibla -->
+    <string name="qibla_title">قبله‌نما</string>
+    <string name="qibla_direction_label">جهت قبله</string>
+    <string name="qibla_from_true_north">از شمال حقیقی</string>
+    <string name="qibla_offset_label">اختلاف</string>
+    <string name="qibla_on_target">در جهت قبله</string>
+    <string name="qibla_turn_short">بچرخانید</string>
+    <string name="qibla_low_accuracy">دقت قطب‌نما کم است — گوشی را چند بار به شکل ۸ بچرخانید</string>
+    <string name="qibla_aligned">رو به قبله ایستاده‌اید</string>
+    <string name="qibla_turn">گوشی را بچرخانید</string>
+    <string name="qibla_no_compass_title">این دستگاه قطب‌نما ندارد</string>
+    <string name="qibla_no_compass_body">جهت قبله از %1$s برابر است با %2$s° نسبت به شمال حقیقی. می‌توانید با یک قطب‌نمای دیگر این زاویه را پیدا کنید.</string>
+
+    <!-- Dhikr -->
+    <string name="dhikr_title">ذکر و دعا</string>
+    <string name="dhikr_tab_list">اذکار و ادعیه</string>
+    <string name="dhikr_tab_tasbih">تسبیح</string>
+    <string name="dhikr_count_label">%1$s ذکر</string>
+    <string name="dhikr_collapse">بستن</string>
+    <string name="dhikr_expand">باز کردن</string>
+    <string name="dhikr_repeat">%1$s مرتبه</string>
+    <string name="tasbih_rounds">دور کامل: %1$s</string>
+    <string name="tasbih_of_target">از %1$s</string>
+    <string name="tasbih_tap_hint">برای شمردن، دایره را لمس کنید</string>
+    <string name="tasbih_total">مجموع: %1$s</string>
+    <string name="tasbih_reset">صفر کردن</string>
+
+    <string name="dhikr_category_morning">اذکار صبح</string>
+    <string name="dhikr_category_evening">اذکار شام</string>
+    <string name="dhikr_category_after_prayer">بعد از نماز</string>
+    <string name="dhikr_category_sleep">قبل از خواب</string>
+    <string name="dhikr_category_travel">دعای سفر</string>
+
+    <string name="dhikr_morning_1">صبح کردیم در حالی که ملک از آنِ الله است و ستایش از آنِ الله است؛ معبودی جز الله نیست که تنها و بی‌شریک است.</string>
+    <string name="dhikr_morning_2">بار الها، به لطف تو صبح کردیم، به لطف تو شام کردیم، به تو زنده‌ایم، به تقدیر تو می‌میریم و بازگشت به سوی توست.</string>
+    <string name="dhikr_morning_3">بار الها، تو پروردگار منی، معبودی جز تو نیست؛ مرا آفریدی و من بنده‌ات هستم و تا آنجا که توانم بر عهد و پیمانت هستم.</string>
+    <string name="dhikr_morning_4">خداوند منزه است و ستایش از آنِ اوست.</string>
+    <string name="dhikr_evening_1">شام کردیم در حالی که ملک از آنِ الله است؛ معبودی جز الله نیست که تنها و بی‌شریک است.</string>
+    <string name="dhikr_evening_2">بار الها، به لطف تو شام کردیم، به لطف تو صبح کردیم، به تو زنده‌ایم و به تقدیر تو می‌میریم و بازگشت به سوی توست.</string>
+    <string name="dhikr_evening_3">بار الها، شام کردم در حالی که تو و حاملان عرشت و فرشتگانت و همه مخلوقاتت را گواه می‌گیرم که تو الله هستی و معبودی جز تو نیست.</string>
+    <string name="dhikr_after_prayer_1">خداوند منزه است.</string>
+    <string name="dhikr_after_prayer_2">ستایش از آنِ الله است.</string>
+    <string name="dhikr_after_prayer_3">الله بزرگ‌تر است.</string>
+    <string name="dhikr_after_prayer_4">معبودی جز الله نیست که تنها و بی‌شریک است؛ ملک از آنِ اوست و ستایش از آنِ اوست و او بر همه چیز تواناست.</string>
+    <string name="dhikr_after_prayer_5">آیة الکرسی: الله معبودی جز او نیست؛ زنده و قائم به ذات است...</string>
+    <string name="dhikr_sleep_1">بار الها، با نام تو می‌میرم و زنده می‌شوم.</string>
+    <string name="dhikr_sleep_2">بار الها، مرا از عذابت در روزی که بندگانت را برمی‌انگیزی نگه‌دار.</string>
+    <string name="dhikr_sleep_3">خداوندا، تو منزهی و ستایش از آنِ توست؛ گواهی می‌دهم که معبودی جز تو نیست؛ از تو آمرزش می‌خواهم و به سوی تو توبه می‌کنم.</string>
+    <string name="dhikr_travel_1">منزه است آن که این را برای ما رام کرد، در حالی که ما توان آن را نداشتیم، و ما به سوی پروردگارمان باز خواهیم گشت.</string>
+    <string name="dhikr_travel_2">بار الها، در این سفر نیکی و تقوا می‌خواهیم و از عمل آنچه را که تو راضی هستی.</string>
+
+    <!-- Notifications from the azan service -->
+    <string name="notif_azan_title">وقت %1$s</string>
+    <string name="notif_azan_body">ساعت %1$s — الله اکبر</string>
+    <string name="notif_azan_stop">قطع اذان</string>
+    <string name="notif_reminder_title">یادآوری وقت %1$s</string>
+    <string name="notif_reminder_body">ساعت %1$s اذان خواهد بود</string>
+    <string name="notif_test_label">تست اذان</string>
+
+    <!-- Settings -->
+    <string name="settings_title">تنظیمات</string>
+    <string name="settings_group_language">زبان</string>
+    <string name="language_dari">دری</string>
+    <string name="language_pashto">پښتو</string>
+    <string name="settings_group_location">محل و محاسبه</string>
+    <string name="settings_city">شهر</string>
+    <string name="settings_method">روش محاسبه</string>
+    <string name="settings_madhab">مذهب</string>
+    <string name="settings_madhab_note">مذهب تنها بر وقت عصر تأثیر دارد. در حنفی عصر دیرتر می‌شود.</string>
+    <string name="settings_group_azans">اذان برای کدام وقت‌ها</string>
+    <string name="settings_group_reminder">یادآوری پیش از اذان</string>
+    <string name="settings_reminder_off">یادآوری خاموش است</string>
+    <string name="settings_reminder_off_short">خاموش</string>
+    <string name="settings_reminder_minutes">%1$s دقیقه پیش از اذان</string>
+    <string name="settings_reminder_minutes_short">%1$s دقیقه</string>
+    <string name="settings_group_azan_playback">پخش اذان</string>
+    <string name="settings_test_azan">تست اذان</string>
+    <string name="settings_test_azan_note">برای اطمینان از پخش صدا، همین حالا پخش می‌شود</string>
+    <string name="settings_test_fajr">تست اذان صبح</string>
+    <string name="settings_test_fajr_note">فایل جداگانه اذان فجر</string>
+    <string name="settings_vibration">لرزش هنگام اذان</string>
+    <string name="settings_group_display">نمایش</string>
+    <string name="settings_dark_mode">حالت شب</string>
+    <string name="settings_group_support">پشتیبانی</string>
+    <string name="settings_contact">تماس با پشتیبانی</string>
+    <string name="settings_email_subject">پشتیبانی اپ اوقات نماز</string>
+    <string name="settings_email_chooser">ارسال ایمیل</string>
+    <string name="settings_version">نسخه برنامه</string>
+    <string name="settings_battery_title">بهینه‌سازی باتری را غیرفعال کنید</string>
+    <string name="settings_battery_body">بدون این کار، سیستم ممکن است اذان را به‌موقع پخش نکند</string>
+</resources>

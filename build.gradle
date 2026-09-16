@@ -1,0 +1,21 @@
+buildscript {
+    // Play requires targetSdk 35, which needs compileSdk 35, which needs AGP 8.6+.
+    // AGP 8.7 needs Gradle 8.9, and Gradle 8.9 is past what Kotlin 1.9.x supports —
+    // so the whole chain moves together: Kotlin 2.0, and with it the separate Compose
+    // compiler plugin that replaces composeOptions.kotlinCompilerExtensionVersion.
+    ext.kotlin_version = "2.0.21"
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.7.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:compose-compiler-gradle-plugin:$kotlin_version"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:2.52"
+    }
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
+}

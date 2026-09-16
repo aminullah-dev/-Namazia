@@ -1,0 +1,103 @@
+# XcodeGen spec — the .xcodeproj is generated from this file, never edited by hand.
+# Regenerate after any change here:  cd ios && xcodegen generate
+#
+# The .xcodeproj is gitignored on purpose: this YAML is the source of truth, which
+# avoids the merge conflicts and invisible drift that hand-edited pbxproj files cause.
+
+name: Namazia
+
+options:
+  bundleIdPrefix: af.namazia
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+  generateEmptyDirectories: true
+  # Project-level development language. This is the knob that makes Xcode treat the
+  # app as Persian-first; setting a DEVELOPMENT_LANGUAGE build setting does not.
+  developmentLanguage: fa
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "4"
+    CODE_SIGN_STYLE: Automatic
+    # Xcode fills the team in from your Apple account the first time you open the
+    # project; leaving it blank here keeps a personal team ID out of git.
+    DEVELOPMENT_TEAM: ""
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    SWIFT_STRICT_CONCURRENCY: minimal
+
+targets:
+  Namazia:
+    type: application
+    platform: iOS
+
+    sources:
+      - path: Namazia
+      # The full-length azan is played in-app when a prayer arrives while the app is
+      # open. The files are referenced where they already live on the Android side
+      # rather than copied here: 8 MB of audio duplicated in git is 8 MB that can drift
+      # out of sync. The short .caf notification sounds are generated into
+      # Namazia/Resources/Sounds and picked up by the folder above.
+      - path: ../app/src/main/res/raw/azan.mp3
+        type: file
+        buildPhase: resources
+      - path: ../app/src/main/res/raw/azan_fajr.mp3
+        type: file
+        buildPhase: resources
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: af.namazia.app
+        PRODUCT_NAME: Namazia
+        INFOPLIST_FILE: Namazia/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Namazia/Resources/Namazia.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # iPhone only for v1. iPad layouts are easy to add later but would ship
+        # untested, and a stretched phone layout looks worse than no iPad build.
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+
+    # Embeds the widget in the app bundle. Without this the extension builds but never
+    # appears in the widget gallery.
+    dependencies:
+      - target: NamaziaWidget
+        embed: true
+
+    # A shared scheme, written into the generated project. Xcode invents one when the
+    # project is opened in the app, but `xcodebuild -scheme Namazia` on the command
+    # line — which is what scripts/upload.sh runs — finds nothing without this.
+    scheme: {}
+
+  NamaziaWidget:
+    type: app-extension
+    platform: iOS
+
+    sources:
+      - path: NamaziaWidget
+      # The widget shares the app's model, time handling and design language, but not
+      # its screens: those reach for UIApplication, which is unavailable in an
+      # extension and would not compile here.
+      - path: Namazia/Data
+      - path: Namazia/Utils
+      - path: Namazia/DesignSystem
+      # The extension resolves its own strings — nothing the app does carries across
+      # process boundaries — so it needs the .lproj bundles too. `L10n.swift` itself
+      # lives in Utils/, not here: a directory named as a source is treated as a
+      # resource group once it contains .lproj folders, and any Swift file inside it
+      # is then never compiled into this target.
+      - path: Namazia/Localization
+      # Fonts have to be in the extension's own bundle as well as the app's.
+      - path: Namazia/Resources/Fonts
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: af.namazia.app.widget
+        PRODUCT_NAME: NamaziaWidget
+        INFOPLIST_FILE: NamaziaWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: NamaziaWidget/NamaziaWidget.entitlements
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: YES
