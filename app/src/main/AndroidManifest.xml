@@ -68,13 +68,21 @@
                 android:resource="@xml/azan_widget_info" />
         </receiver>
 
+        <!--
+          AzanApplication implements Configuration.Provider, so WorkManager must be
+          initialized on demand. Its default initializer is removed here — only that
+          one entry, leaving the provider itself for any other androidx.startup
+          component. Declaring it alongside Configuration.Provider makes lint fail the
+          release build, and would start WorkManager without the Hilt worker factory.
+        -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            android:exported="false">
+            android:exported="false"
+            tools:node="merge">
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup" />
+                tools:node="remove" />
         </provider>
 
     </application>
