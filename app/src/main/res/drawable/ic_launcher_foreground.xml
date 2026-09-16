@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Generated to match the Play Store icon (store/play-icon-512.png).
+  Geometry: mosque unit grid mapped into the 108x108 viewport at unit=1.0,
+  centred on (54, 52); the mark spans ~62x60 so it stays inside the 72x72
+  region every launcher mask keeps visible.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- minaret shaft -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M25.4,77.5 L25.4,47.5 L30.6,47.5 L30.6,77.5 Z" />
+    <!-- minaret balcony -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M23.4,47.5 L23.4,45.1 L32.6,45.1 L32.6,47.5 Z" />
+    <!-- minaret dome cap -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M24.8,45.1 Q28.0,38.0 31.2,45.1 Z" />
+    <!-- minaret finial spike -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M27.15,38.9 L27.15,34.9 L28.85,34.9 L28.85,38.9 Z" />
+    <!-- minaret finial bead -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M26.5,33.9 A1.5,1.5 0 1 0 29.5,33.9 A1.5,1.5 0 1 0 26.5,33.9 Z" />
+    <!-- minaret shaft -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M77.4,77.5 L77.4,47.5 L82.6,47.5 L82.6,77.5 Z" />
+    <!-- minaret balcony -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M75.4,47.5 L75.4,45.1 L84.6,45.1 L84.6,47.5 Z" />
+    <!-- minaret dome cap -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M76.8,45.1 Q80.0,38.0 83.2,45.1 Z" />
+    <!-- minaret finial spike -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M79.15,38.9 L79.15,34.9 L80.85,34.9 L80.85,38.9 Z" />
+    <!-- minaret finial bead -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M78.5,33.9 A1.5,1.5 0 1 0 81.5,33.9 A1.5,1.5 0 1 0 78.5,33.9 Z" />
+    <!-- side half-dome -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M46.0,55.5 Q38.5,44.0 31.0,55.5 Z" />
+    <!-- side half-dome -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M62.0,55.5 Q69.5,44.0 77.0,55.5 Z" />
+    <!-- main dome -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M35.0,55.5 Q54.0,27.0 73.0,55.5 Z" />
+    <!-- dome spire -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M53.05,34.0 L53.05,28.5 L54.95,28.5 L54.95,34.0 Z" />
+    <!-- crescent: single closed outline, see crescent() for why not evenOdd -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M58.76,25.05 L58.7,25.21 L58.64,25.37 L58.57,25.53 L58.49,25.69 L58.41,25.85 L58.33,26.0 L58.24,26.15 L58.15,26.3 L58.05,26.44 L57.94,26.58 L57.83,26.71 L57.72,26.85 L57.6,26.97 L57.47,27.1 L57.35,27.22 L57.21,27.33 L57.08,27.44 L56.94,27.55 L56.8,27.65 L56.65,27.74 L56.5,27.83 L56.35,27.91 L56.19,27.99 L56.03,28.07 L55.87,28.14 L55.71,28.2 L55.55,28.26 L55.38,28.31 L55.21,28.35 L55.04,28.39 L54.87,28.42 L54.7,28.45 L54.52,28.47 L54.35,28.49 L54.17,28.5 L54.0,28.5 L53.83,28.5 L53.65,28.49 L53.48,28.47 L53.3,28.45 L53.13,28.42 L52.96,28.39 L52.79,28.35 L52.62,28.31 L52.45,28.26 L52.29,28.2 L52.13,28.14 L51.97,28.07 L51.81,27.99 L51.65,27.91 L51.5,27.83 L51.35,27.74 L51.2,27.65 L51.06,27.55 L50.92,27.44 L50.79,27.33 L50.65,27.22 L50.53,27.1 L50.4,26.97 L50.28,26.85 L50.17,26.71 L50.06,26.58 L49.95,26.44 L49.85,26.3 L49.76,26.15 L49.67,26.0 L49.59,25.85 L49.51,25.69 L49.43,25.53 L49.36,25.37 L49.3,25.21 L49.24,25.05 L49.19,24.88 L49.15,24.71 L49.11,24.54 L49.08,24.37 L49.05,24.2 L49.03,24.02 L49.01,23.85 L49.0,23.67 L49.0,23.5 L49.0,23.33 L49.01,23.15 L49.03,22.98 L49.05,22.8 L49.08,22.63 L49.11,22.46 L49.15,22.29 L49.19,22.12 L49.24,21.95 L49.3,21.79 L49.36,21.63 L49.43,21.47 L49.51,21.31 L49.59,21.15 L49.67,21.0 L49.76,20.85 L49.85,20.7 L49.95,20.56 L50.06,20.42 L50.17,20.29 L50.28,20.15 L50.4,20.03 L50.53,19.9 L50.65,19.78 L50.79,19.67 L50.92,19.56 L51.06,19.45 L51.2,19.35 L51.35,19.26 L51.5,19.17 L51.65,19.09 L51.81,19.01 L51.97,18.93 L52.13,18.86 L52.29,18.8 L52.45,18.74 L52.62,18.69 L52.79,18.65 L52.96,18.61 L53.13,18.58 L53.3,18.55 L53.48,18.53 L53.65,18.51 L53.83,18.5 L54.0,18.5 L54.05,18.54 L53.93,18.61 L53.81,18.68 L53.7,18.76 L53.59,18.85 L53.48,18.94 L53.37,19.03 L53.27,19.12 L53.17,19.22 L53.08,19.32 L52.99,19.43 L52.9,19.54 L52.81,19.65 L52.73,19.76 L52.66,19.88 L52.59,20.0 L52.52,20.12 L52.45,20.25 L52.4,20.37 L52.34,20.5 L52.29,20.63 L52.25,20.76 L52.2,20.9 L52.17,21.03 L52.14,21.17 L52.11,21.31 L52.09,21.44 L52.07,21.58 L52.06,21.72 L52.05,21.86 L52.05,22.0 L52.05,22.14 L52.06,22.28 L52.07,22.42 L52.09,22.56 L52.11,22.69 L52.14,22.83 L52.17,22.97 L52.2,23.1 L52.25,23.24 L52.29,23.37 L52.34,23.5 L52.4,23.63 L52.45,23.75 L52.52,23.88 L52.59,24.0 L52.66,24.12 L52.73,24.24 L52.81,24.35 L52.9,24.46 L52.99,24.57 L53.08,24.68 L53.17,24.78 L53.27,24.88 L53.37,24.97 L53.48,25.06 L53.59,25.15 L53.7,25.24 L53.81,25.32 L53.93,25.39 L54.05,25.46 L54.17,25.53 L54.3,25.6 L54.42,25.65 L54.55,25.71 L54.68,25.76 L54.81,25.8 L54.95,25.85 L55.08,25.88 L55.22,25.91 L55.36,25.94 L55.49,25.96 L55.63,25.98 L55.77,25.99 L55.91,26.0 L56.05,26.0 L56.19,26.0 L56.33,25.99 L56.47,25.98 L56.61,25.96 L56.74,25.94 L56.88,25.91 L57.02,25.88 L57.15,25.85 L57.29,25.8 L57.42,25.76 L57.55,25.71 L57.68,25.65 L57.8,25.6 L57.93,25.53 L58.05,25.46 L58.17,25.39 L58.29,25.32 L58.4,25.24 L58.51,25.15 L58.62,25.06 L58.73,24.97 Z" />
+    <!-- building body + arch entrance (evenOdd: arch cuts the hole) -->
+    <path
+        android:fillColor="#BFA15C"
+        android:fillType="evenOdd"
+        android:pathData="M30.0,55.5 L30.0,78.5 L78.0,78.5 L78.0,55.5 Z M47.5,78.5 L47.5,64.5 Q54.0,55.0 60.5,64.5 L60.5,78.5 Z" />
+    <!-- plinth -->
+    <path
+        android:fillColor="#BFA15C"
+        android:pathData="M23.0,78.5 L23.0,81.9 L85.0,81.9 L85.0,78.5 Z" />
+
+</vector>

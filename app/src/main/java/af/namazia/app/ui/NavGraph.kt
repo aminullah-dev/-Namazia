@@ -1,0 +1,157 @@
+package af.namazia.app.ui
+
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.annotation.StringRes
+import androidx.compose.ui.res.stringResource
+import af.namazia.app.R
+import af.namazia.app.data.AfghanCities
+import af.namazia.app.data.AppLanguage
+import af.namazia.app.data.AppSettings
+import af.namazia.app.data.PrayerName
+
+private data class NavItem(val route: String, @StringRes val labelRes: Int, val icon: ImageVector)
+
+private val navItems = listOf(
+    NavItem("home", R.string.nav_home, Icons.Filled.Home),
+    NavItem("calendar", R.string.nav_calendar, Icons.Filled.DateRange),
+    NavItem("qibla", R.string.nav_qibla, Icons.Filled.Explore),
+    NavItem("dhikr", R.string.nav_dhikr, Icons.Filled.MenuBook),
+    NavItem("settings", R.string.nav_settings, Icons.Filled.Settings)
+)
+
+@Composable
+fun AzanNavGraph(
+    uiState: HomeUiState,
+    settings: AppSettings,
+    tasbihCount: Int,
+    calendarState: CalendarUiState,
+    onCitySelected: (Int) -> Unit,
+    onPrayerToggled: (PrayerName, Boolean) -> Unit,
+    onReminderChanged: (Int) -> Unit,
+    onCalcMethodChanged: (Int) -> Unit,
+    onAsrSchoolChanged: (Int) -> Unit,
+    onDarkModeToggled: (Boolean) -> Unit,
+    onVibrationToggled: (Boolean) -> Unit,
+    onLanguageChanged: (AppLanguage) -> Unit,
+    onTasbihIncrement: () -> Unit,
+    onTasbihReset: () -> Unit,
+    onMonthChanged: (Int, Int) -> Unit,
+    onTestAzan: (Boolean) -> Unit,
+    onRefresh: () -> Unit
+) {
+    val navController = rememberNavController()
+
+    Scaffold(
+        // Every screen below carries its own Scaffold and TopAppBar, and those already
+        // inset themselves against the status bar. If this outer one did it too the
+        // result would be a status bar's worth of empty space above every top bar.
+        // So the outer Scaffold claims nothing and only the bottom bar is its business.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        bottomBar = {
+            NavigationBar(
+                containerColor = MaterialTheme.colorScheme.surface,
+                tonalElevation = 3.dp
+            ) {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
+
+                navItems.forEach { item ->
+                    val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
+                    NavigationBarItem(
+                        selected = selected,
+                        onClick = {
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = { Icon(item.icon, contentDescription = null) },
+                        label = {
+                            Text(
+                                text = stringResource(item.labelRes),
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        },
+                        alwaysShowLabel = true
+                    )
+                }
+            }
+        }
+    ) { padding ->
+        NavHost(
+            navController = navController,
+            startDestination = "home",
+            // padding here is the bottom bar, which already includes the gesture-bar
+            // inset. Consuming it stops the inner Scaffolds from adding that inset a
+            // second time and leaving a gap above the navigation bar.
+            modifier = Modifier
+                .padding(padding)
+                .consumeWindowInsets(padding)
+        ) {
+            composable("home") {
+                HomeScreen(uiState = uiState, onRefresh = onRefresh)
+            }
+            composable("calendar") {
+                // Auto-load current month when first navigating here
+                LaunchedEffect(Unit) {
+                    if (calendarState.days.isEmpty() && !calendarState.isLoading) {
+                        onMonthChanged(calendarState.year, calendarState.month)
+                    }
+                }
+                CalendarScreen(
+                    calendarState = calendarState,
+                    onMonthChanged = onMonthChanged
+                )
+            }
+            composable("qibla") {
+                QiblaScreen(city = uiState.currentCity)
+            }
+            composable("dhikr") {
+                DuaScreen(
+                    tasbihCount = tasbihCount,
+                    onTasbihIncrement = onTasbihIncrement,
+                    onTasbihReset = onTasbihReset
+                )
+            }
+            composable("settings") {
+                SettingsScreen(
+                    settings = settings,
+                    cities = AfghanCities.list,
+                    onCitySelected = onCitySelected,
+                    onPrayerToggled = onPrayerToggled,
+                    onReminderChanged = onReminderChanged,
+                    onCalcMethodChanged = onCalcMethodChanged,
+                    onAsrSchoolChanged = onAsrSchoolChanged,
+                    onDarkModeToggled = onDarkModeToggled,
+                    onVibrationToggled = onVibrationToggled,
+                onLanguageChanged = onLanguageChanged,
+                    onTestAzan = onTestAzan
+                )
+            }
+        }
+    }
+}
