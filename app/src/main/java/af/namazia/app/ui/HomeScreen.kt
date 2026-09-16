@@ -277,7 +277,7 @@ private fun CountdownRing(
                 color = Color.White.copy(alpha = 0.85f)
             )
             Text(
-                text = next.name,
+                text = stringResource(next.nameRes),
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.White
             )

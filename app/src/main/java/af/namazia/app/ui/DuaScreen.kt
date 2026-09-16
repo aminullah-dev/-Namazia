@@ -104,7 +104,7 @@ private fun DhikrList(categories: List<DuaCategory>) {
         contentPadding = PaddingValues(Spacing.lg),
         verticalArrangement = Arrangement.spacedBy(Spacing.md)
     ) {
-        items(categories, key = { it.title }) { category ->
+        items(categories, key = { it.titleRes }) { category ->
             CategoryCard(category = category)
         }
     }
@@ -112,7 +112,7 @@ private fun DhikrList(categories: List<DuaCategory>) {
 
 @Composable
 private fun CategoryCard(category: DuaCategory) {
-    var expanded by rememberSaveable(category.title) { mutableStateOf(false) }
+    var expanded by rememberSaveable(category.titleRes) { mutableStateOf(false) }
 
     Surface(
         shape = Radii.lg,
@@ -132,7 +132,7 @@ private fun CategoryCard(category: DuaCategory) {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = category.title,
+                        text = stringResource(category.titleRes),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary

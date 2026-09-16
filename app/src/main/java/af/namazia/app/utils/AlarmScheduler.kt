@@ -159,9 +159,12 @@ object AlarmScheduler {
 
     fun cancelAllAlarms(context: Context) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        // Cancellation matches on component + action + request code, not on the intent's
+        // extras — so the settings passed here are never actually used and a default is fine.
+        val settings = AppSettings()
         PrayerName.entries.forEach { prayer ->
             listOf(false, true).forEach { isReminder ->
-                val intent = createAlarmIntent(context, prayer, "", isReminder)
+                val intent = createAlarmIntent(context, prayer, "", isReminder, settings)
                 alarmManager.cancel(intent)
             }
         }
