@@ -23,3 +23,22 @@ ios/DerivedData/
 ios/scripts/.env
 ios/build/
 *.p8
+
+# --- Hardening: build outputs everywhere (not just root) ---
+build/
+app/build/
+app/release/
+*.apk
+*.aab
+
+# --- Hardening: secrets & signing (never commit) ---
+.env*
+!.env.example
+*.jks
+*.keystore
+keystore.properties
+key.properties
+google-services.json
+service-account*.json
+*.p12
+*.pem
