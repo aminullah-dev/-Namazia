@@ -1,0 +1,114 @@
+package af.namazia.app.ui
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import af.namazia.app.ui.theme.AzanAppTheme
+import af.namazia.app.utils.withLanguage
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* permission result handled silently */ }
+
+    // The ViewModel loads on init, so skip the resume that immediately follows onCreate.
+    private var firstResume = true
+
+    override fun onResume() {
+        super.onResume()
+        if (firstResume) {
+            firstResume = false
+        } else {
+            // Returning to the app: refresh so the next-prayer card / countdown stay current.
+            viewModel.loadPrayerTimes()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // From targetSdk 36 the system draws the app behind the status and navigation
+        // bars and the manifest opt-out is ignored. Asking for it here rather than
+        // leaving it to the system means every Android version we support behaves the
+        // same way, so what we see on an old phone is what a new one does.
+        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+
+        // Only ask when we do not already hold it — launching the request on every start
+        // re-prompts users who granted it and wastes the one prompt of users who denied it.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        setContent {
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val settings by viewModel.settings.collectAsStateWithLifecycle()
+            val tasbihCount by viewModel.tasbihCount.collectAsStateWithLifecycle()
+            val calendarState by viewModel.calendarState.collectAsStateWithLifecycle()
+
+            // The chosen language is the app's own setting, not the phone's: an Afghan
+            // phone is very often set to English, and someone who wants Pashto should
+            // not have to change their whole device. Providing a context built for that
+            // language is what makes every `stringResource` below resolve through it,
+            // and swapping it recomposes the whole tree — so the switch is instant.
+            val localizedContext = LocalContext.current.withLanguage(settings.language)
+
+            AzanAppTheme(darkTheme = settings.darkMode) {
+                // Both languages are right-to-left, so this is pinned rather than left
+                // to the device locale.
+                CompositionLocalProvider(
+                    LocalLayoutDirection provides LayoutDirection.Rtl,
+                    LocalContext provides localizedContext
+                ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    AzanNavGraph(
+                        uiState = uiState,
+                        settings = settings,
+                        tasbihCount = tasbihCount,
+                        calendarState = calendarState,
+                        onCitySelected = viewModel::selectCity,
+                        onPrayerToggled = viewModel::togglePrayer,
+                        onReminderChanged = viewModel::updateReminderMinutes,
+                        onCalcMethodChanged = viewModel::updateCalculationMethod,
+                        onAsrSchoolChanged = viewModel::updateAsrSchool,
+                        onDarkModeToggled = viewModel::toggleDarkMode,
+                        onVibrationToggled = viewModel::toggleVibration,
+                        onLanguageChanged = viewModel::updateLanguage,
+                        onTasbihIncrement = viewModel::incrementTasbih,
+                        onTasbihReset = viewModel::resetTasbih,
+                        onMonthChanged = viewModel::loadMonthlyCalendar,
+                        onTestAzan = viewModel::testAzan,
+                        onRefresh = { viewModel.loadPrayerTimes() }
+                    )
+                }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  The same group as the app, and it must stay the same: this is the only channel
+	  between them. The widget makes no network calls of its own — it reads the prayer
+	  times the app already cached in this container.
+	-->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.af.namazia.app</string>
+	</array>
+</dict>
+</plist>

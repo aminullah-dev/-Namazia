@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Pashto (پښتو).
+
+  Not a transliteration of the Dari: the prayers have their own names (ماسپښين,
+  مازديګر, ماخستن), several cities are spelled differently (لښکرګاه), and past-tense
+  transitive verbs agree with the *object* rather than the subject — «سهار مو وکړ».
+-->
+<resources>
+    <string name="app_name">د لمانځه وختونه</string>
+    <string name="widget_description">د لمانځه د وختونو ویجټ — راتلونکی لمونځ ښیي</string>
+    <string name="channel_azan_name">اذان</string>
+    <string name="channel_azan_description">د لمانځه د وخت خبرتیا د اذان له غږولو سره</string>
+    <string name="channel_reminder_name">د لمانځه یادونه</string>
+    <string name="channel_reminder_description">تر لمانځه څو دقیقې دمخه یادونه</string>
+
+    <string name="error_offline_title">انټرنټ نشته</string>
+    <string name="error_offline_body">د دې ورځې وختونه په حافظه کې نه دي خوندي شوي. له انټرنټ سره وصل شئ او بیا هڅه وکړئ.</string>
+    <string name="error_server_title">سرور ځواب ورنکړ</string>
+    <string name="error_server_body">اوس مهال د وختونو ترلاسه کول ممکن نه دي. یوه شېبه وروسته بیا هڅه وکړئ.</string>
+    <string name="error_bad_response_title">ناسم ځواب</string>
+    <string name="error_bad_response_body">ترلاسه شوي معلومات بشپړ نه وو. مهرباني وکړئ بیا هڅه وکړئ.</string>
+    <string name="error_unknown_title">ناڅرګنده تېروتنه</string>
+    <string name="error_unknown_body">یوه ستونزه رامنځته شوه. مهرباني وکړئ بیا هڅه وکړئ.</string>
+    <string name="action_retry">بیا هڅه وکړئ</string>
+    <string name="calendar_empty_title">معلومات نشته</string>
+
+    <string name="prayer_fajr">سهار</string>
+    <string name="prayer_sunrise">لمر ختل</string>
+    <string name="prayer_dhuhr">ماسپښين</string>
+    <string name="prayer_asr">مازديګر</string>
+    <string name="prayer_maghrib">ماښام</string>
+    <string name="prayer_isha">ماخستن</string>
+    <string name="prayer_generic">لمونځ</string>
+
+    <string name="city_kabul">کابل</string>
+    <string name="city_herat">هرات</string>
+    <string name="city_mazar">مزار شریف</string>
+    <string name="city_kandahar">کندهار</string>
+    <string name="city_jalalabad">جلال‌آباد</string>
+    <string name="city_kunduz">کندز</string>
+    <string name="city_bamyan">بامیان</string>
+    <string name="city_ghazni">غزني</string>
+    <string name="city_lashkargah">لښکرګاه</string>
+    <string name="city_taloqan">تالقان</string>
+    <string name="city_pulekhumri">پلخمري</string>
+    <string name="city_maimana">میمنه</string>
+    <string name="city_sheberghan">شبرغان</string>
+    <string name="city_zaranj">زرنج</string>
+    <string name="city_fayzabad">فیض‌آباد</string>
+
+    <string name="madhab_hanafi">حنفي</string>
+    <string name="madhab_other">شافعي / مالکي / حنبلي</string>
+    <string name="method_karachi">د کراچۍ د اسلامي علومو پوهنتون</string>
+    <string name="method_mwl">د مسلمانانو نړیواله ټولنه</string>
+    <string name="method_makkah">د مکې ام القری</string>
+    <string name="method_isna">د شمالي امریکا اسلامي ټولنه</string>
+    <string name="method_egypt">د مصر د مساحې عمومي اداره</string>
+
+    <string name="nav_home">لمونځ</string>
+    <string name="nav_calendar">کالیز</string>
+    <string name="nav_qibla">قبله</string>
+    <string name="nav_dhikr">ذکر</string>
+    <string name="nav_settings">تنظیمات</string>
+
+    <string name="action_refresh">بیا پورته کول</string>
+    <string name="home_day_finished_title">د نن ورځې لمونځونه پای ته ورسېدل</string>
+    <string name="home_day_finished_body">د سبا د سهار اذان به په خپل وخت وغږېږي</string>
+    <string name="home_next_prayer">راتلونکی لمونځ</string>
+    <string name="home_until_azan">تر اذانه %1$s</string>
+    <string name="home_azan_off">د دې وخت اذان بند دی</string>
+    <string name="home_past">تېر شوی</string>
+    <string name="home_stale_data">%1$s — ښودل شوي وختونه له حافظې دي</string>
+
+    <string name="calendar_title">د وختونو کالیز</string>
+    <string name="calendar_prev_month">تېره میاشت</string>
+    <string name="calendar_next_month">راتلونکې میاشت</string>
+    <string name="calendar_day">ورځ</string>
+    <string name="month_1">جنوري</string>
+    <string name="month_2">فبروري</string>
+    <string name="month_3">مارچ</string>
+    <string name="month_4">اپریل</string>
+    <string name="month_5">مې</string>
+    <string name="month_6">جون</string>
+    <string name="month_7">جولای</string>
+    <string name="month_8">اګست</string>
+    <string name="month_9">سپټمبر</string>
+    <string name="month_10">اکتوبر</string>
+    <string name="month_11">نومبر</string>
+    <string name="month_12">دسمبر</string>
+
+    <string name="qibla_title">قبله‌نما</string>
+    <string name="qibla_direction_label">د قبلې لوری</string>
+    <string name="qibla_from_true_north">له ریښتیني شماله</string>
+    <string name="qibla_offset_label">توپیر</string>
+    <string name="qibla_on_target">د قبلې په لور</string>
+    <string name="qibla_turn_short">وګرځوئ</string>
+    <string name="qibla_low_accuracy">د قطب‌نما دقت کم دی — موبایل څو ځله د ۸ په څېر وګرځوئ</string>
+    <string name="qibla_aligned">قبلې ته مو مخ دی</string>
+    <string name="qibla_turn">موبایل وګرځوئ</string>
+    <string name="qibla_no_compass_title">دا وسیله قطب‌نما نه لري</string>
+    <string name="qibla_no_compass_body">له %1$s څخه د قبلې لوری له ریښتیني شماله %2$s° دی. دا زاویه کولی شئ له بل قطب‌نما څخه پیدا کړئ.</string>
+
+    <string name="dhikr_title">ذکر او دعا</string>
+    <string name="dhikr_tab_list">اذکار او دعاګانې</string>
+    <string name="dhikr_tab_tasbih">تسبیح</string>
+    <string name="dhikr_count_label">%1$s ذکرونه</string>
+    <string name="dhikr_collapse">بندول</string>
+    <string name="dhikr_expand">پرانیستل</string>
+    <string name="dhikr_repeat">%1$s ځله</string>
+    <string name="tasbih_rounds">بشپړ دور: %1$s</string>
+    <string name="tasbih_of_target">له %1$s څخه</string>
+    <string name="tasbih_tap_hint">د شمېرلو لپاره دایره ټک کړئ</string>
+    <string name="tasbih_total">ټول: %1$s</string>
+    <string name="tasbih_reset">صفر کول</string>
+
+    <string name="dhikr_category_morning">د سهار اذکار</string>
+    <string name="dhikr_category_evening">د ماښام اذکار</string>
+    <string name="dhikr_category_after_prayer">تر لمانځه وروسته</string>
+    <string name="dhikr_category_sleep">د خوب دمخه</string>
+    <string name="dhikr_category_travel">د سفر دعا</string>
+
+    <string name="dhikr_morning_1">سهار مو وکړ، په داسې حال کې چې ټول واک د الله دی او ستاینه یوازې الله ته ده؛ له الله پرته بل معبود نشته، یو دی او شریک نه لري.</string>
+    <string name="dhikr_morning_2">یا الله، ستا په لطف مو سهار وکړ او ستا په لطف مو ماښام وکړ، ستا په واک ژوندي یو، ستا په حکم مړه کېږو او بېرته ستا لور ته ورتګ دی.</string>
+    <string name="dhikr_morning_3">یا الله، ته زما پالونکی یې، له تا پرته بل معبود نشته؛ زه دې پیدا کړم، زه ستا بنده یم او تر خپله وسه ستا په عهد او ژمنه ولاړ یم.</string>
+    <string name="dhikr_morning_4">الله پاک دی او ستاینه یوازې هغه ته ده.</string>
+    <string name="dhikr_evening_1">ماښام مو وکړ، په داسې حال کې چې ټول واک د الله دی؛ له الله پرته بل معبود نشته، یو دی او شریک نه لري.</string>
+    <string name="dhikr_evening_2">یا الله، ستا په لطف مو ماښام وکړ او ستا په لطف مو سهار وکړ، ستا په واک ژوندي یو، ستا په حکم مړه کېږو او ورتګ ستا لور ته دی.</string>
+    <string name="dhikr_evening_3">یا الله، ماښام مې وکړ او تا، ستا د عرش وړونکي، ستا پرښتې او ټول مخلوق دې ته ګواه نیسم چې ته الله یې او له تا پرته بل معبود نشته.</string>
+    <string name="dhikr_after_prayer_1">الله پاک دی.</string>
+    <string name="dhikr_after_prayer_2">ټوله ستاینه الله ته ده.</string>
+    <string name="dhikr_after_prayer_3">الله تر ټولو لوی دی.</string>
+    <string name="dhikr_after_prayer_4">له الله پرته بل معبود نشته، یو دی او شریک نه لري؛ واک د هغه دی، ستاینه د هغه ده او هغه پر هر څه توانا دی.</string>
+    <string name="dhikr_after_prayer_5">آیة الکرسي: الله، له هغه پرته بل معبود نشته؛ تل ژوندی او پر خپل ذات ولاړ دی...</string>
+    <string name="dhikr_sleep_1">یا الله، ستا په نامه مړ کېږم او ژوندی کېږم.</string>
+    <string name="dhikr_sleep_2">یا الله، ما له خپل عذابه وساته په هغه ورځ چې خپل بندګان راپاڅوې.</string>
+    <string name="dhikr_sleep_3">یا الله، ته پاک یې او ستاینه ستا ده؛ ګواهي ورکوم چې له تا پرته بل معبود نشته؛ له تا بښنه غواړم او تا ته توبه کوم.</string>
+    <string name="dhikr_travel_1">پاک دی هغه ذات چې دا یې زموږ لپاره اېل کړ، که نه موږ یې وس نه درلود، او موږ به خامخا خپل پالونکي ته ورستانه شو.</string>
+    <string name="dhikr_travel_2">یا الله، په دې سفر کې له تا نېکي او پرهېزګاري غواړو او له کړنو هغه څه چې ته پرې راضي یې.</string>
+
+    <string name="notif_azan_title">د %1$s وخت</string>
+    <string name="notif_azan_body">%1$s بجې — الله اکبر</string>
+    <string name="notif_azan_stop">اذان ودروئ</string>
+    <string name="notif_reminder_title">د %1$s د وخت یادونه</string>
+    <string name="notif_reminder_body">%1$s بجې به اذان وشي</string>
+    <string name="notif_test_label">د اذان ازموینه</string>
+
+    <string name="settings_title">تنظیمات</string>
+    <string name="settings_group_language">ژبه</string>
+    <string name="language_dari">دری</string>
+    <string name="language_pashto">پښتو</string>
+    <string name="settings_group_location">ځای او محاسبه</string>
+    <string name="settings_city">ښار</string>
+    <string name="settings_method">د محاسبې طریقه</string>
+    <string name="settings_madhab">مذهب</string>
+    <string name="settings_madhab_note">مذهب یوازې د مازديګر پر وخت اغېزه کوي. په حنفي کې مازديګر وروسته کېږي.</string>
+    <string name="settings_group_azans">د کومو وختونو لپاره اذان</string>
+    <string name="settings_group_reminder">تر اذان دمخه یادونه</string>
+    <string name="settings_reminder_off">یادونه بنده ده</string>
+    <string name="settings_reminder_off_short">بند</string>
+    <string name="settings_reminder_minutes">تر اذان %1$s دقیقې دمخه</string>
+    <string name="settings_reminder_minutes_short">%1$s دقیقې</string>
+    <string name="settings_group_azan_playback">د اذان غږول</string>
+    <string name="settings_test_azan">د اذان ازموینه</string>
+    <string name="settings_test_azan_note">د غږ د ډاډ لپاره همدا اوس غږېږي</string>
+    <string name="settings_test_fajr">د سهار د اذان ازموینه</string>
+    <string name="settings_test_fajr_note">د سهار اذان جلا فایل لري</string>
+    <string name="settings_vibration">د اذان پر مهال ښورېدل</string>
+    <string name="settings_group_display">ښکارېدنه</string>
+    <string name="settings_dark_mode">د شپې بڼه</string>
+    <string name="settings_group_support">ملاتړ</string>
+    <string name="settings_contact">له ملاتړ سره اړیکه</string>
+    <string name="settings_email_subject">د لمانځه د وختونو اپ ملاتړ</string>
+    <string name="settings_email_chooser">برېښنالیک لېږل</string>
+    <string name="settings_version">د اپ نسخه</string>
+    <string name="settings_battery_title">د بطرۍ اصلاح غیرفعاله کړئ</string>
+    <string name="settings_battery_body">پرته له دې، سیستم ممکن اذان په خپل وخت ونه غږوي</string>
+</resources>
