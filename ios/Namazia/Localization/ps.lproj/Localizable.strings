@@ -175,7 +175,7 @@
 
 "settings.section.azans" = "اذانونه";
 "settings.azanFor" = "د %@ اذان";
-"settings.azans.footer" = "د لمر ختلو لپاره اذان نه ویل کېږي؛ دا کیلۍ یوازې دا ټاکي چې په لیست کې وښودل شي که نه.";
+"settings.azans.footer" = "د لمر ختو پر مهال اذان نه ویل کېږي، ایا غواړئ دا بټن هم په لېسټ کې وښودل شي او که نه؟";
 
 "settings.section.sound" = "یادونه او غږ";
 "settings.reminder" = "تر اذان دمخه یادونه";
