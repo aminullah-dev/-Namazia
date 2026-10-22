@@ -22,8 +22,9 @@ android {
         // even to a test track and even if that bundle was never published. Raise this for
         // every single upload, including re-uploads after a rejected or discarded one.
         // 3 is spent: it reached the production draft and was rejected for targetSdk.
-        versionCode 4
-        versionName "1.1.0"
+        // 4 (1.1.0) is live in production.
+        versionCode 5
+        versionName "1.1.1"
     }
 
     buildFeatures {

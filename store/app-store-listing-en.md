@@ -192,6 +192,16 @@ Connect should not ask at all.
 | Contact email | aminhashemi979@gmail.com |
 
 ### What's New in This Version
+
+**1.0.1 (build 5)** — Pashto wording fixes only.
+
+```
+ps: د پښتو ژبې ځینې متنونه سم شول.
+fa: برخی متن‌های زبان پشتو اصلاح شد.
+en: Corrected Pashto wording.
+```
+
+**1.0 (first release)**
 *First release — this field is not shown for version 1.0, but App Store Connect may
 still ask for it.*
 
