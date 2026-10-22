@@ -14,12 +14,12 @@
 "tab.qibla" = "قبله";
 "tab.calendar" = "کالیز";
 "tab.dhikr" = "اذکار";
-"tab.settings" = "تنظیمات";
+"tab.settings" = "تنځیمات";
 
 /* MARK: Actions */
 "action.refresh" = "تازه کول";
 "action.retry" = "بیا هڅه وکړئ";
-"action.openSettings" = "تنظیمات";
+"action.openSettings" = "تنځیمات";
 "action.testAzan" = "د اذان ازموینه";
 
 /* MARK: Home */
@@ -191,7 +191,7 @@
 
 "settings.section.appearance" = "بڼه";
 "settings.darkMode" = "تیاره بڼه";
-"settings.darkMode.footer" = "بند یعنې هماغه حالت چې ستاسو د موبایل په تنظیماتو کې ټاکل شوی دی.";
+"settings.darkMode.footer" = "بند یعنې هماغه حالت چې ستاسو د موبایل په تنځیماتو کې ټاکل شوی دی.";
 
 "settings.section.about" = "په اړه";
 "settings.version" = "نسخه";
