@@ -104,6 +104,26 @@ Fajr azan recording: "Morning call to prayer on Bodufolhudhoo, Maldives" by jros
 ---
 
 ## What's new (release notes)
+
+### 1.1.1 (versionCode 5)
+Pashto wording fixes only. Paste into every language box Play Console shows.
+
+**Pashto (ps)**
+```
+د پښتو ژبې ځینې متنونه سم شول.
+```
+
+**Dari / Persian (fa)**
+```
+برخی متن‌های زبان پشتو اصلاح شد.
+```
+
+**English (en-US)**
+```
+Corrected Pashto wording.
+```
+
+### 1.1.0 (first production release)
 *Limit: 500 characters per language*
 
 These read as a first release because that is what it is: production has never been
