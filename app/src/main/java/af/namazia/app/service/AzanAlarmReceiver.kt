@@ -80,6 +80,7 @@ class AzanAlarmReceiver : BroadcastReceiver() {
         val prayerTime = intent.getStringExtra(AlarmScheduler.EXTRA_PRAYER_TIME) ?: ""
         val isReminder = intent.getBooleanExtra(AlarmScheduler.EXTRA_IS_REMINDER, false)
         val vibrate = intent.getBooleanExtra(AlarmScheduler.EXTRA_VIBRATE, true)
+        val language = intent.getStringExtra(AlarmScheduler.EXTRA_LANGUAGE)
 
         val serviceIntent = Intent(context, AzanService::class.java).apply {
             action = intent.action
@@ -88,6 +89,9 @@ class AzanAlarmReceiver : BroadcastReceiver() {
             putExtra(AlarmScheduler.EXTRA_PRAYER_TIME, prayerTime)
             putExtra(AlarmScheduler.EXTRA_IS_REMINDER, isReminder)
             putExtra(AlarmScheduler.EXTRA_VIBRATE, vibrate)
+            // AzanService builds its notification text in this language; without it
+            // AppLanguage.fromCode(null) falls back to Dari even for Pashto users.
+            putExtra(AlarmScheduler.EXTRA_LANGUAGE, language)
         }
 
         context.startForegroundService(serviceIntent)
