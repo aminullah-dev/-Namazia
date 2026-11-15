@@ -189,6 +189,9 @@ class MainViewModel @Inject constructor(
             )
             putExtra(AlarmScheduler.EXTRA_PRAYER_TIME, "")
             putExtra(AlarmScheduler.EXTRA_VIBRATE, settings.value.vibrationEnabled)
+            // This path goes straight to AzanService, not through AzanAlarmReceiver, so it
+            // must carry the language itself or the notification text falls back to Dari.
+            putExtra(AlarmScheduler.EXTRA_LANGUAGE, settings.value.language.code)
         }
         ContextCompat.startForegroundService(context, intent)
     }
