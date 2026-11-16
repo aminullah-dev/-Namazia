@@ -41,6 +41,16 @@ android {
         }
     }
 
+    bundle {
+        language {
+            // The app switches between Dari and Pashto inside the app, independent of the
+            // device language. With language splits (the default for an AAB), Play delivers
+            // only the device's languages, so values-ps could be missing on a phone that is
+            // not set to Pashto and the in-app switch would silently fall back to Dari.
+            enableSplit = false
+        }
+    }
+
     buildFeatures {
         compose true
         // Needed for BuildConfig.VERSION_NAME in the settings screen. AGP 8 turns this
