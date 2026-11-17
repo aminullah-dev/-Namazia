@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AzanService finds the azan audio with resources.getIdentifier("azan", "raw", ...), which
+  the resource shrinker cannot follow. Without this, shrinkResources could drop the files
+  and the app would silently fall back to the phone's default ringtone.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/azan,@raw/azan_fajr" />
