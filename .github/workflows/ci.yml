@@ -1,0 +1,60 @@
+name: CI
+
+# Kept small on purpose: one Linux job (the cheapest runner), only on pushes to
+# main and on pull requests, and not at all for changes that cannot break the
+# build (texts, store files, the iOS app, which has no tests yet).
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "store/**"
+      - "licenses/**"
+      - "ios/**"
+      - "tools/**"
+      - "privacy-policy.html"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "store/**"
+      - "licenses/**"
+      - "ios/**"
+      - "tools/**"
+      - "privacy-policy.html"
+  workflow_dispatch:
+
+# A new push to the same branch makes the previous run irrelevant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Android
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "17" # matches compileOptions in app/build.gradle
+
+      # Caches Gradle between runs and checks the wrapper jar against Gradle's
+      # published checksums.
+      - uses: gradle/actions/setup-gradle@v6
+
+      # The same three tasks were run on the Mac before this file was added.
+      - run: ./gradlew compileDebugKotlin testDebugUnitTest lintDebug --no-daemon
+
+      - name: Upload lint report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: app/build/reports/lint-results-debug.html
+          if-no-files-found: ignore
