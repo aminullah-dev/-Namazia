@@ -105,6 +105,26 @@ Fajr azan recording: "Morning call to prayer on Bodufolhudhoo, Maldives" by jros
 
 ## What's new (release notes)
 
+### 1.1.2 (versionCode 6)
+Pashto notifications follow the chosen language (PR #8) and the release build is now
+shrunk and obfuscated with R8 (Play's "DEX code optimization" warning). Paste into every
+language box Play Console shows.
+
+**Pashto (ps)**
+```
+د خبرتیاوو پښتو متنونه سم شول. چټکتیا او ثبات ښه شو.
+```
+
+**Dari / Persian (fa)**
+```
+متن‌های پشتو در اعلان‌ها اصلاح شد. بهبود سرعت و پایداری.
+```
+
+**English (en-US)**
+```
+Corrected Pashto wording in notifications. Performance and stability improvements.
+```
+
 ### 1.1.1 (versionCode 5)
 Pashto wording fixes only. Paste into every language box Play Console shows.
 
@@ -239,9 +259,12 @@ location detection in this release.
 - **`versionCode` must go up on every upload.** Play retires a code the moment a bundle
   carrying it is uploaded — to any track, published or not — and will not accept it again.
   Bump `versionCode` in `app/build.gradle` before each new bundle you build.
-  Currently at `versionCode 4`, `versionName "1.1.0"`. Codes 1–3 are spent: 3 reached the
+  Currently at `versionCode 6`, `versionName "1.1.2"`. Codes 1–3 are spent: 3 reached the
   production draft and was rejected there for targeting an old API level, which retires it
-  just the same.
+  just the same. 4 (1.1.0) and 5 (1.1.1) are live.
+- **Release builds are minified and shrunk (R8).** Reflection and Gson needs are listed by
+  hand in `app/proguard-rules.pro`; add any new API model class there, and test a release
+  build on a device — unit tests do not run through R8.
 - `minSdk 26` (Android 8.0), `targetSdk 36` (Android 16). Play raises this floor every year
   and rejects the release outright — not the app, the upload — when the bundle is below it.
   Raising targetSdk to 36 also ends the edge-to-edge opt-out: the app now draws behind the
